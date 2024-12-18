@@ -1,0 +1,1 @@
+{"root":["./src/App.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/CodeEditor.tsx","./src/components/Header.tsx","./src/components/ReglViewer.tsx","./src/components/camera.d.ts","./src/components/createReglCamera.tsx"],"errors":true,"version":"5.6.3"}
