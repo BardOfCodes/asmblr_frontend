@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Editor from '@monaco-editor/react';
 
-export const CodeEditor: React.FC = () => {
-  const [code, setCode] = useState<string>('# Write your Python code here\n');
+interface CodeEditorProps {
+  code: string;
+  setCode: (newCode: string) => void;
+}
 
+export const CodeEditor: React.FC<CodeEditorProps> = ({ code, setCode }) => {
   return (
     <Editor
       height="100%"

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import createREGL from 'regl';
 // import glslify from 'glslify';
 // import fragShader from '../renderer/raymarch_prim.frag.glsl';  // Import the GLSL file directly
-import fragShader from '../renderer/main.frag.glsl';  // Import the GLSL file directly
+import fragShader from '../renderer/raymarch_prim.frag.glsl';  // Import the GLSL file directly
 import vertShader from '../renderer/main.vert.glsl';  // Import the GLSL file directly
 
 export const ReglViewer: React.FC = () => {
