@@ -8,7 +8,8 @@ import generateShaderCodeFromGraphSet from '../api/generateShaderCodeFromGraphSe
 import generateResolve2PolySet from '../api/generateResolve2PolySet';
 import generateConvert2Millable from '../api/generateConvert2Millable';
 import generateConvert2Interlocking from '../api/generateConvert2Interlocking';
-import generateTemp from '../api/generateTemp';
+import generateConvert2STL from '../api/generateConvert2STL';
+import generateConvert2JWood from '../api/generateConvert2JWood';
 import fragShader from '../renderer/default.frag.glsl'; // Adjust the path as needed
 
 // Styled div for each uniform card
@@ -306,7 +307,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
     }
   };
 
-  const handleTemp = async () => {
+  const handleConvert2STL = async () => {
     try {
       // Step 1: Sync the current editor state
       editor.modules.sync();
@@ -315,7 +316,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
       const current_data = JSON.stringify(editor.modules.getCurrent(), null, 2);
   
       // Step 3: Fetch STL files from the backend
-      const stlFiles = await generateTemp({ moduleData: current_data });
+      const stlFiles = await generateConvert2STL({ moduleData: current_data });
   
       // Step 4: Trigger downloads for each STL file
       stlFiles.forEach(({ blob, filename }) => {
@@ -326,6 +327,35 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
         link.click();
         document.body.removeChild(link);
       });
+  
+      console.log('Successfully downloaded STL files.');
+    } catch (error) {
+      console.error('Error generating STL files:', error);
+    }
+  };
+
+
+  const handleConvert2JWood = async () => {
+    try {
+      // Step 1: Sync the current editor state
+      editor.modules.sync();
+  
+      // Step 2: Export the current module data
+      const current_data = JSON.stringify(editor.modules.getCurrent(), null, 2);
+  
+      const currentUniforms = fetchUniforms();
+
+      // Step 3: Fetch STL files from the backend
+      const jwood_str = await generateConvert2JWood({ moduleData: current_data, uniforms: currentUniforms });
+  
+      // Step 4: Trigger downloads for each STL file
+      const blob = new Blob([jwood_str], { type: 'application/json' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'module_jwood.json';  // Or any filename you prefer
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
   
       console.log('Successfully downloaded STL files.');
     } catch (error) {
@@ -418,10 +448,13 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
       <Button onClick={handleLoadProgramFromGraph}>Load Geometry</Button>
       <Button onClick={handleLoadProgramFromGraphSet}>Load All</Button>
       <Button onClick={arrangeNodes}>Arrange Nodes</Button>
+      <br />
       <Button onClick={handleResolve2PolySet}>Resolve2PolySet</Button>
       <Button onClick={handleConvert2Millable}>Convert2Millable</Button>
       <Button onClick={handleConvert2Interlocking}>Convert2Interlocking</Button>
-      <Button onClick={handleTemp}>TEMP</Button>
+      <Button onClick={handleConvert2STL}>Convert2STL</Button>
+      <Button onClick={handleConvert2JWood}>Convert2JWood</Button>
+      <br />
       <Button onClick={resetShader}>Reset Shader</Button>
       {/* Collapsible Uniforms Section */}
       <UniformContainer>

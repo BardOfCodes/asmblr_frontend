@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const generateTemp = async (payload: any) => {
+const generateConvert2STL = async (payload: any) => {
   try {
-    const response = await axios.post('http://localhost:5000/convert-to-mesh', {
+    const response = await axios.post('http://localhost:5000/convert-to-stl', {
       moduleData: JSON.stringify(payload.moduleData),
     });
 
@@ -27,4 +27,4 @@ const generateTemp = async (payload: any) => {
   }
 };
 
-export default generateTemp;
+export default generateConvert2STL;
