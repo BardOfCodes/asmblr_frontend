@@ -322,3 +322,21 @@ export class Circle2D extends ClassicPreset.Node<Circle2DInputs, Circle2DOutputs
       }
     }
 }
+
+export class NullExpression2D extends ClassicPreset.Node<{}, { expr: ClassicPreset.Socket }> implements DataflowNode {
+  static ID = 'NullExpression2D'
+  width = 180
+
+  constructor() {
+      super("Null Expression 2D");
+      const expr_out = new ClassicPreset.Output(exprSocket, "expr");
+      this.addOutput("expr", expr_out);
+    }
+
+    data(): {} {
+      return {};
+    }
+    serialize(): {} {
+      return {}
+    }
+}

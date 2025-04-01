@@ -11,7 +11,7 @@ export { Float, Vec2, Vec3, Vec4,
 
 export {Translate2D, EulerRotate2D, Scale2D,
 Rectangle2D, Trapezoid2D, Dilate2D,
-PolyLine2D, Circle2D,
+PolyLine2D, Circle2D, NullExpression2D,
 } from './r2_nodes';
 
 export {Translate3D, EulerRotate3D, Scale3D, 

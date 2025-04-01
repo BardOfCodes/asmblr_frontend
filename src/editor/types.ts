@@ -19,6 +19,7 @@ export type Node =
   | SWNodes.Trapezoid2D
   | SWNodes.PolyLine2D
   | SWNodes.Circle2D
+  | SWNodes.NullExpression2D
   | SWNodes.Dilate2D
   | SWNodes.Translate3D
   | SWNodes.EulerRotate3D

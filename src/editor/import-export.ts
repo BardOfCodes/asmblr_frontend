@@ -38,6 +38,7 @@ export async function createNode(di: DiContainer, name: string, data: any, unifo
     [SWNodes.PolyLine2D.ID]: () => new SWNodes.PolyLine2D(data),
     [SWNodes.Circle2D.ID]: () => new SWNodes.Circle2D(data),
     [SWNodes.Dilate2D.ID]: () => new SWNodes.Dilate2D(data),
+    [SWNodes.NullExpression2D.ID]: () => new SWNodes.NullExpression2D(),
 
 
     [SWNodes.Translate3D.ID]: () => new SWNodes.Translate3D(data),
