@@ -9,6 +9,7 @@ import generateResolve2PolySet from '../api/generateResolve2PolySet';
 import generateConvert2Millable from '../api/generateConvert2Millable';
 import generateConvert2Interlocking from '../api/generateConvert2Interlocking';
 import generateConvert2STL from '../api/generateConvert2STL';
+import generateConvert2MCMesh from '../api/generateConvert2MCMesh';
 import generateConvert2JWood from '../api/generateConvert2JWood';
 import fragShader from '../renderer/default.frag.glsl'; // Adjust the path as needed
 
@@ -334,6 +335,32 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
     }
   };
 
+  const handleConvert2MCMesh = async () => {
+    try {
+      // Step 1: Sync the current editor state
+      editor.modules.sync();
+  
+      // Step 2: Export the current module data
+      const current_data = JSON.stringify(editor.modules.getCurrent(), null, 2);
+  
+      // Step 3: Fetch STL files from the backend
+      const stlFiles = await generateConvert2MCMesh({ moduleData: current_data });
+  
+      // Step 4: Trigger downloads for each STL file
+      stlFiles.forEach(({ blob, filename }) => {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+  
+      console.log('Successfully downloaded STL files.');
+    } catch (error) {
+      console.error('Error generating STL files:', error);
+    }
+  };
 
   const handleConvert2JWood = async () => {
     try {
@@ -453,6 +480,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
       <Button onClick={handleConvert2Millable}>Convert2Millable</Button>
       <Button onClick={handleConvert2Interlocking}>Convert2Interlocking</Button>
       <Button onClick={handleConvert2STL}>Convert2STL</Button>
+      <Button onClick={handleConvert2MCMesh}>Convert2MCMesh</Button>
       <Button onClick={handleConvert2JWood}>Convert2JWood</Button>
       <br />
       <Button onClick={resetShader}>Reset Shader</Button>
