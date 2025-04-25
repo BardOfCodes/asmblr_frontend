@@ -3,14 +3,17 @@ import styled, { css } from 'styled-components';
 import { ReglViewerHandle } from './NewReglViewer';
 
 import { importEditor } from '../editor/import-export';
-import generateShaderCodeFromGraph from '../api/generateShaderCodeFromGraph';
-import generateShaderCodeFromGraphSet from '../api/generateShaderCodeFromGraphSet';
-import generateResolve2PolySet from '../api/generateResolve2PolySet';
-import generateConvert2Millable from '../api/generateConvert2Millable';
-import generateConvert2Interlocking from '../api/generateConvert2Interlocking';
-import generateConvert2STL from '../api/generateConvert2STL';
-import generateConvert2MCMesh from '../api/generateConvert2MCMesh';
-import generateConvert2JWood from '../api/generateConvert2JWood';
+import {
+  generateShaderCodeFromGraph,
+  generateShaderCodeFromGraphSet,
+  generateResolve2PolySet,
+  generateConvert2Millable,
+  generateConvert2Interlocking,
+  generateConvert2STL,
+  generateConvert2MCMesh,
+  generateConvert2JWood
+} from './api';
+
 import fragShader from '../renderer/default.frag.glsl'; // Adjust the path as needed
 
 // Styled div for each uniform card
@@ -100,16 +103,34 @@ interface ControlPanelProps {
   editor: any;
 }
 
+
 export const ControlPanel: React.FC<ControlPanelProps> = ({
   reglViewerRef,
   editor,
 }) => {
   const [uniforms, setUniforms] = useState<any>({});
   const [isUniformOpen, setIsUniformOpen] = useState(false);
-  
+  const [currentFragCode, setCurrentFragCode] = useState<string>(fragShader);
+
   const handleToggleUniforms = () => {
     setIsUniformOpen((prev) => !prev);
   };
+
+  const sunUniforms = {
+    sunAzimuth: {
+      type: 'float' as const,
+      init_value: Math.PI/4,
+      min: [0],
+      max: [ 2 * Math.PI],
+    },
+    sunElevation: {
+      type: 'float' as const,
+      init_value: 0.5,
+      min: [-Math.PI/2],
+      max: [ Math.PI/2],
+    },
+  };
+
   
   const handleLoadProgramFromGraph = async () => {
     try {
@@ -117,14 +138,22 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
       const data = JSON.stringify(editor.modules.getCurrent(), null, 2);
       const { shaderCode, uniforms: backendUniforms } = await generateShaderCodeFromGraph(data);
   
-      const initializedUniforms = Object.entries(backendUniforms).reduce((acc, [name, spec]: any) => {
-        acc[name] = spec; // Save the full uniform spec
-        return acc;
-      }, {});
-  
+      // const initializedUniforms = Object.entries(backendUniforms).reduce((acc, [name, spec]: any) => {
+      //   acc[name] = spec; // Save the full uniform spec
+      //   return acc;
+      // }, {});
+
+      // ↑ replace with:
+      const initializedUniforms = {
+        // first, your sun controls…
+        ...sunUniforms,
+        // …then everything the backend gave you
+        ...backendUniforms,
+      };
+
       setUniforms(initializedUniforms); // Save full uniforms in state
       reglViewerRef.current?.setShaderCode(shaderCode);
-  
+      setCurrentFragCode(shaderCode);
       // Set uniforms in ReglViewer
       Object.entries(initializedUniforms).forEach(([name, spec]) => {
         reglViewerRef.current?.setUniform(name, spec.init_value); // Use spec.init_value
@@ -144,7 +173,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
         }
       });
       await editor.modules.loadUniforms(uniformFunctionsMap);
-
+      
     } catch (error) {
       console.error('Error loading shader program:', error);
     }
@@ -163,7 +192,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   
       setUniforms(initializedUniforms); // Save full uniforms in state
       reglViewerRef.current?.setShaderCode(shaderCode);
-  
+      setCurrentFragCode(shaderCode);
       // Set uniforms in ReglViewer
       Object.entries(initializedUniforms).forEach(([name, spec]) => {
         reglViewerRef.current?.setUniform(name, spec.init_value); // Use spec.init_value
@@ -200,6 +229,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   const resetShader = () => {
     setUniforms({});
     reglViewerRef.current?.setShaderCode(fragShader);
+    setCurrentFragCode(fragShader);
   };
 
   const fetchUniforms = () => {
@@ -390,6 +420,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
     }
   };
   
+
   const handleUniformChange = (name: string, value: any) => {
     setUniforms((prev) => {
       const updatedUniforms = { ...prev, [name]: { ...prev[name], init_value: value } };
@@ -397,8 +428,17 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
       return updatedUniforms; // Return the updated state
     });
   };
-
-
+  const handleSaveShaderCode = () => {
+    const blob = new Blob([currentFragCode], { type: 'text/plain' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = 'shader.frag';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
   const renderUniformInput = (name: string, uniform: any) => {
     const { type, init_value, min, max } = uniform;
   
@@ -484,8 +524,10 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
       <Button onClick={handleConvert2JWood}>Convert2JWood</Button>
       <br />
       <Button onClick={resetShader}>Reset Shader</Button>
+      <Button onClick={handleSaveShaderCode}>Save ShaderCode</Button>
       {/* Collapsible Uniforms Section */}
       <UniformContainer>
+        
         <UniformHeader isOpen={isUniformOpen} onClick={handleToggleUniforms}>
           Uniforms
           <ToggleIcon>{isUniformOpen ? "-" : "+"}</ToggleIcon>
