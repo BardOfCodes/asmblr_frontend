@@ -1,7 +1,7 @@
 
 export { ConvertToShaderNode, LinkedHeightField3D, 
-    ApplyHeight, SetMaterial, RegisterGeometry,
-    RegisterState, NamedGeometry, MarkerNode
+    ApplyHeight, SetMaterial, RegisterGeometry,RegisterGeometryBeta,
+    RegisterState, NamedGeometry, MarkerNode, BBoxedApplyHeight,
 } from './evaluate_nodes';
 
 export { Float, Vec2, Vec3, Vec4,

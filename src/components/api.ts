@@ -148,14 +148,20 @@ export const generateConvert2MCMesh = async (payload: any) => {
     }
   };
   
-  export {
-    generateConvert2Interlocking,
-    generateConvert2JWood,
-    generateConvert2MCMesh,
-    generateConvert2Millable,
-    generateConvert2STL,
-    generateResolve2PolySet,
-    generateShaderCodeFromGraph,
-    generateShaderCodeFromGraphSet
+
+  export const generateConvert2Bboxed = async (payload: any,) => {
+    try {
+      const response = await axios.post('http://localhost:5000/convert-to-bboxed', {
+        moduleData: JSON.stringify(payload.moduleData),
+        uniforms: JSON.stringify(payload.uniforms),
+      });
+  
+      const { moduleData } = response.data; // Assuming the backend returns new_data
+      const new_data = JSON.parse(moduleData);
+      return new_data;
+    } catch (error) {
+      console.error('Error resolving to BBox:', error);
+      throw error;
+    }
   };
   

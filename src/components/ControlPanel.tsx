@@ -2,16 +2,13 @@ import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { ReglViewerHandle } from './NewReglViewer';
 
-import { importEditor } from '../editor/import-export';
 import {
   generateShaderCodeFromGraph,
   generateShaderCodeFromGraphSet,
-  generateResolve2PolySet,
-  generateConvert2Millable,
   generateConvert2Interlocking,
-  generateConvert2STL,
   generateConvert2MCMesh,
-  generateConvert2JWood
+  generateConvert2JWood,
+  generateConvert2Bboxed
 } from './api';
 
 import fragShader from '../renderer/default.frag.glsl'; // Adjust the path as needed
@@ -21,10 +18,9 @@ const UniformCard = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start; /* Align all content to the left */
-  box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px;
   border-radius: 5px;
-  padding: 1em;
-  margin: 1em 0;
+  padding: 5px;
+  margin: 5px 0;
   background-color: #f9f9f9;
 `;
 
@@ -36,12 +32,6 @@ const SliderWrapper = styled.div`
   margin: 0 1em;
 `;
 
-// Styled label to ensure uniform alignment
-const UniformLabel = styled.div`
-  flex: 1; // Ensure the label takes up space but doesn't dominate
-  font-weight: bold;
-  text-align: left;
-`;
 
 const Button = styled.button<{ $primary?: boolean }>`
   background: transparent;
@@ -242,69 +232,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
     return currentUniforms;
   };
 
-  const handleResolve2PolySet = async () => {
-    try {
-      // Step 1: Sync the current editor state
-      editor.modules.sync();
-  
-      // Step 2: Export the current module data
-      const orig_data_str = JSON.stringify(editor.modules.list, null, 2);
-      const orig_data = JSON.parse(orig_data_str);
-      const current_name = editor.modules.getCurrentName();
-      const current_data = JSON.stringify(editor.modules.getCurrent(), null, 2);
-      const new_name = current_name + '_resolved';
-      // Step 3: Generate the updated data from the backend
 
-      const currentUniforms = fetchUniforms();
-
-      // Step 4: Generate the updated data from the backend
-      const newData = await generateResolve2PolySet({
-        moduleData: current_data,
-        uniforms: currentUniforms
-      });
-      orig_data[new_name] = newData;
-      // Step 4: Clear the current editor
-      await editor.modules.clear();
-      
-      // Import the new data into the modules
-      await editor.modules.importModules(orig_data);
-      
-      console.log('Successfully resolved to polyset and loaded the new data.');
-    } catch (error) {
-      console.error('Error resolving to polyset:', error);
-    }
-  };
-
-
-  const handleConvert2Millable = async () => {
-    try {
-      // Step 1: Sync the current editor state
-      editor.modules.sync();
-  
-      // Step 2: Export the current module data
-      const orig_data_str = JSON.stringify(editor.modules.list, null, 2);
-      const orig_data = JSON.parse(orig_data_str);
-      const current_name = editor.modules.getCurrentName();
-      const current_data = JSON.stringify(editor.modules.getCurrent(), null, 2);
-      const new_name = current_name + '_millable';
-      // Step 3: Generate the updated data from the backend
-
-
-      // Step 4: Generate the updated data from the backend
-      const newData = await generateConvert2Millable({moduleData: current_data});
-
-      orig_data[new_name] = newData;
-      // Step 4: Clear the current editor
-      await editor.modules.clear();
-      
-      // Import the new data into the modules
-      await editor.modules.importModules(orig_data);
-      
-      console.log('Successfully resolved to polyset and loaded the new data.');
-    } catch (error) {
-      console.error('Error resolving to polyset:', error);
-    }
-  };
 
 
   const handleConvert2Interlocking = async () => {
@@ -338,30 +266,35 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
     }
   };
 
-  const handleConvert2STL = async () => {
+
+  const handleConvert2BBoxed = async () => {
     try {
       // Step 1: Sync the current editor state
       editor.modules.sync();
   
       // Step 2: Export the current module data
+      const orig_data_str = JSON.stringify(editor.modules.list, null, 2);
+      const orig_data = JSON.parse(orig_data_str);
+      const current_name = editor.modules.getCurrentName();
       const current_data = JSON.stringify(editor.modules.getCurrent(), null, 2);
-  
-      // Step 3: Fetch STL files from the backend
-      const stlFiles = await generateConvert2STL({ moduleData: current_data });
-  
-      // Step 4: Trigger downloads for each STL file
-      stlFiles.forEach(({ blob, filename }) => {
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      });
-  
-      console.log('Successfully downloaded STL files.');
+      const new_name = current_name + '_bboxed';
+      // Step 3: Generate the updated data from the backend
+
+      const currentUniforms = fetchUniforms();
+
+      // Step 4: Generate the updated data from the backend
+      const newData = await generateConvert2Bboxed({moduleData: current_data, uniforms: currentUniforms});
+
+      orig_data[new_name] = newData;
+      // Step 4: Clear the current editor
+      await editor.modules.clear();
+      
+      // Import the new data into the modules
+      await editor.modules.importModules(orig_data);
+      
+      console.log('Successfully resolved to polyset and loaded the new data.');
     } catch (error) {
-      console.error('Error generating STL files:', error);
+      console.error('Error resolving to polyset:', error);
     }
   };
 
@@ -516,12 +449,11 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
       <Button onClick={handleLoadProgramFromGraphSet}>Load All</Button>
       <Button onClick={arrangeNodes}>Arrange Nodes</Button>
       <br />
-      <Button onClick={handleResolve2PolySet}>Resolve2PolySet</Button>
-      <Button onClick={handleConvert2Millable}>Convert2Millable</Button>
       <Button onClick={handleConvert2Interlocking}>Convert2Interlocking</Button>
-      <Button onClick={handleConvert2STL}>Convert2STL</Button>
+      {/* <Button onClick={handleConvert2STL}>Convert2STL</Button> */}
       <Button onClick={handleConvert2MCMesh}>Convert2MCMesh</Button>
       <Button onClick={handleConvert2JWood}>Convert2JWood</Button>
+      <Button onClick={handleConvert2BBoxed}>Convert2BBoxed</Button>
       <br />
       <Button onClick={resetShader}>Reset Shader</Button>
       <Button onClick={handleSaveShaderCode}>Save ShaderCode</Button>

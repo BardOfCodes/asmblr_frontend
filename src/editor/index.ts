@@ -130,6 +130,7 @@ export async function createEditor(
         ["RegisterGeometry", () => new SWNodes.RegisterGeometry({'name': "base", "bbox": [2.0, 4.0, 2.0]})],
         ["RegisterState", () => new SWNodes.RegisterState({'state': [0]})],
         ["NamedGeometry", () => new SWNodes.NamedGeometry({'name': 'base'})],
+        ["RGB", () => new SWNodes.RegisterGeometryBeta({'name': "base", "bbox_scale": [2.0, 4.0, 2.0], 'bbox_origin': [0.0, 0.0, 0.0]})],
       ]],
       ["Transforms", [
         ["2D", [
@@ -168,9 +169,10 @@ export async function createEditor(
       ["Process", [
         // ["ConvertToShaderNode", () => new SWNodes.ConvertToShaderNode()],
         ["SetMaterial", () => new SWNodes.SetMaterial({"material": [2.0]})],
+        ["LHF3D", () => new SWNodes.LinkedHeightField3D()],
         ["ApplyHeight", () => new SWNodes.ApplyHeight({'height': [0.5]})],
-        ["LinkedHeightField3D", () => new SWNodes.LinkedHeightField3D()],
         ["MarkerNode", () => new SWNodes.MarkerNode()],
+        ["BBAH", () => new SWNodes.BBoxedApplyHeight({'height': [0.5], 'bbox_origin': [0.0, 0.0], 'bbox_scale': [1.0, 1.0]})],
       ]
       ],
       ['Maths', [

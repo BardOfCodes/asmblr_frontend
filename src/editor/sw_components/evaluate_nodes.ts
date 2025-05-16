@@ -3,7 +3,7 @@ import { ClassicPreset } from "rete";
 import { DataflowNode } from 'rete-engine';
 import { FloatControl } from "../controls/vector-control";
 import { StringControl } from "../controls/string-control";
-import { Vector3DControl } from "../controls/vector-control";
+import { Vector2DControl, Vector3DControl } from "../controls/vector-control";
 
 const exprSocket = new ClassicPreset.Socket("ExprSocket");
 
@@ -102,6 +102,58 @@ export class ApplyHeight extends ClassicPreset.Node<ApplyHeightInputs, ApplyHeig
       }
     }
 }
+
+type BBoxedApplyHeightData = {
+  bbox_scale: [number, number],
+  bbox_origin: [number, number]
+  height: [number]
+}
+type BBoxedApplyHeightInputs = { expr: ClassicPreset.Socket, bbox_scale: ClassicPreset.Socket, bbox_origin: ClassicPreset.Socket, height: ClassicPreset.Socket };
+type BBoxedApplyHeightOutputs = { expr: ClassicPreset.Socket };
+
+export class BBoxedApplyHeight extends ClassicPreset.Node<BBoxedApplyHeightInputs, BBoxedApplyHeightOutputs> implements DataflowNode {
+  static ID = 'BBoxedApplyHeight'
+  width = 180
+
+  constructor(data: BBoxedApplyHeightData) {
+      super("Apply Height BBoxed");
+      const expr = new ClassicPreset.Input(exprSocket, "expr");
+      const bbox_scale = new ClassicPreset.Input(exprSocket, "bbox_scale");
+      const bbox_origin = new ClassicPreset.Input(exprSocket, "bbox_origin");
+      const height = new ClassicPreset.Input(exprSocket, "height");
+      const expr_out = new ClassicPreset.Output(exprSocket, "expr");
+
+      this.addInput("expr", expr);
+      this.addInput("bbox_scale", bbox_scale);
+      this.addInput("bbox_origin", bbox_origin);
+      this.addInput("height", height);
+      this.addOutput("expr", expr_out);
+
+      const vctrl = new Vector2DControl(data.bbox_origin, 'BBox Origin', () => {
+        console.log("Origin Updated");
+      });
+      bbox_origin.addControl(vctrl);
+      const vctrl2 = new Vector2DControl(data.bbox_scale, 'BBox Scale', () => {
+        console.log("Scale Updated");
+      });
+      bbox_scale.addControl(vctrl2);
+      const heightCtrl = new FloatControl(data.height, 'Height', () => {});
+      height.addControl(heightCtrl)
+
+    }
+
+    data(): {} {
+      return {};
+    }
+    serialize(): BBoxedApplyHeightData {
+      return {
+        bbox_scale: (this.inputs['bbox_scale']?.control as Vector2DControl).value as [number, number],
+        bbox_origin: (this.inputs['bbox_origin']?.control as Vector2DControl).value as [number, number],
+        height: (this.inputs['height']?.control as FloatControl).value as [number]
+      }
+    }
+}
+
 type SetMaterialData = {
   material: [number]
 }
@@ -177,6 +229,60 @@ export class RegisterGeometry extends ClassicPreset.Node<RegisterGeometryInputs,
       }
     }
 }
+
+type RegisterGeometryBetaData = {
+  name: string
+  bbox_scale: [number, number, number]
+  bbox_origin: [number, number, number]
+}
+
+type RegisterGeometryBetaInputs = { expr: ClassicPreset.Socket, 
+  name: ClassicPreset.Socket,
+  bbox_scale: ClassicPreset.Socket,
+  bbox_origin: ClassicPreset.Socket,
+};
+
+type RegisterGeometryBetaOutputs = { };
+
+export class RegisterGeometryBeta extends ClassicPreset.Node<RegisterGeometryBetaInputs, RegisterGeometryBetaOutputs> implements DataflowNode {
+  static ID = 'RegisterGeometryBeta'
+  width = 180
+
+  constructor(data: RegisterGeometryBetaData) {
+      super("Register Geometry");
+      const nameControl = new StringControl(data.name, "Name", () => {});
+      this.addControl("name", nameControl);
+      const bbox_scale= new ClassicPreset.Input(exprSocket, "bbox_scale");
+      this.addInput("bbox_scale", bbox_scale);
+      const vctrl = new Vector3DControl(data.bbox_scale, 'BBox Scale', () => {
+          console.log("Theta Updated");
+      });
+      bbox_scale.addControl(vctrl);
+      const bbox_origin = new ClassicPreset.Input(exprSocket, "bbox_origin");
+      this.addInput("bbox_origin", bbox_origin);
+      const vctrl2 = new Vector3DControl(data.bbox_origin, 'BBox Origin', () => {
+          console.log("Theta Updated");
+      });
+      bbox_origin.addControl(vctrl2);
+
+
+      const expr = new ClassicPreset.Input(exprSocket, "expr");
+      this.addInput("expr", expr);
+    }
+
+    data(): {} {
+      return this.serialize();
+    }
+    serialize(): RegisterGeometryBetaData {
+      const nameControl = this.controls["name"] as ClassicPreset.InputControl<"text">;
+      return {
+        name: nameControl.value as string,
+        bbox_scale: (this.inputs['bbox_scale']?.control as Vector3DControl).value as [number, number, number],
+        bbox_origin: (this.inputs['bbox_origin']?.control as Vector3DControl).value as [number, number, number]
+      }
+    }
+}
+
 
 type NamedGeometryData = {
   name: string

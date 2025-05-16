@@ -30,10 +30,12 @@ export type Node =
   | SWNodes.Difference
   | SWNodes.Complement
   | SWNodes.ApplyHeight
+  | SWNodes.BBoxedApplyHeight
   | SWNodes.Difference
   | SWNodes.LinkedHeightField3D
   | SWNodes.SetMaterial
   | SWNodes.RegisterGeometry
+  | SWNodes.RegisterGeometryBeta
   | SWNodes.RegisterState
   | SWNodes.NamedGeometry
   | SWNodes.ConvertToShaderNode

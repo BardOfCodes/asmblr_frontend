@@ -147,6 +147,7 @@ export const NewReglViewer = React.forwardRef<ReglViewerHandle>((_, ref) => {
           viewportHeight,
         ],
         time: ({ tick }) => tick * 0.001,
+        castShadows: true,
         ...dynamicUniforms,
       },
       count: 4,

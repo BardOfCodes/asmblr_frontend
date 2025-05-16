@@ -56,9 +56,11 @@ export async function createNode(di: DiContainer, name: string, data: any, unifo
     [SWNodes.ApplyHeight.ID]: () => new SWNodes.ApplyHeight(data),
     [SWNodes.SetMaterial.ID]: () => new SWNodes.SetMaterial(data),
     [SWNodes.RegisterGeometry.ID]: () => new SWNodes.RegisterGeometry(data),
+    [SWNodes.RegisterGeometryBeta.ID]: () => new SWNodes.RegisterGeometryBeta(data),
     [SWNodes.RegisterState.ID]: () => new SWNodes.RegisterState(data),
     [SWNodes.NamedGeometry.ID]: () => new SWNodes.NamedGeometry(data),
     [SWNodes.MarkerNode.ID]: () => new SWNodes.MarkerNode(data),
+    [SWNodes.BBoxedApplyHeight.ID]: () => new SWNodes.BBoxedApplyHeight(data),
 
     [SWNodes.UnaryOperator.ID]: () => new SWNodes.UnaryOperator(data),
     [SWNodes.BinaryOperator.ID]: () => new SWNodes.BinaryOperator(data),
