@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
-import { ReglViewerHandle } from './NewReglViewer';
+import type { ViewerHandle } from '../modes/types';
 
 import {
   generateShaderCodeFromGraph,
@@ -89,13 +89,14 @@ const ToggleIcon = styled.span`
 
 
 interface ControlPanelProps {
-  reglViewerRef: React.RefObject<ReglViewerHandle>;
+  // reglViewerRef: React.RefObject<ReglViewerHandle>;
+  viewerRef: React.RefObject<ViewerHandle>;
   editor: any;
 }
 
 
 export const ControlPanel: React.FC<ControlPanelProps> = ({
-  reglViewerRef,
+  viewerRef,
   editor,
 }) => {
   const [uniforms, setUniforms] = useState<any>({});
@@ -142,11 +143,11 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
       };
 
       setUniforms(initializedUniforms); // Save full uniforms in state
-      reglViewerRef.current?.setShaderCode(shaderCode);
+      viewerRef.current?.setShaderCode(shaderCode);
       setCurrentFragCode(shaderCode);
       // Set uniforms in ReglViewer
       Object.entries(initializedUniforms).forEach(([name, spec]) => {
-        reglViewerRef.current?.setUniform(name, spec.init_value); // Use spec.init_value
+        viewerRef.current?.setUniform(name, spec.init_value); // Use spec.init_value
       });
       const uniformFunctionsMap: Record<string, any> = {};
       // for each entry in initializedUniforms create a function that sets the uniform
@@ -181,11 +182,11 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
       }, {});
   
       setUniforms(initializedUniforms); // Save full uniforms in state
-      reglViewerRef.current?.setShaderCode(shaderCode);
+      viewerRef.current?.setShaderCode(shaderCode);
       setCurrentFragCode(shaderCode);
       // Set uniforms in ReglViewer
       Object.entries(initializedUniforms).forEach(([name, spec]) => {
-        reglViewerRef.current?.setUniform(name, spec.init_value); // Use spec.init_value
+        viewerRef.current?.setUniform(name, spec.init_value); // Use spec.init_value
       });
       const uniformFunctionsMap: Record<string, any> = {};
       // for each entry in initializedUniforms create a function that sets the uniform
@@ -218,7 +219,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   };
   const resetShader = () => {
     setUniforms({});
-    reglViewerRef.current?.setShaderCode(fragShader);
+    viewerRef.current?.setShaderCode(fragShader);
     setCurrentFragCode(fragShader);
   };
 
@@ -357,7 +358,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   const handleUniformChange = (name: string, value: any) => {
     setUniforms((prev) => {
       const updatedUniforms = { ...prev, [name]: { ...prev[name], init_value: value } };
-      reglViewerRef.current?.setUniform(name, value); // Send updated uniform to the shader
+      viewerRef.current?.setUniform(name, value); // Send updated uniform to the shader
       return updatedUniforms; // Return the updated state
     });
   };

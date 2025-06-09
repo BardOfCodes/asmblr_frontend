@@ -1,109 +1,82 @@
 import { NodeEditor, NodeId } from 'rete';
 import { DiContainer, Schemes } from "../editor"
-import * as Nodes from './components';
-import * as SWNodes from './sw_components';
+import * as ANodes from './nodes';
 import { Connection } from './connections';
-import { NodeFactory } from './components/types';
+import { NodeFactory } from './nodes/types';
 
-export async function createNode(di: DiContainer, name: string, data: any, uniformFunctionMap?: any) {
+export async function createNode(name: string, data: any, uniformFunctionMap?: any) {
   const nodes = {
-    [SWNodes.Float.ID]: () => new SWNodes.Float(data),
-    [SWNodes.Vec2.ID]: () => new SWNodes.Vec2(data),
-    [SWNodes.Vec3.ID]: () => new SWNodes.Vec3(data),
-    [SWNodes.Vec4.ID]: () => new SWNodes.Vec4(data),
+    [ANodes.Float.ID]: () => new ANodes.Float(data),
+    [ANodes.Vec2.ID]: () => new ANodes.Vec2(data),
+    [ANodes.Vec3.ID]: () => new ANodes.Vec3(data),
+    [ANodes.Vec4.ID]: () => new ANodes.Vec4(data),
 
-    [SWNodes.SplitVec2D.ID]: () => new SWNodes.SplitVec2D(data),
-    [SWNodes.SplitVec3D.ID]: () => new SWNodes.SplitVec3D(data),
-    [SWNodes.SplitVec4D.ID]: () => new SWNodes.SplitVec4D(data),
-    [SWNodes.UniformFloat.ID]: () => {
+    [ANodes.SplitVec2D.ID]: () => new ANodes.SplitVec2D(data),
+    [ANodes.SplitVec3D.ID]: () => new ANodes.SplitVec3D(data),
+    [ANodes.SplitVec4D.ID]: () => new ANodes.SplitVec4D(data),
+    [ANodes.UniformFloat.ID]: () => {
       return uniformFunctionMap
-        ? new SWNodes.UniformFloat(data, uniformFunctionMap[data.name])
-        : new SWNodes.UniformFloat(data);
+        ? new ANodes.UniformFloat(data, uniformFunctionMap[data.name])
+        : new ANodes.UniformFloat(data);
     },
-    [SWNodes.UniformVec2.ID]: () => {
+    [ANodes.UniformVec2.ID]: () => {
       return uniformFunctionMap
-        ? new SWNodes.UniformVec2(data, uniformFunctionMap[data.name])
-        : new SWNodes.UniformVec2(data);
+        ? new ANodes.UniformVec2(data, uniformFunctionMap[data.name])
+        : new ANodes.UniformVec2(data);
     },
-    [SWNodes.UniformVec3.ID]: () => {
+    [ANodes.UniformVec3.ID]: () => {
       return uniformFunctionMap
-        ? new SWNodes.UniformVec3(data, uniformFunctionMap[data.name])
-        : new SWNodes.UniformVec3(data);
+        ? new ANodes.UniformVec3(data, uniformFunctionMap[data.name])
+        : new ANodes.UniformVec3(data);
     },
-    [SWNodes.Translate2D.ID]: () => new SWNodes.Translate2D(data),
-    [SWNodes.EulerRotate2D.ID]: () => new SWNodes.EulerRotate2D(data),
-    [SWNodes.Scale2D.ID]: () => new SWNodes.Scale2D(data),
-    [SWNodes.Rectangle2D.ID]: () => new SWNodes.Rectangle2D(data),
-    [SWNodes.Trapezoid2D.ID]: () => new SWNodes.Trapezoid2D(data),
-    [SWNodes.PolyLine2D.ID]: () => new SWNodes.PolyLine2D(data),
-    [SWNodes.Circle2D.ID]: () => new SWNodes.Circle2D(data),
-    [SWNodes.Dilate2D.ID]: () => new SWNodes.Dilate2D(data),
-    [SWNodes.NullExpression2D.ID]: () => new SWNodes.NullExpression2D(),
-
-
-    [SWNodes.Translate3D.ID]: () => new SWNodes.Translate3D(data),
-    [SWNodes.EulerRotate3D.ID]: () => new SWNodes.EulerRotate3D(data),
-    [SWNodes.Scale3D.ID]: () => new SWNodes.Scale3D(data),
-    [SWNodes.Plane3D.ID]: () => new SWNodes.Plane3D(data),
-
-    [SWNodes.Union.ID]: () => new SWNodes.Union(),
-    [SWNodes.Difference.ID]: () => new SWNodes.Difference(),
-    [SWNodes.Intersection.ID]: () => new SWNodes.Intersection(),
-    [SWNodes.Complement.ID]: () => new SWNodes.Complement(),
-
-    [SWNodes.ConvertToShaderNode.ID]: () => new SWNodes.ConvertToShaderNode(),
-    [SWNodes.LinkedHeightField3D.ID]: () => new SWNodes.LinkedHeightField3D(),
-    [SWNodes.ApplyHeight.ID]: () => new SWNodes.ApplyHeight(data),
-    [SWNodes.SetMaterial.ID]: () => new SWNodes.SetMaterial(data),
-    [SWNodes.RegisterGeometry.ID]: () => new SWNodes.RegisterGeometry(data),
-    [SWNodes.RegisterGeometryBeta.ID]: () => new SWNodes.RegisterGeometryBeta(data),
-    [SWNodes.RegisterState.ID]: () => new SWNodes.RegisterState(data),
-    [SWNodes.NamedGeometry.ID]: () => new SWNodes.NamedGeometry(data),
-    [SWNodes.MarkerNode.ID]: () => new SWNodes.MarkerNode(data),
-    [SWNodes.BBoxedApplyHeight.ID]: () => new SWNodes.BBoxedApplyHeight(data),
-
-    [SWNodes.UnaryOperator.ID]: () => new SWNodes.UnaryOperator(data),
-    [SWNodes.BinaryOperator.ID]: () => new SWNodes.BinaryOperator(data),
-    [SWNodes.VectorOperator.ID]: () => new SWNodes.VectorOperator(data),
-
-
-    [Nodes.InputNumber.ID]: () => new Nodes.InputNumber(di, data),
-    [Nodes.InputTexture.ID]: () => new Nodes.InputTexture(di, data),
-    [Nodes.InputCurve.ID]: () => new Nodes.InputCurve(di, data),
-    [Nodes.InputColor.ID]: () => new Nodes.InputColor(di, data),
-
-    [Nodes.Brick.ID]: () => new Nodes.Brick(di),
-    [Nodes.Circle.ID]: () => new Nodes.Circle(di, data),
-    [Nodes.Noise.ID]: () => new Nodes.Noise(di),
-
-    [Nodes.NumberNode.ID]: () => new Nodes.NumberNode(di, data),
-    [Nodes.Add.ID]: () => new Nodes.Add(),
-    [Nodes.Subtract.ID]: () => new Nodes.Subtract(),
-    [Nodes.Distance.ID]: () => new Nodes.Distance(),
-    [Nodes.Divide.ID]: () => new Nodes.Divide(),
-    [Nodes.Multiply.ID]: () => new Nodes.Multiply(),
-    [Nodes.Pow.ID]: () => new Nodes.Pow(di, data),
-
-    [Nodes.Blend.ID]: () => new Nodes.Blend(di),
-    [Nodes.Blur.ID]: () => new Nodes.Blur(di, data),
-    [Nodes.Invert.ID]: () => new Nodes.Invert(di),
-    [Nodes.Lightness.ID]: () => new Nodes.Lightness(di, data),
-    [Nodes.NormalMap.ID]: () => new Nodes.NormalMap(di, data),
-    [Nodes.Gradient.ID]: () => new Nodes.Gradient(di),
-    [Nodes.Transform.ID]: () => new Nodes.Transform(di, data),
-
-    [Nodes.ModuleNode.ID]: async () => {
-      const node = new Nodes.ModuleNode(di, data)
-
-      await node.update()
-      return node
+    [ANodes.UniformVec4.ID]: () => {
+      return uniformFunctionMap
+        ? new ANodes.UniformVec4(data, uniformFunctionMap[data.name])
+        : new ANodes.UniformVec4(data);
     },
-    [Nodes.OutputMaterial.ID]: () => new Nodes.OutputMaterial(di),
 
-    [Nodes.OutputNumber.ID]: () => new Nodes.OutputNumber(data),
-    [Nodes.OutputTexture.ID]: () => new Nodes.OutputTexture(data),
-    [Nodes.OutputCurve.ID]: () => new Nodes.OutputCurve(data),
-    [Nodes.OutputColor.ID]: () => new Nodes.OutputColor(data),
+    [ANodes.Union.ID]: () => new ANodes.Union(),
+    [ANodes.Difference.ID]: () => new ANodes.Difference(),
+    [ANodes.Intersection.ID]: () => new ANodes.Intersection(),
+    [ANodes.Complement.ID]: () => new ANodes.Complement(),
+
+    [ANodes.RegisterGeometry.ID]: () => new ANodes.RegisterGeometry(data),
+    [ANodes.RegisterState.ID]: () => new ANodes.RegisterState(data),
+    [ANodes.RegisterMaterial.ID]: () => new ANodes.RegisterMaterial(data),
+    [ANodes.NamedGeometry.ID]: () => new ANodes.NamedGeometry(data),
+    [ANodes.SetMaterial.ID]: () => new ANodes.SetMaterial(data),
+    
+    // Neo - Transforms + Cuboid + Superquadric + base SuperPrim
+    [ANodes.Translate3D.ID]: () => new ANodes.Translate3D(data),
+    [ANodes.EulerRotate3D.ID]: () => new ANodes.EulerRotate3D(data),
+    [ANodes.AARotate3D.ID]: () => new ANodes.AARotate3D(data),
+    [ANodes.Scale3D.ID]: () => new ANodes.Scale3D(data),
+    [ANodes.Plane3D.ID]: () => new ANodes.Plane3D(data),
+    [ANodes.Cuboid3D.ID]: () => new ANodes.Cuboid3D(data),
+    [ANodes.SuperQuadric3D.ID]: () => new ANodes.SuperQuadric3D(data),
+    [ANodes.NeoPrimitive3D.ID]: () => new ANodes.NeoPrimitive3D(data),
+
+
+    [ANodes.Translate2D.ID]: () => new ANodes.Translate2D(data),
+    [ANodes.EulerRotate2D.ID]: () => new ANodes.EulerRotate2D(data),
+    [ANodes.Scale2D.ID]: () => new ANodes.Scale2D(data),
+    [ANodes.Rectangle2D.ID]: () => new ANodes.Rectangle2D(data),
+    [ANodes.Trapezoid2D.ID]: () => new ANodes.Trapezoid2D(data),
+    [ANodes.PolyLine2D.ID]: () => new ANodes.PolyLine2D(data),
+    [ANodes.Circle2D.ID]: () => new ANodes.Circle2D(data),
+    [ANodes.Dilate2D.ID]: () => new ANodes.Dilate2D(data),
+    [ANodes.NullExpression2D.ID]: () => new ANodes.NullExpression2D(),
+
+
+
+    [ANodes.LinkedHeightField3D.ID]: () => new ANodes.LinkedHeightField3D(),
+    [ANodes.ApplyHeight.ID]: () => new ANodes.ApplyHeight(data),
+    [ANodes.MarkerNode.ID]: () => new ANodes.MarkerNode(),
+    
+
+    [ANodes.UnaryOperator.ID]: () => new ANodes.UnaryOperator(data),
+    [ANodes.BinaryOperator.ID]: () => new ANodes.BinaryOperator(data),
+    [ANodes.VectorOperator.ID]: () => new ANodes.VectorOperator(data),
   }
 
   const matched = nodes[name]
@@ -121,11 +94,11 @@ type Data = {
   positions: Record<string, { x: number, y: number }>
 }
 
-export async function importEditor(di: DiContainer, data: Data, other_editor: any, uniformFunctionMap?: any) {
+export async function importEditor(di: DiContainer, data: Data, other_editor?: any, uniformFunctionMap?: any) {
   const { nodes, connections, positions} = data;
 
   for (const n of nodes) {
-    const node = await createNode(di, n.name, n.data, uniformFunctionMap);
+    const node = await createNode(n.name, n.data, uniformFunctionMap);
     node.id = n.id;
     await di.editor.addNode(node);
   }

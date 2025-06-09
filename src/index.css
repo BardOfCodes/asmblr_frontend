@@ -108,3 +108,53 @@ button:focus-visible {
   background-position: -3.2px -3.2px, -3.2px -3.2px, -1.6px -1.6px,
     -1.6px -1.6px;
 }
+
+.asmblr-context-menu {
+  background: #D2E8E3;
+  border: 1px solid #2C3532;
+  color: #646464;
+  padding: 8px;
+  border-radius: 4px;
+  position: absolute;
+  z-index: 9999;
+  font-family: sans-serif;
+  min-width: 180px;
+}
+
+.asmblr-context-menu-search {
+  width: 100%;
+  padding: 6px;
+  margin-bottom: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.asmblr-context-menu-item {
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background-color 0.2s;
+}
+
+.asmblr-context-menu-item:hover {
+  background-color: #f2f2f2;
+}
+
+.asmblr-context-submenu {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  background: #D2E8E3;
+  border: 1px solid #2C3532;
+  border-radius: 4px;
+  padding: 6px;
+  margin-left: 2px;
+}
+
+.asmblr-context-menu-closed {
+  padding: 0 !important;
+  border: 0 !important;
+  min-width: 0 !important;
+  box-shadow: none !important;
+  overflow: hidden;
+}

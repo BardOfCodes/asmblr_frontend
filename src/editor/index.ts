@@ -8,13 +8,14 @@ import { saveAs } from 'file-saver';
 import { AreaExtensions, AreaPlugin } from 'rete-area-plugin';
 import { AutoArrangePlugin, Presets as ArrangePresets } from 'rete-auto-arrange-plugin'
 import { ConnectionPlugin, Presets as ConnectionPresets } from 'rete-connection-plugin';
-import { ContextMenuExtra, ContextMenuPlugin, Presets as ContextMenuPresets } from 'rete-context-menu-plugin';
+// import { ContextMenuExtra, ContextMenuPlugin, Presets as ContextMenuPresets } from 'rete-context-menu-plugin';
+import { ContextMenuExtra, ContextMenuPlugin, Presets as ContextMenuPresets } from './context-menu-plugin';
+
 import { ReactArea2D, ReactRenderPlugin, Presets } from 'rete-react-render-plugin';
 import { debounce } from 'lodash';
 import { createRoot } from "react-dom/client";
-import * as Nodes from './components';
-import * as SWNodes from './sw_components';
-import { FloatControl, Vector2DControl, VectorControl } from "./controls/vector-control";
+import * as ANodes from './nodes';
+import { VectorControl } from "./controls/vector-control";
 import { VectorUI } from "./controls/vector-ui";
 import { SliderVectorControl } from './controls/slider-vector-control';
 import { SliderVectorUI } from './controls/slider-vector-ui';
@@ -32,12 +33,20 @@ import { StyledNode } from './styled-node';
 import { ZoomWithoutDblClick } from './zoom_mod';
 import { HistoryPlugin, Presets as HistoryPresets
 } from "rete-history-plugin";
-import { CommentPlugin, CommentExtensions, InlineComment, FrameComment } from "rete-comment-plugin";
+import { CommentPlugin, InlineComment} from "rete-comment-plugin";
 import { ExpectedScheme } from 'rete-scopes-plugin/_types/types';
 // import { ScopesPlugin, Presets as ScopesPresets } from "rete-scopes-plugin";
 
+export type ContextMenuItem = {
+  label: string;
+  handler?: () => void;
+  key?: string;
+  // support submenu
+  children?: ContextMenuItem[];  // extra fields supported by rete
+  selected?: boolean;
+  icon?: string;
+};
 
-class Connection<N extends Node> extends ClassicPreset.Connection<N, N> {}
 
 export const socket = new ClassicPreset.Socket("socket");
 
@@ -56,7 +65,8 @@ export type DiContainer = {
 export async function createEditor(
   container: HTMLElement,
   getModuleData: () => any,
-  log: (message: string, type: "info" | "error") => void
+  log: (message: string, type: "info" | "error") => void,
+  modeName: string // ← new argument
 ) {
   const editor = new NodeEditor<Schemes>();
   const area = new AreaPlugin<Schemes, AreaExtra>(container);
@@ -82,7 +92,7 @@ export async function createEditor(
 
     editor
       .getNodes()
-      .filter((n) => n instanceof Nodes.OutputMaterial)
+      // .filter((n) => n instanceof Nodes.OutputMaterial)
       .forEach((n) => {
         engine.fetch(n.id)
       })
@@ -103,6 +113,8 @@ export async function createEditor(
           modules
         },
         data
+        // other_editor,
+        // data.uniformFunctionMap
       );
     }
   );
@@ -114,81 +126,21 @@ export async function createEditor(
     editor,
     modules
   }
-  const contextMenu = new ContextMenuPlugin<Schemes>({
-    items: ContextMenuPresets.classic.setup([
-      ['Primitives', [
-        ['2D', [
-          ['Rectangle2D', () => new SWNodes.Rectangle2D({'size': [0.5, 0.5]})],
-          ['Trapezoid2D', () => new SWNodes.Trapezoid2D({'r1': [0.5], 'r2': [0.5], 'height': [0.5]})],
-          ['Polyline2D', () => new SWNodes.PolyLine2D({'points': [[0.0, -0.5, 0.2], [0.0, 0.5, 0],
-                                                                  [1.0, 0.0, 0.0], [0.0, -0.5, 0.0]]})],
-          ['Circle2D', () => new SWNodes.Circle2D({'radius': [0.5]})],
-        ]],
-        ['3D', [
-          ['Plane3D', () => new SWNodes.Plane3D({'origin': [0.0, 0.0, 0.0], 'normal': [0.0, 1.0, 1.0]})],
-        ]],
-        ["RegisterGeometry", () => new SWNodes.RegisterGeometry({'name': "base", "bbox": [2.0, 4.0, 2.0]})],
-        ["RegisterState", () => new SWNodes.RegisterState({'state': [0]})],
-        ["NamedGeometry", () => new SWNodes.NamedGeometry({'name': 'base'})],
-        ["RGB", () => new SWNodes.RegisterGeometryBeta({'name': "base", "bbox_scale": [2.0, 4.0, 2.0], 'bbox_origin': [0.0, 0.0, 0.0]})],
-      ]],
-      ["Transforms", [
-        ["2D", [
-          ["Translate2D", () => new SWNodes.Translate2D({'param': [0.5, 0.5]})],
-          ["EulerRotate2D", () => new SWNodes.EulerRotate2D({'param': [0.5]})],
-          // ["Scale2D", () => new SWNodes.Scale2D({'param': [0.25, 0.25]})],
-          ["Dilate2D", () => new SWNodes.Dilate2D({'k': [0.5]})],
 
-        ]],
-        ["3D", [
-          ["Translate3D", () => new SWNodes.Translate3D({'param': [0.5, 0.5, 0.5]})],
-          ["EulerRotate3D", () => new SWNodes.EulerRotate3D({'param': [0.5, 0.5, 0.5]})],
-          // ["Scale3D", () => new SWNodes.Scale3D({'param': [0.5, 0.5, 0.5]})],
-        ]],
-      ]],
-      ["Variables", 
-        [
-          ["Primitives", [
-          ["Float", () => new SWNodes.Float({'value': [0.5,]})],
-          ["Vec2D", () => new SWNodes.Vec2({'value_1': [0.5,], 'value_2': [0.5,]})],
-          ["Vec3D", () => new SWNodes.Vec3({'value_1': [0.5,], 'value_2': [0.5,], 'value_3': [0.5,]})],
-          ["Vec4D", () => new SWNodes.Vec4({'value_1': [0.5,], 'value_2': [0.5,], 'value_3': [0.5,], 'value_4': [0.5,]})],
-          ]],
-          ["Uniforms", [
-            ["UniformFloat", () => new SWNodes.UniformFloat({'min': [0.0], 'max': [1.0], 'value': [0.5], 'name': 'uni'})],
-            ["UniformVec2", () => new SWNodes.UniformVec2({'min': [0.0, 0.0], 'max': [1.0, 1.0], 'value': [0.5, 0.5], 'name': 'uni'})],
-            ["UniformVec3", () => new SWNodes.UniformVec3({'min': [0.0, 0.0, 0.0], 'max': [1.0, 1.0, 1.0], 'value': [0.5, 0.5, 0.5], 'name': 'uni'})],
-          ]],
-          ["Splitter", [
-            ["SplitVec2D", () => new SWNodes.SplitVec2D({"expr": [0.5, 0.5]})],
-            ["SplitVec3D", () => new SWNodes.SplitVec3D({"expr": [0.5, 0.5, 0.5]})],
-            ["SplitVec4D", () => new SWNodes.SplitVec4D({"expr": [0.5, 0.5, 0.5, 0.5]})],
-          ]]
-        ]
-        ],
-      ["Process", [
-        // ["ConvertToShaderNode", () => new SWNodes.ConvertToShaderNode()],
-        ["SetMaterial", () => new SWNodes.SetMaterial({"material": [2.0]})],
-        ["LHF3D", () => new SWNodes.LinkedHeightField3D()],
-        ["ApplyHeight", () => new SWNodes.ApplyHeight({'height': [0.5]})],
-        ["MarkerNode", () => new SWNodes.MarkerNode()],
-        ["BBAH", () => new SWNodes.BBoxedApplyHeight({'height': [0.5], 'bbox_origin': [0.0, 0.0], 'bbox_scale': [1.0, 1.0]})],
-      ]
-      ],
-      ['Maths', [
-        ['UnaryOperator', () => new SWNodes.UnaryOperator({'operator': 'NEG'})],
-        ['BinaryOperator', () => new SWNodes.BinaryOperator({'operator': 'ADD'})],
-        ['VectorOperator', () => new SWNodes.VectorOperator({'operator': 'NORM'})],
-      ]],
-      ["Combinators", [
-        ["Difference", () => new SWNodes.Difference()],
-        ["Union", () => new SWNodes.Union()],
-        ["Intersection", () => new SWNodes.Intersection()],
-        ["Complement", () => new SWNodes.Complement()],
-      ]
-      ],
-    ])
+  const contextMenu = new ContextMenuPlugin<Schemes>({
+    items: getContextMenuItems(modeName),
   });
+  // const contextMenu = new AsmblrContextMenuPlugin({
+  //   items:getContextMenuItems(modeName),
+  // });
+  // const contextMenu = new AsmblrContextMenuPlugin({
+  //   items: () => ({
+  //     searchBar: true,
+  //     list: flattenMenuItems(getContextMenuItems(modeName))
+  //   })
+  // });
+
+  // const contextMenu = new AsmblrContextMenuPlugin(() => getContextMenuItems(modeName));
   area.use(contextMenu);
 
   AreaExtensions.selectableNodes(area, AreaExtensions.selector(), {
@@ -211,25 +163,6 @@ export async function createEditor(
     })
   );
 
-  // const controlMap = new Map<any, any>([
-  //   [VectorControl, VectorUI],
-  //   [SliderVectorControl, SliderVectorUI],
-  //   [StringSelectionControl, StringSelectionControlUI],
-  //   [ListControl, ListControlUI],
-  //   [StringControl, StringControlUI],
-  // ]);
-  
-  // render.addPreset(
-  //   Presets.classic.setup({
-  //     customize: {
-  //       control(data) {
-  //         // Ensure the payload is defined and its constructor matches a key in the map
-  //         const ControlUI = data.payload && controlMap.get(data.payload.constructor);
-  //         return ControlUI || Presets.classic.InputControl;
-  //       },
-  //     },
-  //   })
-  // );
 
   render.addPreset(Presets.classic.setup({
     customize: {
@@ -361,6 +294,153 @@ export function updateAndArrange(
         });
     }, timeout); // Second timeout to ensure layout is complete
   }, timeout); // First timeout for initial layout
+}
+
+function getContextMenuItems(mode: string) {
+  if (mode === 'splitweave') {
+    return ContextMenuPresets.classic.setup([
+      // list of SplitWeave nodes here...
+    ]);
+  } else if (mode === 'neo') {
+    return ContextMenuPresets.classic.setup([
+      ['Capture', [
+        ["RegisterGeometry", () => new ANodes.RegisterGeometry({'name': "base", "bbox_origin": [0.0, 0.0, 0.0], "bbox_scale": [2.0, 2.0, 2.0]})],
+        ["RegisterState", () => new ANodes.RegisterState({'state': [0]})],
+        ["RegisterMaterial", () => new ANodes.RegisterMaterial({"name": "base", 
+          "base_color": [0.5, 0.5, 0.5], "metallic": [0.0], "roughness": [0.5], "ior": [1.5], "emissive": [0.0, 0.0, 0.0], "opacity": [1.0]
+        })],
+        ["NamedGeometry", () => new ANodes.NamedGeometry({'name': 'base'})],
+        ["SetMaterial", () => new ANodes.SetMaterial({"material_name": "base"})],
+      ]],
+      ['Primitives', [
+        ['Cuboid3D', () => new ANodes.Cuboid3D({'size': [1.0, 1.0, 1.0]})],
+        ['SuperQuadric3D', () => new ANodes.SuperQuadric3D({'skew_vec': [1.0, 1.0, 1.0], 'epsilon_1': [1.0], 'epsilon_2': [1.0], })],
+        ['NeoPrimitive3D', () => new ANodes.NeoPrimitive3D({
+          "size": [0.5, 0.5],
+          "corners": [0.1, 0.1, 0.1, 0.1],
+          "thickness": [0.1],
+          "mode": "0",
+          "onion": [0.0],
+          "inflate": [0.0],
+          "extrusion": [0.5, 0.5, 0.5],
+        })],
+      ]],
+      ["Transforms", [
+        ["Translate3D", () => new ANodes.Translate3D({'param': [0.0, 0.0, 0.0]})],
+        ["EulerRotate3D", () => new ANodes.EulerRotate3D({'param': [0.0, 0.5, 0.0]})],
+        ['AARotate3D', () => new ANodes.AARotate3D({'param': [0.0, 0.5, 0.0]})],
+        ["Scale3D", () => new ANodes.Scale3D({'param': [1.0, 1.0, 1.0]})],
+      ]],
+      ["Combinators", [
+        ["Difference", () => new ANodes.Difference()],
+        ["Union", () => new ANodes.Union()],
+        ["Intersection", () => new ANodes.Intersection()],
+        ["Complement", () => new ANodes.Complement()],
+        // Add Smooth Transforms.
+      ]
+      ],
+      ["Variables", 
+        [
+          ["Primitives", [
+          ["Float", () => new ANodes.Float({'value': [0.5,]})],
+          ["Vec2D", () => new ANodes.Vec2({'value_1': [0.5,], 'value_2': [0.5,]})],
+          ["Vec3D", () => new ANodes.Vec3({'value_1': [0.5,], 'value_2': [0.5,], 'value_3': [0.5,]})],
+          ["Vec4D", () => new ANodes.Vec4({'value_1': [0.5,], 'value_2': [0.5,], 'value_3': [0.5,], 'value_4': [0.5,]})],
+          ]],
+          ["Uniforms", [
+            ["UniformFloat", () => new ANodes.UniformFloat({'min': [0.0], 'max': [1.0], 'value': [0.5], 'name': 'uni'})],
+            ["UniformVec2", () => new ANodes.UniformVec2({'min': [0.0, 0.0], 'max': [1.0, 1.0], 'value': [0.5, 0.5], 'name': 'uni'})],
+            ["UniformVec3", () => new ANodes.UniformVec3({'min': [0.0, 0.0, 0.0], 'max': [1.0, 1.0, 1.0], 'value': [0.5, 0.5, 0.5], 'name': 'uni'})],
+          ]],
+          ["Splitter", [
+            ["SplitVec2D", () => new ANodes.SplitVec2D({"expr": [0.5, 0.5]})],
+            ["SplitVec3D", () => new ANodes.SplitVec3D({"expr": [0.5, 0.5, 0.5]})],
+            ["SplitVec4D", () => new ANodes.SplitVec4D({"expr": [0.5, 0.5, 0.5, 0.5]})],
+          ]]
+        ]
+        ],
+      ['Maths', [
+        ['UnaryOperator', () => new ANodes.UnaryOperator({'operator': 'NEG'})],
+        ['BinaryOperator', () => new ANodes.BinaryOperator({'operator': 'ADD'})],
+        ['VectorOperator', () => new ANodes.VectorOperator({'operator': 'NORM'})],
+      ]],
+    ]);
+  } else if (mode === 'mxg') {
+    return ContextMenuPresets.classic.setup([
+      ['Primitives', [
+        ['2D', [
+          ['Rectangle2D', () => new ANodes.Rectangle2D({'size': [0.5, 0.5]})],
+          ['Trapezoid2D', () => new ANodes.Trapezoid2D({'r1': [0.5], 'r2': [0.5], 'height': [0.5]})],
+          ['Polyline2D', () => new ANodes.PolyLine2D({'points': [[0.0, -0.5, 0.2], [0.0, 0.5, 0],
+                                                                  [1.0, 0.0, 0.0], [0.0, -0.5, 0.0]]})],
+          ['Circle2D', () => new ANodes.Circle2D({'radius': [0.5]})],
+        ]],
+        ['3D', [
+          ['Plane3D', () => new ANodes.Plane3D({'origin': [0.0, 0.0, 0.0], 'normal': [0.0, 1.0, 1.0]})],
+        ]],
+        ["RegisterGeometry", () => new ANodes.OldRegisterGeometry({'name': "base", "bbox": [2.0, 4.0, 2.0]})],
+        ["RegisterState", () => new ANodes.RegisterState({'state': [0]})],
+        ["NamedGeometry", () => new ANodes.NamedGeometry({'name': 'base'})],
+        ["RGB", () => new ANodes.RegisterGeometry({'name': "base", "bbox_scale": [2.0, 4.0, 2.0], 'bbox_origin': [0.0, 0.0, 0.0]})],
+      ]],
+      ["Transforms", [
+        ["2D", [
+          ["Translate2D", () => new ANodes.Translate2D({'param': [0.5, 0.5]})],
+          ["EulerRotate2D", () => new ANodes.EulerRotate2D({'param': [0.5]})],
+          // ["Scale2D", () => new ANodes.Scale2D({'param': [0.25, 0.25]})],
+          ["Dilate2D", () => new ANodes.Dilate2D({'k': [0.5]})],
+
+        ]],
+        ["3D", [
+          ["Translate3D", () => new ANodes.Translate3D({'param': [0.5, 0.5, 0.5]})],
+          ["EulerRotate3D", () => new ANodes.EulerRotate3D({'param': [0.5, 0.5, 0.5]})],
+          // ["Scale3D", () => new ANodes.Scale3D({'param': [0.5, 0.5, 0.5]})],
+        ]],
+      ]],
+      ["Variables", 
+        [
+          ["Primitives", [
+          ["Float", () => new ANodes.Float({'value': [0.5,]})],
+          ["Vec2D", () => new ANodes.Vec2({'value_1': [0.5,], 'value_2': [0.5,]})],
+          ["Vec3D", () => new ANodes.Vec3({'value_1': [0.5,], 'value_2': [0.5,], 'value_3': [0.5,]})],
+          ["Vec4D", () => new ANodes.Vec4({'value_1': [0.5,], 'value_2': [0.5,], 'value_3': [0.5,], 'value_4': [0.5,]})],
+          ]],
+          ["Uniforms", [
+            ["UniformFloat", () => new ANodes.UniformFloat({'min': [0.0], 'max': [1.0], 'value': [0.5], 'name': 'uni'})],
+            ["UniformVec2", () => new ANodes.UniformVec2({'min': [0.0, 0.0], 'max': [1.0, 1.0], 'value': [0.5, 0.5], 'name': 'uni'})],
+            ["UniformVec3", () => new ANodes.UniformVec3({'min': [0.0, 0.0, 0.0], 'max': [1.0, 1.0, 1.0], 'value': [0.5, 0.5, 0.5], 'name': 'uni'})],
+          ]],
+          ["Splitter", [
+            ["SplitVec2D", () => new ANodes.SplitVec2D({"expr": [0.5, 0.5]})],
+            ["SplitVec3D", () => new ANodes.SplitVec3D({"expr": [0.5, 0.5, 0.5]})],
+            ["SplitVec4D", () => new ANodes.SplitVec4D({"expr": [0.5, 0.5, 0.5, 0.5]})],
+          ]]
+        ]
+        ],
+      ["Process", [
+        // ["ConvertToShaderNode", () => new ANodes.ConvertToShaderNode()],
+        ["SetMaterial", () => new ANodes.SetMaterial({"material_name": "0.2"})],
+        ["LHF3D", () => new ANodes.LinkedHeightField3D()],
+        ["ApplyHeight", () => new ANodes.ApplyHeight({'height': [0.5]})],
+        ["MarkerNode", () => new ANodes.MarkerNode()],
+      ]
+      ],
+      ['Maths', [
+        ['UnaryOperator', () => new ANodes.UnaryOperator({'operator': 'NEG'})],
+        ['BinaryOperator', () => new ANodes.BinaryOperator({'operator': 'ADD'})],
+        ['VectorOperator', () => new ANodes.VectorOperator({'operator': 'NORM'})],
+      ]],
+      ["Combinators", [
+        ["Difference", () => new ANodes.Difference()],
+        ["Union", () => new ANodes.Union()],
+        ["Intersection", () => new ANodes.Intersection()],
+        ["Complement", () => new ANodes.Complement()],
+      ]
+      ],
+    ]);
+  } else {
+    return ContextMenuPresets.classic.setup([]); // fallback
+  }
 }
 
 // COMMENTS

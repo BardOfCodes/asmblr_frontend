@@ -28,41 +28,44 @@ const EditorContainer = styled.div`
   }
 `
 
-export function useEditor({}: {}) {
+
+export function useEditor({ modeName }: { modeName: string }) {
   const [messageApi, contextHolder] = message.useMessage();
-  const create = useCallback((container: HTMLElement) => createEditor(
-    container,
-    () => modules.list,
-    (text, type) => messageApi[type](text)
-  ), [messageApi])
-  const [container, editor] = useRete(create)
+
+  // Pass modeName to createEditor
+  const create = useCallback((container: HTMLElement) => {
+    return createEditor(
+      container,
+      () => modules.list,
+      (text, type) => messageApi[type](text),
+      modeName
+    );
+  }, [messageApi, modeName]);
+
+  const [container, editor] = useRete(create);
+
   const modules = useModules({
     async opened() {
-      if (!editor) return
-      // await editor.view.resize()
-      editor.process()
-
+      if (!editor) return;
+      editor.process();
     },
     other_editor: editor
-  })
+  });
 
   useEffect(() => {
     if (!editor) return;
-  
+
     const initializeEditor = async () => {
       modules.setDI(editor.di);
-      await modules.importModules(guideEditor.moduleList); // Import modules
-      // await modules.sync(); // Wait for synchronization
-
-      // editor.loadPositions(guideEditor.positions); // Load positions after sync
+      await modules.importModules(guideEditor.moduleList);
+      // editor.loadPositions(guideEditor.positions);
     };
-  
-    initializeEditor(); // Call the async function
+
+    initializeEditor();
   }, [editor]);
-  
 
   return {
-    modules, // Return modules for importing and clearing
+    modules,
     editor,
     process() {
       editor?.process();
@@ -74,5 +77,54 @@ export function useEditor({}: {}) {
         {modules.view}
       </Container>
     )
-  }
+  };
 }
+
+// export function useEditor({}: {}) {
+//   const [messageApi, contextHolder] = message.useMessage();
+//   const create = useCallback((container: HTMLElement) => createEditor(
+//     container,
+//     () => modules.list,
+//     (text, type) => messageApi[type](text)
+//   ), [messageApi])
+//   const [container, editor] = useRete(create)
+//   const modules = useModules({
+//     async opened() {
+//       if (!editor) return
+//       // await editor.view.resize()
+//       editor.process()
+
+//     },
+//     other_editor: editor
+//   })
+
+//   useEffect(() => {
+//     if (!editor) return;
+  
+//     const initializeEditor = async () => {
+//       modules.setDI(editor.di);
+//       await modules.importModules(guideEditor.moduleList); // Import modules
+//       // await modules.sync(); // Wait for synchronization
+
+//       // editor.loadPositions(guideEditor.positions); // Load positions after sync
+//     };
+  
+//     initializeEditor(); // Call the async function
+//   }, [editor]);
+  
+
+//   return {
+//     modules, // Return modules for importing and clearing
+//     editor,
+//     process() {
+//       editor?.process();
+//     },
+//     view: (
+//       <Container>
+//         {contextHolder}
+//         <EditorContainer ref={container}></EditorContainer>
+//         {modules.view}
+//       </Container>
+//     )
+//   }
+// }

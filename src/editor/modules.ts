@@ -1,13 +1,5 @@
 import { ClassicPreset, NodeEditor } from "rete";
 import { DataflowEngine } from "rete-engine";
-import { InputColor } from './components/input/color';
-import { InputCurve } from './components/input/curve';
-import { InputTexture } from './components/input/texture';
-import { OutputNumber } from './components/output/number';
-import { OutputColor } from './components/output/color';
-import { OutputCurve } from './components/output/curve';
-import { OutputTexture } from './components/output/texture';
-import { InputNumber } from './components/input/number';
 import { Schemes } from '.';
 
 
@@ -53,10 +45,7 @@ export class Modules {
   }
 
   private static isInputNode<S extends Schemes>(node: S['Node']): node is S['Node'] & { inputValue: any } {
-    return node instanceof InputColor
-      || node instanceof InputNumber
-      || node instanceof InputCurve
-      || node instanceof InputTexture
+    return true;
   }
 
   private injectInputs(nodes: Schemes["Node"][], inputData: Record<string, any>) {
@@ -71,10 +60,7 @@ export class Modules {
   }
 
   private static isOutputNode<S extends Schemes>(node: S["Node"]): node is S['Node'] & { outputValue: any } {
-    return node instanceof OutputNumber
-      || node instanceof OutputColor
-      || node instanceof OutputCurve
-      || node instanceof OutputTexture
+    return false;
   }
 
   private async retrieveOutputs(nodes: Schemes["Node"][], engine: DataflowEngine<Schemes>) {

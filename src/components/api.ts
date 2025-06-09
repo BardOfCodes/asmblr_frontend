@@ -123,7 +123,7 @@ export const generateConvert2MCMesh = async (payload: any) => {
 
   export const generateShaderCodeFromGraph = async (program_data: any) => {
     try {
-      const response = await axios.post('http://localhost:5000/generate-shadercode-graph', {
+      const response = await axios.post('http://127.0.0.1:5000/generate-shadercode-graph', {
         moduleData: JSON.stringify(program_data),
       });
       const { shaderCode, uniforms } = response.data;

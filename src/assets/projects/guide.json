@@ -3,19 +3,24 @@
     "base": {
       "nodes": [
         {
-          "id": "13ae8b6eecf4bf81",
+          "id": "8c1990221b15c4df",
           "name": "RegisterGeometry",
           "data": {
             "name": "base",
-            "bbox": [
+            "bbox_scale": [
               2,
-              1,
+              2,
               2
+            ],
+            "bbox_origin": [
+              0,
+              0,
+              0
             ]
           }
         },
         {
-          "id": "2b61f35975d37b61",
+          "id": "4699d638f04160cb",
           "name": "RegisterState",
           "data": {
             "state": [
@@ -24,323 +29,238 @@
           }
         },
         {
-          "id": "453fd25cd31ae038",
+          "id": "ed9624f676ef7f4a",
+          "name": "RegisterMaterial",
+          "data": {
+            "name": "base",
+            "base_color": [
+              0,
+              0,
+              1
+            ],
+            "metallic": [
+              0
+            ],
+            "roughness": [
+              0.5
+            ],
+            "ior": [
+              1.5
+            ],
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "opacity": [
+              1
+            ]
+          }
+        },
+        {
+          "id": "83aba2437032f440",
+          "name": "RegisterMaterial",
+          "data": {
+            "name": "base2",
+            "base_color": [
+              1,
+              0.5,
+              0
+            ],
+            "metallic": [
+              0
+            ],
+            "roughness": [
+              0.5
+            ],
+            "ior": [
+              1.5
+            ],
+            "emissive": [
+              0,
+              0,
+              0
+            ],
+            "opacity": [
+              1
+            ]
+          }
+        },
+        {
+          "id": "fb28c72e75db4d8a",
           "name": "NamedGeometry",
           "data": {
             "name": "base"
           }
         },
         {
-          "id": "16e68b074dd5817a",
+          "id": "85bbb752066934fd",
           "name": "SetMaterial",
           "data": {
-            "material": [
-              2
-            ]
+            "material_name": "base2"
           }
         },
         {
-          "id": "32503138de6b2b99",
-          "name": "ApplyHeight",
+          "id": "0dea1b81b2e56c37",
+          "name": "SetMaterial",
           "data": {
-            "height": [
-              0.5
-            ]
+            "material_name": "base"
           }
         },
         {
-          "id": "712b00f3615a8507",
-          "name": "LinkedHeightField3D",
+          "id": "515e1f1dd4e2503c",
+          "name": "Difference",
           "data": {}
         },
         {
-          "id": "35e3359e036337bf",
-          "name": "Plane3D",
+          "id": "c0890e875c0fa241",
+          "name": "AARotate3D",
           "data": {
-            "origin": [
+            "param": [
               0,
-              0,
-              0
-            ],
-            "normal": [
-              0,
-              1,
+              0.5,
               0
             ]
           }
         },
         {
-          "id": "f584dcb1265a57b3",
-          "name": "Rectangle2D",
+          "id": "47c0fc0b2f2c1e4a",
+          "name": "Translate3D",
+          "data": {
+            "param": [
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "id": "4fc50045ee9cc7c2",
+          "name": "Cuboid3D",
           "data": {
             "size": [
-              0.25,
-              1.5
+              1,
+              1,
+              1
             ]
           }
         },
         {
-          "id": "1a45d802b6823352",
-          "name": "Translate2D",
+          "id": "3cb4f6e169e1bb4c",
+          "name": "SuperQuadric3D",
           "data": {
-            "param": [
-              0,
-              0
-            ]
-          }
-        },
-        {
-          "id": "ef80d0dc679eab10",
-          "name": "Union",
-          "data": {}
-        },
-        {
-          "id": "e20934e29e52c257",
-          "name": "Circle2D",
-          "data": {
-            "radius": [
-              0.5
-            ]
-          }
-        },
-        {
-          "id": "aa96310c2d05848b",
-          "name": "PolyLine2D",
-          "data": {
-            "points": [
-              [
-                0,
-                -0.5,
-                0.2
-              ],
-              [
-                0,
-                0.5,
-                0
-              ],
-              [
-                1,
-                0,
-                0
-              ]
-            ]
-          }
-        },
-        {
-          "id": "ccce09cac487137f",
-          "name": "Translate2D",
-          "data": {
-            "param": [
-              -1,
-              0
-            ]
-          }
-        },
-        {
-          "id": "552fe0f767059f5f",
-          "name": "Vec2",
-          "data": {
-            "value_1": [
-              0.5
-            ],
-            "value_2": [
-              0.5
-            ]
-          }
-        },
-        {
-          "id": "83503f31f4136bcd",
-          "name": "BinaryOperator",
-          "data": {
-            "operator": "MUL"
-          }
-        },
-        {
-          "id": "a963b53ecb1bfe34",
-          "name": "Float",
-          "data": {
-            "value": [
-              0.5
-            ]
-          }
-        },
-        {
-          "id": "67a9db5757ef4381",
-          "name": "UniformFloat",
-          "data": {
-            "min": [
-              0
-            ],
-            "max": [
+            "skew_vec": [
+              1,
+              1,
               1
             ],
-            "value": [
-              0.91
+            "epsilon_1": [
+              1
             ],
-            "name": "uni"
+            "epsilon_2": [
+              1
+            ]
           }
         }
       ],
       "connections": [
         {
-          "source": "453fd25cd31ae038",
+          "source": "fb28c72e75db4d8a",
           "sourceOutput": "expr",
-          "target": "2b61f35975d37b61",
+          "target": "4699d638f04160cb",
           "targetInput": "expr"
         },
         {
-          "source": "35e3359e036337bf",
+          "source": "c0890e875c0fa241",
           "sourceOutput": "expr",
-          "target": "712b00f3615a8507",
-          "targetInput": "plane"
-        },
-        {
-          "source": "32503138de6b2b99",
-          "sourceOutput": "expr",
-          "target": "712b00f3615a8507",
-          "targetInput": "apply_height"
-        },
-        {
-          "source": "712b00f3615a8507",
-          "sourceOutput": "expr",
-          "target": "16e68b074dd5817a",
+          "target": "85bbb752066934fd",
           "targetInput": "expr"
         },
         {
-          "source": "16e68b074dd5817a",
+          "source": "85bbb752066934fd",
           "sourceOutput": "expr",
-          "target": "13ae8b6eecf4bf81",
+          "target": "47c0fc0b2f2c1e4a",
           "targetInput": "expr"
         },
         {
-          "source": "f584dcb1265a57b3",
+          "source": "0dea1b81b2e56c37",
           "sourceOutput": "expr",
-          "target": "1a45d802b6823352",
-          "targetInput": "expr"
-        },
-        {
-          "source": "1a45d802b6823352",
-          "sourceOutput": "expr",
-          "target": "ef80d0dc679eab10",
-          "targetInput": "expr"
-        },
-        {
-          "source": "ef80d0dc679eab10",
-          "sourceOutput": "expr",
-          "target": "32503138de6b2b99",
-          "targetInput": "expr"
-        },
-        {
-          "source": "e20934e29e52c257",
-          "sourceOutput": "expr",
-          "target": "ccce09cac487137f",
-          "targetInput": "expr"
-        },
-        {
-          "source": "ccce09cac487137f",
-          "sourceOutput": "expr",
-          "target": "ef80d0dc679eab10",
-          "targetInput": "expr"
-        },
-        {
-          "source": "aa96310c2d05848b",
-          "sourceOutput": "expr",
-          "target": "ef80d0dc679eab10",
-          "targetInput": "expr"
-        },
-        {
-          "source": "552fe0f767059f5f",
-          "sourceOutput": "expr",
-          "target": "83503f31f4136bcd",
+          "target": "515e1f1dd4e2503c",
           "targetInput": "expr1"
         },
         {
-          "source": "a963b53ecb1bfe34",
+          "source": "47c0fc0b2f2c1e4a",
           "sourceOutput": "expr",
-          "target": "83503f31f4136bcd",
+          "target": "515e1f1dd4e2503c",
           "targetInput": "expr2"
         },
         {
-          "source": "83503f31f4136bcd",
+          "source": "515e1f1dd4e2503c",
           "sourceOutput": "expr",
-          "target": "f584dcb1265a57b3",
-          "targetInput": "size"
+          "target": "8c1990221b15c4df",
+          "targetInput": "expr"
         },
         {
-          "source": "67a9db5757ef4381",
+          "source": "4fc50045ee9cc7c2",
           "sourceOutput": "expr",
-          "target": "e20934e29e52c257",
-          "targetInput": "radius"
+          "target": "0dea1b81b2e56c37",
+          "targetInput": "expr"
+        },
+        {
+          "source": "3cb4f6e169e1bb4c",
+          "sourceOutput": "expr",
+          "target": "c0890e875c0fa241",
+          "targetInput": "expr"
         }
       ],
       "positions": {
-        "13ae8b6eecf4bf81": {
-          "x": 2200,
-          "y": 20
+        "8c1990221b15c4df": {
+          "x": 940,
+          "y": 160
         },
-        "2b61f35975d37b61": {
+        "4699d638f04160cb": {
+          "x": -560,
+          "y": -140
+        },
+        "ed9624f676ef7f4a": {
+          "x": -1040,
+          "y": 300
+        },
+        "83aba2437032f440": {
+          "x": -800,
+          "y": 300
+        },
+        "fb28c72e75db4d8a": {
+          "x": -1020,
+          "y": -60
+        },
+        "85bbb752066934fd": {
           "x": 280,
-          "y": 340
+          "y": 700
         },
-        "453fd25cd31ae038": {
-          "x": 20,
-          "y": 440
+        "0dea1b81b2e56c37": {
+          "x": 80,
+          "y": 260
         },
-        "16e68b074dd5817a": {
-          "x": 1960,
-          "y": 280
+        "515e1f1dd4e2503c": {
+          "x": 500,
+          "y": 320
         },
-        "32503138de6b2b99": {
-          "x": 1460,
+        "c0890e875c0fa241": {
+          "x": -20,
+          "y": 720
+        },
+        "47c0fc0b2f2c1e4a": {
+          "x": 560,
+          "y": 640
+        },
+        "4fc50045ee9cc7c2": {
+          "x": -320,
+          "y": 260
+        },
+        "3cb4f6e169e1bb4c": {
+          "x": -440,
           "y": 760
-        },
-        "712b00f3615a8507": {
-          "x": 1740,
-          "y": 380
-        },
-        "35e3359e036337bf": {
-          "x": 1460,
-          "y": 340
-        },
-        "f584dcb1265a57b3": {
-          "x": 520,
-          "y": 580
-        },
-        "1a45d802b6823352": {
-          "x": 840,
-          "y": 500
-        },
-        "ef80d0dc679eab10": {
-          "x": 1220,
-          "y": 840
-        },
-        "e20934e29e52c257": {
-          "x": 520,
-          "y": 1120
-        },
-        "aa96310c2d05848b": {
-          "x": 660,
-          "y": 760
-        },
-        "ccce09cac487137f": {
-          "x": 840,
-          "y": 1040
-        },
-        "552fe0f767059f5f": {
-          "x": 20,
-          "y": 680
-        },
-        "83503f31f4136bcd": {
-          "x": 280,
-          "y": 620
-        },
-        "a963b53ecb1bfe34": {
-          "x": 20,
-          "y": 880
-        },
-        "67a9db5757ef4381": {
-          "x": 300,
-          "y": 1160
         }
       }
     }

@@ -6,7 +6,6 @@ import { initializeMouseControls } from './mouseControls';
 export interface ReglViewerHandle {
   setShaderCode: (fragShader: string, vertShader?: string) => void;
   setUniform: (name: string, value: any) => void;
-
   captureScreenshot: () => void;
 }
 

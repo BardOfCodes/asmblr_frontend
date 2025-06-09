@@ -61,7 +61,7 @@ export class UniformFloatControl extends SliderVectorControl {
     constructor(
       initial: [number, number, number, number],
       label: string,
-      range: [SliderVectorRange, SliderVectorRange, SliderVectorRange],
+      range: [SliderVectorRange, SliderVectorRange, SliderVectorRange, SliderVectorRange],
       onUpdate: (value: number[]) => void
     ) {
       super(initial, label, range, onUpdate);

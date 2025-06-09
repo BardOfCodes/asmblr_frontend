@@ -2818,9 +2818,9 @@ rete-connection-plugin@^2.0.0-beta.15:
     "@babel/runtime" "^7.21.0"
 
 rete-context-menu-plugin@^2.0.0-beta.9:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/rete-context-menu-plugin/-/rete-context-menu-plugin-2.0.4.tgz#8126daaa4afaa70661c9e4bb866bee6b36798be4"
-  integrity sha512-0rgYC1jFeNC6CIOd7VuCaI7guY3sP3fLa07TmjT/cuA5pwka0xQdfaNd+PNJl0zA69jFzX2wVi3cx3jtzr7W/A==
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/rete-context-menu-plugin/-/rete-context-menu-plugin-2.0.6.tgz#763a595f1bc1d4f25ec0b9908c126a06728650bc"
+  integrity sha512-OmzdYEDvaJux4W7pTZPJ9oxO+YMNA4cw3/262ia564+0HXazrcHjyg3m6jXswfleeOS8SAaV+e+X3caTLUyEgw==
   dependencies:
     "@babel/runtime" "^7.21.0"
 

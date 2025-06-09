@@ -4,12 +4,14 @@ import { Layout, Menu } from 'antd';
 import type { MenuProps } from 'antd';
 import { useProjectPicker } from './project-picker';
 import { useProjectSaver } from './project-saver';
+import { AvailableModes, saveModeToDisk } from '../modes';
 
 interface HeaderProps {
-  editor: any; // Replace `any` with the correct type if available
+  editor: any;
+  modeName: string;
+  setMode: (name: string) => void;
 }
-
-export const Header: React.FC<HeaderProps> = ({ editor, }) => {
+export const Header: React.FC<HeaderProps> = ({ editor, modeName, setMode}) => {
   const [open, file] = useProjectPicker()
   const [save] = useProjectSaver('project.json')
 
@@ -37,30 +39,45 @@ export const Header: React.FC<HeaderProps> = ({ editor, }) => {
     }
   }, [file]);
 
+  const modeItems = Object.entries(AvailableModes).map(([key, mode]) => ({
+    key,
+    label: mode.label,
+    onClick: () => {
+      saveModeToDisk(key);
+      setMode(key);
+      window.location.reload(); // clean reload with new mode
+    },
+  }));
+  
   const items: MenuProps['items'] = [
     {
-      label: 'Tsugite',
-      key: 'Tsugite',
+      label: modeName,
+      key: 'mode-name',
+      children: [],
     },
     {
       label: 'New',
       key: 'new',
       onClick() {
-        editor.modules.clear()
-      }
+        editor.modules.clear();
+      },
     },
     {
       label: 'Open',
       key: 'open',
-      onClick: handleLoad
+      onClick: handleLoad,
     },
     {
       label: 'Save',
       key: 'save',
-      onClick: handleSave
+      onClick: handleSave,
     },
-
-  ]
+    {
+      label: 'ASMBLR Mode',
+      key: 'mode',
+      children: modeItems,
+    },
+  ];
 
 
   return (
