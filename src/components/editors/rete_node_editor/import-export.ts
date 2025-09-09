@@ -1,5 +1,5 @@
 import { NodeEditor, NodeId } from 'rete';
-import { DiContainer, Schemes } from "../editor"
+import { DiContainer, Schemes } from "./index"
 import * as ANodes from './nodes';
 import { Connection } from './connections';
 import { NodeFactory } from './nodes/types';

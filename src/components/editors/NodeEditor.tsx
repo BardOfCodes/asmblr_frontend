@@ -6,7 +6,7 @@ import * as Texturity from 'texturity.js';
 import { useRete } from 'rete-react-render-plugin';
 import guideEditor from '../../assets/projects/guide.json'
 import { useModules } from './Modules';
-import { createEditor } from '../../editor';
+import { createEditor } from './rete_node_editor';
 import { message } from 'antd';
 
 const Container = styled.div`

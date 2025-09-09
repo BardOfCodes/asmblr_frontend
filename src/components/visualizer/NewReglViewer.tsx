@@ -26,7 +26,7 @@ export const NewReglViewer = React.forwardRef<ReglViewerHandle>((_, ref) => {
 
   const [shaderCode, setShaderCodeState] = useState({
     frag: '',
-    vert: vertShader,
+    vert: defaultVertShader,
   });
 
   const [dynamicUniforms, setDynamicUniforms] = useState<{ [key: string]: any }>({
@@ -150,11 +150,11 @@ export const NewReglViewer = React.forwardRef<ReglViewerHandle>((_, ref) => {
         ],
       },
       uniforms: {
-        resolution: ({ viewportWidth, viewportHeight }) => [
+        resolution: ({ viewportWidth, viewportHeight }: any) => [
           viewportWidth,
           viewportHeight,
         ],
-        time: ({ tick }) => tick * 0.001,
+        time: ({ tick }: any) => tick * 0.001,
         castShadows: true,
         ...dynamicUniforms,
       },

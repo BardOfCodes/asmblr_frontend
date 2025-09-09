@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { ModuleItem } from './ModuleItem';
-import { exportEditor, importEditor } from '../../editor/import-export';
-import { DiContainer } from '../../editor';
+import { exportEditor, importEditor } from './rete_node_editor/import-export';
+import { DiContainer } from './rete_node_editor';
 import { Button } from 'antd';
 
 const Styles = styled.div`
