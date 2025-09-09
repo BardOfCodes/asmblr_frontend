@@ -2,7 +2,7 @@ import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import createREGL from 'regl';
 import { initializeMouseControls } from '../utils/mouseControls';
 
-// Fallback vertex shader in case import fails
+// Default vertex shader
 const defaultVertShader = `#version 300 es
 precision mediump float;
 
@@ -11,15 +11,6 @@ in vec2 position;
 void main() {
   gl_Position = vec4(position, 0.0, 1.0);
 }`;
-
-// Try to import the external shader, with fallback
-let vertShader: string;
-try {
-  vertShader = require('../../renderer/main.vert.glsl').default || defaultVertShader;
-} catch (e) {
-  console.warn('Could not load vertex shader file, using fallback:', e);
-  vertShader = defaultVertShader;
-}
 
 export interface ReglViewerHandle {
   setShaderCode: (fragShader: string, vertShader?: string) => void;
