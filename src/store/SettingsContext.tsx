@@ -13,13 +13,34 @@ export interface LayoutSettings {
   controlPanel: PanelSettings;
 }
 
+export type EditorType = 'rete_node_editor' | 'code_editor';
+export type ViewerType = 'iframe_viewer' | 'shader_viewer';
+
+export interface ShaderSettings {
+  render_mode: string;
+  variables: Record<string, any>;
+  extract_vars: boolean;
+  use_define_vars: boolean;
+}
+
+export interface ComponentSettings {
+  selectedEditor: EditorType;
+  selectedViewer: ViewerType;
+}
+
 export interface UISettings {
   theme: 'light' | 'dark';
   layout: LayoutSettings;
+  components: ComponentSettings;
+}
+
+export interface ShaderGenerationSettings {
+  shaderSettings: ShaderSettings;
 }
 
 interface SettingsState {
   ui: UISettings;
+  shaderGeneration: ShaderGenerationSettings;
 }
 
 type SettingsAction =
@@ -27,6 +48,9 @@ type SettingsAction =
   | { type: 'SET_PANEL_SIZE'; payload: { panel: keyof LayoutSettings; size: { width?: number; height?: number } } }
   | { type: 'SET_PANEL_POSITION'; payload: { panel: keyof LayoutSettings; position: 'default' | 'floating' } }
   | { type: 'SET_THEME'; payload: 'light' | 'dark' }
+  | { type: 'SET_EDITOR_TYPE'; payload: EditorType }
+  | { type: 'SET_VIEWER_TYPE'; payload: ViewerType }
+  | { type: 'SET_SHADER_SETTINGS'; payload: ShaderSettings }
   | { type: 'RESET_LAYOUT' }
   | { type: 'LOAD_SETTINGS'; payload: SettingsState };
 
@@ -54,6 +78,18 @@ const defaultSettings: SettingsState = {
         size: { height: 40 },
         position: 'default'
       }
+    },
+    components: {
+      selectedEditor: 'rete_node_editor',
+      selectedViewer: 'iframe_viewer'
+    }
+  },
+  shaderGeneration: {
+    shaderSettings: {
+      render_mode: "",
+      variables: {},
+      extract_vars: false,
+      use_define_vars: false
     }
   }
 };
@@ -111,6 +147,39 @@ function settingsReducer(state: SettingsState, action: SettingsAction): Settings
       return {
         ...state,
         ui: { ...state.ui, theme: action.payload }
+      };
+
+    case 'SET_EDITOR_TYPE':
+      return {
+        ...state,
+        ui: {
+          ...state.ui,
+          components: {
+            ...state.ui.components,
+            selectedEditor: action.payload
+          }
+        }
+      };
+
+    case 'SET_VIEWER_TYPE':
+      return {
+        ...state,
+        ui: {
+          ...state.ui,
+          components: {
+            ...state.ui.components,
+            selectedViewer: action.payload
+          }
+        }
+      };
+
+    case 'SET_SHADER_SETTINGS':
+      return {
+        ...state,
+        shaderGeneration: {
+          ...state.shaderGeneration,
+          shaderSettings: action.payload
+        }
       };
 
     case 'RESET_LAYOUT':

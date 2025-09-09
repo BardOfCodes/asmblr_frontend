@@ -1,4 +1,4 @@
-import { UniformSpec } from '../services/api/types';
+import { UniformSpec } from '../API';
 
 export interface ViewerState {
   shaderCode: string;

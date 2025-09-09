@@ -108,3 +108,7 @@ export const IFrameViewer = forwardRef<IFrameViewerHandle>((_, ref) => {
     </Container>
   );
 });
+
+IFrameViewer.displayName = 'IFrameViewer';
+
+export default IFrameViewer;

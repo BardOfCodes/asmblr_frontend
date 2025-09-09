@@ -1,4 +1,4 @@
-import { HybridViewer, HybridViewerHandle } from '../components/visualizer/HybridViewer';
+import AdaptiveViewer, { AdaptiveViewerHandle } from '../components/visualizer/AdaptiveViewer';
 import { HybridControlPanel } from '../components/control-panel/HybridControlPanel';
 import { useEditor } from '../components/editors/NodeEditor';
 import { EnhancedHeader } from '../components/header/EnhancedHeader';
@@ -11,7 +11,7 @@ export function makeEnhancedNeoMode(): AsmblrMode {
     label: 'Neo Graph',
     useEditor: () => useEditor({ modeName: 'neo' }),
     HeaderComponent: EnhancedHeader,
-    ViewerComponent: asViewerComponent<HybridViewerHandle>(HybridViewer),
+    ViewerComponent: asViewerComponent<AdaptiveViewerHandle>(AdaptiveViewer),
     ControlPanelComponent: HybridControlPanel,
   };
 }
