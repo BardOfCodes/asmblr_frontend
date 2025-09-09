@@ -1,0 +1,2206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Tailwind Play CDN with Forms Plugin -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: {} }
+    };
+  </script>
+
+  <!-- Pico.css fallback (if you still want it) -->
+  <!-- <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css"> -->
+
+  <!-- ReGL runtime from CDN -->
+  
+    <script src="https://cdn.jsdelivr.net/npm/twgl.js@4.21.2/dist/4.x/twgl-full.min.js"></script>
+  
+  
+  
+  <style>
+    .slider::-webkit-slider-thumb {
+      appearance: none;
+      height: 20px;
+      width: 20px;
+      border-radius: 50%;
+      background: #3b82f6;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .slider::-moz-range-thumb {
+      height: 20px;
+      width: 20px;
+      border-radius: 50%;
+      background: #3b82f6;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    /* Custom scrollbar styling for control panels */
+    .control-scroll::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .control-scroll::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 4px;
+    }
+    
+    .control-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    
+    .control-scroll::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    
+    /* Ensure smooth scrolling */
+    .control-scroll {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+
+  <!-- Main content -->
+  <main class="container mx-auto px-4 py-8">
+    
+
+<div class="w-full min-h-screen">
+  <!-- Interactive Shader Visualizer -->
+  <div class="w-full h-full bg-white">
+    <div class="w-full h-full space-y-6 p-4">
+      
+      <!-- Canvas Area -->
+      <div class="flex justify-center">
+        <div id="canvas-container" class="relative bg-black rounded-lg overflow-hidden shadow-lg" style="width: 512px; height: 512px;">
+          <canvas
+            id="glcanvas"
+            class="absolute inset-0 w-full h-full"
+          ></canvas>
+        </div>
+      </div>
+
+      <!-- Controls Area -->
+      <div class="w-full">
+        <!-- Controls Panel -->
+<div id="control-panel" class="space-y-4 ">
+  <div class="bg-gray-50 p-4 rounded-lg shadow-sm space-y-6 ">
+
+    
+    
+    <!-- UBO Animation Controls (appears first if enabled) -->
+    <!-- UBO Animation Controls -->
+
+    
+    <!-- UBO Variable Editor (appears above other controls) -->
+    <!-- UBO Editing Controls -->
+
+    
+    <!-- Uniform Controls - Grouped by set_name -->
+    
+    
+      
+      
+        
+      
+      
+    
+      
+      
+      
+    
+      
+      
+        
+      
+      
+    
+      
+      
+      
+    
+      
+      
+      
+    
+    
+    <!-- Add Settings group if it doesn't exist -->
+    
+    
+    <!-- Process all non-Settings groups first -->
+    
+    
+    
+    
+    <details open class="bg-gray-100 border border-gray-300 rounded-lg">
+      <summary class="px-3 py-2 font-medium text-gray-800 cursor-pointer hover:bg-gray-200">
+        Knobs
+      </summary>
+      <div class="px-3 pb-3 space-y-4">
+        
+        <div class="space-y-2">
+          
+          <label for="backgroundAzimuth" class="block font-medium text-gray-700">
+            Background Azimuth: <span id="backgroundAzimuth_value" class="text-blue-600 font-mono">0.0</span>
+          </label>
+          <input
+            id="backgroundAzimuth"
+            type="range"
+            min="-3.141592653589793"
+            max="3.141592653589793"
+            step="0.006283185307179587"
+            value="0.0"
+            class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+          />
+          
+        </div>
+        
+        <div class="space-y-2">
+          
+          <label for="backgroundElevation" class="block font-medium text-gray-700">
+            Background Elevation: <span id="backgroundElevation_value" class="text-blue-600 font-mono">0.0</span>
+          </label>
+          <input
+            id="backgroundElevation"
+            type="range"
+            min="-0.7853981633974483"
+            max="0.7853981633974483"
+            step="0.0015707963267948967"
+            value="0.0"
+            class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+          />
+          
+        </div>
+        
+      </div>
+    </details>
+    
+    
+    
+    <!-- Process Settings group last -->
+    
+    <details open class="bg-gray-100 border border-gray-300 rounded-lg">
+      <summary class="px-3 py-2 font-medium text-gray-800 cursor-pointer hover:bg-gray-200">
+        Settings
+      </summary>
+      <div class="px-3 pb-3 space-y-4">
+        
+        <div class="space-y-2">
+          
+          <label for="sunAzimuth" class="block font-medium text-gray-700">
+            Sun Azimuth: <span id="sunAzimuth_value" class="text-blue-600 font-mono">0.0</span>
+          </label>
+          <input
+            id="sunAzimuth"
+            type="range"
+            min="-3.141592653589793"
+            max="3.141592653589793"
+            step="0.006283185307179587"
+            value="0.0"
+            class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+          />
+          
+        </div>
+        
+        <div class="space-y-2">
+          
+          <label for="sunElevation" class="block font-medium text-gray-700">
+            Sun Elevation: <span id="sunElevation_value" class="text-blue-600 font-mono">0.5</span>
+          </label>
+          <input
+            id="sunElevation"
+            type="range"
+            min="0.0"
+            max="1.5707963267948966"
+            step="0.0015707963267948967"
+            value="0.5"
+            class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+          />
+          
+        </div>
+        
+        <div class="space-y-2">
+          
+          <div class="border-l-4 border-blue-500 pl-4 space-y-3">
+            <h4 class="font-semibold text-gray-800">Camera Origin (vec3)</h4>
+            <div class="grid grid-cols-1 gap-3">
+              
+              
+              
+              
+              <div class="space-y-1">
+                <label for="cameraOrigin_x" class="block text-sm font-medium text-gray-600">
+                  X: <span id="cameraOrigin_x_value" class="text-blue-600 font-mono">0</span>
+                </label>
+                <input
+                  id="cameraOrigin_x"
+                  type="range"
+                  min="-10.0"
+                  max="10.0"
+                  step="0.02"
+                  value="0"
+                  class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                />
+              </div>
+              
+              
+              <div class="space-y-1">
+                <label for="cameraOrigin_y" class="block text-sm font-medium text-gray-600">
+                  Y: <span id="cameraOrigin_y_value" class="text-blue-600 font-mono">0.5</span>
+                </label>
+                <input
+                  id="cameraOrigin_y"
+                  type="range"
+                  min="-10.0"
+                  max="10.0"
+                  step="0.02"
+                  value="0.5"
+                  class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                />
+              </div>
+              
+              
+              <div class="space-y-1">
+                <label for="cameraOrigin_z" class="block text-sm font-medium text-gray-600">
+                  Z: <span id="cameraOrigin_z_value" class="text-blue-600 font-mono">0</span>
+                </label>
+                <input
+                  id="cameraOrigin_z"
+                  type="range"
+                  min="-10.0"
+                  max="10.0"
+                  step="0.02"
+                  value="0"
+                  class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                />
+              </div>
+              
+            </div>
+          </div>
+          
+        </div>
+        
+        
+        
+        <!-- Mouse Control Instructions -->
+        <div class="space-y-2 border-t pt-4">
+          <h4 class="font-semibold text-gray-800">Mouse Controls</h4>
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+            <div class="text-sm text-blue-700 space-y-1">
+              <div>• <strong>Drag:</strong> Orbit camera</div>
+              <div>• <strong>Wheel:</strong> Zoom in/out</div>
+              <div>• <strong>Shift + Drag:</strong> Pan camera</div>
+            </div>
+          </div>
+        </div>
+        
+        
+        
+        <!-- Resolution Scale Control -->
+        <div class="space-y-2 border-t pt-4">
+          <h4 class="font-semibold text-gray-800">Adaptive Resolution</h4>
+          <div class="space-y-2">
+            <label for="resolutionScale" class="block text-sm font-medium text-green-700">
+              Resolution Scale: <span id="resolutionScale_value" class="text-green-600 font-mono">1.0</span>
+            </label>
+            <input
+              id="resolutionScale"
+              type="range"
+              min="0.1"
+              max="2.0"
+              step="0.1"
+              value="1.0"
+              class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+            />
+            <div class="text-xs text-green-600">Automatically adjusts resolution based on canvas size</div>
+          </div>
+        </div>
+        
+        
+        <!-- Canvas Size Controls -->
+        <div class="space-y-2 border-t pt-4">
+          <h4 class="font-semibold text-gray-800">Canvas Size</h4>
+          <div class="space-y-2">
+            <label for="canvasWidth" class="block text-sm font-medium text-purple-700">
+              Width: <span id="canvasWidth_value" class="text-purple-600 font-mono">512</span>px
+            </label>
+            <input
+              id="canvasWidth"
+              type="range"
+              min="256"
+              max="1024"
+              step="32"
+              value="512"
+              class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+            />
+            <label for="canvasHeight" class="block text-sm font-medium text-purple-700">
+              Height: <span id="canvasHeight_value" class="text-purple-600 font-mono">512</span>px
+            </label>
+            <input
+              id="canvasHeight"
+              type="range"
+              min="256"
+              max="1024"
+              step="32"
+              value="512"
+              class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+            />
+          </div>
+        </div>
+        
+      </div>
+    </details>
+    
+    
+    
+    <!-- Always Visible Buttons -->
+    <details open class="bg-gray-100 border border-gray-300 rounded-lg">
+      <summary class="px-3 py-2 font-medium text-gray-800 cursor-pointer hover:bg-gray-200">
+        Actions
+      </summary>
+      <div class="px-3 pb-3 space-y-4">
+        <!-- Reset Buttons -->
+        <div class="space-y-2 border-t pt-4">
+          <div class="flex gap-2">
+            <button
+              id="reset-shader"
+              class="px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded font-medium transition-colors"
+            >
+              Reset to Defaults
+            </button>
+            <button
+              id="reset-shader-code"
+              class="px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded font-medium transition-colors"
+            >
+              Reset Shader Code
+            </button>
+            <button
+              id="save-render"
+              class="px-4 py-2 bg-green-100 hover:bg-green-200 text-green-700 rounded font-medium transition-colors"
+            >
+              Save Render to PNG
+            </button>
+          </div>
+        </div>
+        
+      </div>
+    </details>
+  </div>
+</div> 
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<!-- Include Script Component Based on Backend -->
+
+<!-- TWGL Shader Script -->
+<script type="module">
+
+
+
+
+  // Original shader code for reset to defaults
+  const originalShaderCode = `#version 300 es
+#ifdef GL_ES
+precision highp float;
+precision highp sampler2D;
+precision highp sampler3D;
+#endif
+out vec4 fragColor;  // Define the output color variable
+
+
+
+// Constants
+const int _RAYCAST_MAX_STEPS = 200;
+const float _AO_MAX_DIST = 3.0;
+const float _AS_n = 1.0003;
+const vec3 _lambda = vec3(6.8e-07, 5.5e-07, 4.5e-07);
+const vec3 _SCENE_BOX_CENTER = vec3(0.0, 0.5, 0.0);
+const float _FOCAL_LENGTH = 2.5;
+const float AngularDiameterCos = 0.9999566769464484;
+const vec3 _SCENE_BOX_SIZE = vec3(10.0, 5.0, 10.0);
+const float _EE = 1000.0;
+const float _cutoffAngle = 1.6110731556870734;
+const float PI = 3.141592653589793;
+const vec3 _K = vec3(0.686, 0.678, 0.666);
+const float _AS_pn = 0.035;
+const int _AO_STEPS = 4;
+const float _V = 4.0;
+const int _SHADOW_MAX_STEPS = 64;
+const vec3 _up = vec3(0.0, 0.0, 1.0);
+const bool _ADD_FLOOR_PLANE = false;
+const float _rayleighZenithLength = 8400.0;
+const float _mieZenithLength = 1250.0;
+const float _steepness = 1.5;
+const float _RAYCAST_CONSERVATIVE_STEPPING_RATE = 0.95;
+const int _AA = 2;
+const int _ZERO = 0;
+const float _mieDirectionalG = 0.75;
+const float _turbidity = 10.0;
+const float _mieCoefficient = 0.005;
+const float _SCENE_RADIUS = 100.0;
+const float _reileighCoefficient = 2.0;
+const float _AS_N = 2.545e+25;
+
+// Uniforms
+uniform vec2 resolution;
+uniform float sunAzimuth;
+uniform float sunElevation;
+uniform float backgroundAzimuth;
+uniform float cameraAngleX;
+uniform float backgroundElevation;
+uniform float cameraDistance;
+uniform vec3 cameraOrigin;
+uniform float cameraAngleY;
+
+// Module: Translate3D
+vec3 Translate3D( vec3 p, vec3 translation )
+{
+    return p - translation;
+}
+
+// Module: AxisAngleRotate3D
+vec3 AxisAngleRotate3D( vec3 p, vec3 axis_angle )
+{
+    float theta = length(axis_angle);
+    vec3 axis = normalize(axis_angle);
+    mat3 K = mat3(0.0, -axis.z, axis.y, axis.z, 0.0, -axis.x, -axis.y, axis.x, 0.0);
+    float s = sin(theta);
+    float c = cos(theta);
+    mat3 R = mat3(1.0) + s * K + (1.0 - c) * (K * K);
+    return p * R;  // row vector multiplied from left
+}
+
+// Module: MatSolidV3
+vec2 MatSolidV3( float sdf, float mat )
+{
+  return vec2(sdf, mat);
+}
+vec2 MatSolidV3( vec2 res, float mat )
+{
+  return vec2(res.x, mat);
+}
+
+// Module: Union
+vec2 Union( vec2 d1, vec2 d2 )
+{
+	return (d1.x<d2.x) ? d1 : d2;
+}
+
+// Module: setCamera_v1
+mat3 setCamera( in vec3 ro, in vec3 ta, float cr )
+{
+	vec3 cw = normalize(ta-ro);
+	vec3 cp = vec3(sin(cr), cos(cr),0.0);
+	vec3 cu = normalize( cross(cw,cp) );
+	vec3 cv =          ( cross(cu,cw) );
+    return mat3( cu, cv, cw );
+}
+
+// Module: BaseMaterials
+struct Material {
+    vec3 albedo;
+    vec3 emissive;
+    float roughness;
+    float clearcoat;
+    float metallic;
+};
+float sat(float x) {
+    return clamp(x, 0.0, 1.0);
+}
+vec3 sat(vec3 x) {
+    return clamp(x, 0.0, 1.0);
+}
+Material MixMaterial(Material a, Material b, float t) {
+    Material mat;
+    mat.albedo = mix(a.albedo, b.albedo, t);
+    mat.roughness = mix(a.roughness, b.roughness, t);
+    mat.emissive = mix(a.emissive, b.emissive, t);
+    mat.clearcoat = mix(a.clearcoat, b.clearcoat, t);
+    mat.metallic = mix(a.metallic, b.metallic, t);
+    return mat;
+}
+
+// Module: Box3D
+float Box3D( vec3 p, vec3 b )
+{
+  vec3 d = abs(p) - b;
+  return length(max(d,0.0)) + min(max(d.x,max(d.y,d.z)),0.0);
+}
+
+// Module: NeoBaseV1
+float HalfRoundedRectangle2D( in vec2 p, in vec2 b, in float r )
+{
+    vec2 size = b / 2.0;
+    vec2 q = abs(p) - size +r;
+    return min(max(q.x,q.y),0.0) + length(max(q,0.0)) - r;
+}
+float HalfRoundedRectangle2D( in vec2 p, in vec2 b, in vec4 r )
+{
+    vec2 size = b / 2.0;
+    r.xy = (p.x>0.0)?r.xy : r.zw;
+    r.x  = (p.y>0.0)?r.x  : r.y;
+    vec2 q = abs(p) - size + r.x;
+    return min(max(q.x,q.y),0.0) + length(max(q,0.0)) - r.x;
+}
+float RoundedRectangle2D( in vec2 p, in vec2 size, in float r )
+{
+    vec2 q = abs(p) - size +r;
+    return min(max(q.x,q.y),0.0) + length(max(q,0.0)) - r;
+}
+float RoundedRectangle2D( in vec2 p, in vec2 size, in vec4 r )
+{
+    r.xy = (p.x>0.0)?r.xy : r.zw;
+    r.x  = (p.y>0.0)?r.x  : r.y;
+    vec2 q = abs(p) - size + r.x;
+    return min(max(q.x,q.y),0.0) + length(max(q,0.0)) - r.x;
+}
+
+// Module: ToneMappingBase
+const float W =11.2; // white scale
+const float A = 0.22; // shoulder strength
+const float B = 0.3; // linear strength
+const float C = 0.1; // linear angle
+const float D = 0.20; // toe strength
+const float E = 0.01; // toe numerator
+const float F = 0.30; // toe denominator
+vec3 LinearToSRGB(vec3 x) 
+{
+    vec3 t = step(x,vec3(0.0031308));
+    return mix(1.055*pow(x, vec3(1./2.4)) - 0.055, 12.92*x, t);
+}
+
+// Module: ACESFitted
+vec3 ACESFitted(vec3 color) {
+    color = pow(color, vec3(0.833));
+    color *= 1.07;
+    const mat3 ACESInput = mat3(
+        0.59719, 0.35458, 0.04823,
+        0.07600, 0.90834, 0.01566,
+        0.02840, 0.13383, 0.83777
+    );
+    const mat3 ACESOutput = mat3(
+        1.60475, -0.53108, -0.07367,
+        -0.10208,  1.10813, -0.00605,
+        -0.00327, -0.07276,  1.07602
+    );
+    color = color * ACESInput;
+    vec3 a = color * (color + 0.0245786) - 0.000090537;
+    vec3 b = color * (0.983729 * color + 0.4329510) + 0.38081;
+    color = a/b;
+    return color * ACESOutput;
+}
+
+// Module: MatPlastic
+Material MatPlastic(vec3 p, vec3 n) {
+    Material mat;
+    mat.albedo = vec3(1);
+    mat.metallic = 0.0;
+    mat.roughness = 0.2;
+    return mat;
+}
+
+// Module: mat_0_func
+
+Material mat_0_func(vec3 pos_0, vec3 n_0) {
+    
+    Material mat_0;
+    mat_0.albedo = vec3(0.5567590221489107, 0.472828676440307, 0.92759672379266);
+    mat_0.roughness = 0.900000000000000;
+    mat_0.clearcoat = 0.100000000000000;
+    mat_0.metallic = 0.900000000000000;
+return mat_0;
+}
+
+// Module: mat_1_func
+
+Material mat_1_func(vec3 pos_0, vec3 n_0) {
+    
+    Material mat_0;
+    mat_0.albedo = vec3(0.9222772479976162, 0.4652700163861626, 0.4846867821855738);
+    mat_0.roughness = 0.900000000000000;
+    mat_0.clearcoat = 0.100000000000000;
+    mat_0.metallic = 0.900000000000000;
+return mat_0;
+}
+
+// Module: mat_2_func
+
+Material mat_2_func(vec3 pos_0, vec3 n_0) {
+    
+    Material mat_0;
+    mat_0.albedo = vec3(0.8532116258086627, 0.43855797062483926, 0.7433556024067158);
+    mat_0.roughness = 0.900000000000000;
+    mat_0.clearcoat = 0.100000000000000;
+    mat_0.metallic = 0.900000000000000;
+return mat_0;
+}
+
+// Module: mat_3_func
+
+Material mat_3_func(vec3 pos_0, vec3 n_0) {
+    
+    Material mat_0;
+    mat_0.albedo = vec3(0.29025323826653326, 0.7140011762810855, 0.6743864012700336);
+    mat_0.roughness = 0.900000000000000;
+    mat_0.clearcoat = 0.100000000000000;
+    mat_0.metallic = 0.900000000000000;
+return mat_0;
+}
+
+// Module: mat_4_func
+
+Material mat_4_func(vec3 pos_0, vec3 n_0) {
+    
+    Material mat_0;
+    mat_0.albedo = vec3(0.9596429250848977, 0.46837657289611223, 0.3143006344749102);
+    mat_0.roughness = 0.900000000000000;
+    mat_0.clearcoat = 0.100000000000000;
+    mat_0.metallic = 0.900000000000000;
+return mat_0;
+}
+
+// Module: mat_5_func
+
+Material mat_5_func(vec3 pos_0, vec3 n_0) {
+    
+    Material mat_0;
+    mat_0.albedo = vec3(0.2422524997772001, 0.14645648367422504, 0.8004003775167224);
+    mat_0.roughness = 0.900000000000000;
+    mat_0.clearcoat = 0.100000000000000;
+    mat_0.metallic = 0.900000000000000;
+return mat_0;
+}
+
+// Module: mat_6_func
+
+Material mat_6_func(vec3 pos_0, vec3 n_0) {
+    
+    Material mat_0;
+    mat_0.albedo = vec3(0.23232222259663327, 0.5499260935819109, 0.1186705701256281);
+    mat_0.roughness = 0.900000000000000;
+    mat_0.clearcoat = 0.100000000000000;
+    mat_0.metallic = 0.900000000000000;
+return mat_0;
+}
+
+// Module: mat_7_func
+
+Material mat_7_func(vec3 pos_0, vec3 n_0) {
+    
+    Material mat_0;
+    mat_0.albedo = vec3(0.1964644841436506, 0.03210905353893412, 0.8447271623531027);
+    mat_0.roughness = 0.900000000000000;
+    mat_0.clearcoat = 0.100000000000000;
+    mat_0.metallic = 0.900000000000000;
+return mat_0;
+}
+
+// Module: mat_8_func
+
+Material mat_8_func(vec3 pos_0, vec3 n_0) {
+    
+    Material mat_0;
+    mat_0.albedo = vec3(0.9607229096943182, 0.12684321752745586, 0.49262124424250686);
+    mat_0.roughness = 0.900000000000000;
+    mat_0.clearcoat = 0.100000000000000;
+    mat_0.metallic = 0.900000000000000;
+return mat_0;
+}
+
+// Module: mat_9_func
+
+Material mat_9_func(vec3 pos_0, vec3 n_0) {
+    
+    Material mat_0;
+    mat_0.albedo = vec3(0.23091288615341, 0.8602422603032137, 0.36839269632709337);
+    mat_0.roughness = 0.900000000000000;
+    mat_0.clearcoat = 0.100000000000000;
+    mat_0.metallic = 0.900000000000000;
+return mat_0;
+}
+
+// Module: mat_10_func
+
+Material mat_10_func(vec3 pos_0, vec3 n_0) {
+    
+    Material mat_0;
+    mat_0.albedo = vec3(0.6420933474787575, 0.6286199557215741, 0.4468775837887403);
+    mat_0.roughness = 0.900000000000000;
+    mat_0.clearcoat = 0.100000000000000;
+    mat_0.metallic = 0.900000000000000;
+return mat_0;
+}
+
+// Module: mat_11_func
+
+Material mat_11_func(vec3 pos_0, vec3 n_0) {
+    
+    Material mat_0;
+    mat_0.albedo = vec3(0.7420087192750257, 0.4286299668936816, 0.5477915236045529);
+    mat_0.roughness = 0.900000000000000;
+    mat_0.clearcoat = 0.100000000000000;
+    mat_0.metallic = 0.900000000000000;
+return mat_0;
+}
+
+// Module: mat_12_func
+
+Material mat_12_func(vec3 pos_0, vec3 n_0) {
+    
+    Material mat_0;
+    mat_0.albedo = vec3(0.5016040850210075, 0.40052901884113246, 0.35489747441556174);
+    mat_0.roughness = 0.900000000000000;
+    mat_0.clearcoat = 0.100000000000000;
+    mat_0.metallic = 0.900000000000000;
+return mat_0;
+}
+
+// Module: NeoSimpleMappable
+float NeoSimpleMappable(vec3 p, vec3 size, float roundness, float dilate_3d)
+{
+    vec2 uv = p.xy;
+    float r = roundness * min(size.x, size.y)  * 0.5;
+    float sdf2d  = HalfRoundedRectangle2D(uv, size.xy, r);
+    float half_height = size.z * 0.5;
+    vec2 d = vec2(sdf2d, abs(p.z) - half_height);
+    float sdf3d = min(max(d.x, d.y), 0.0) + length(max(d, 0.0));
+    return sdf3d - dilate_3d;
+}
+
+// Module: ToneMapping
+
+vec3 ToneMapping(vec3 color) {
+    color = color*0.2;
+    color = ACESFitted(color);
+    color = clamp(LinearToSRGB(color), 0.0, 1.0);
+    return color;
+}
+
+// Module: SCENE_MATERIAL
+
+Material SCENE_MATERIAL(in vec3 p, in vec3 n, in float y)
+{
+    int index = int(y);
+    switch (index) {
+        case 0: return mat_0_func(p, n);
+case 1: return mat_1_func(p, n);
+case 2: return mat_2_func(p, n);
+case 3: return mat_3_func(p, n);
+case 4: return mat_4_func(p, n);
+case 5: return mat_5_func(p, n);
+case 6: return mat_6_func(p, n);
+case 7: return mat_7_func(p, n);
+case 8: return mat_8_func(p, n);
+case 9: return mat_9_func(p, n);
+case 10: return mat_10_func(p, n);
+case 11: return mat_11_func(p, n);
+case 12: return mat_12_func(p, n);
+        default: return MatPlastic(p, n);
+    }
+}
+
+
+// Module: SCENE_EXPRESSION
+
+vec2 SCENE_EXPRESSION(vec3 pos_0) {
+    vec3 pos_1 = Translate3D(pos_0, vec3(0.000221985115786083, 0.0289205405861139, 0.153888583183289));
+vec3 pos_2 = AxisAngleRotate3D(pos_1, vec3(-0.226954415440559, 0.000890962313860655, 0.00972446519881487));
+float sdf_0 = NeoSimpleMappable(pos_2, vec3(0.113466620445251, 0.154469221830368, 0.490908145904541),0.999997913837433,0.138387113809586);
+float mat_0 = 0.0;
+vec2 res_1 = MatSolidV3(sdf_0, mat_0);
+vec3 pos_3 = Translate3D(pos_0, vec3(0.0240997057408094, 0.264083713293076, -0.346213221549988));
+vec3 pos_4 = AxisAngleRotate3D(pos_3, vec3(-0.0925653055310249, 0.0357170030474663, -0.474098712205887));
+float sdf_2 = NeoSimpleMappable(pos_4, vec3(0.179569363594055, 0.282706201076508, 0.402329504489899),0.948570013046265,0.0146963000297546);
+float mat_1 = 1.0;
+vec2 res_3 = MatSolidV3(sdf_2, mat_1);
+vec2 sdf_4 = Union(res_1, res_3);
+vec3 pos_5 = Translate3D(pos_0, vec3(0.612040460109711, 0.196398809552193, -0.480964750051498));
+vec3 pos_6 = AxisAngleRotate3D(pos_5, vec3(1.91650068759918, -0.681954383850098, 0.927381694316864));
+float sdf_5 = NeoSimpleMappable(pos_6, vec3(0.0354778170585632, 0.030499130487442, 0.555446326732635),0.999996364116669,0.119452983140945);
+float mat_2 = 2.0;
+vec2 res_6 = MatSolidV3(sdf_5, mat_2);
+vec2 sdf_7 = Union(sdf_4, res_6);
+vec3 pos_7 = Translate3D(pos_0, vec3(-0.609299659729004, 0.195225760340691, -0.480254918336868));
+vec3 pos_8 = AxisAngleRotate3D(pos_7, vec3(0.885186076164246, -1.21465086936951, 1.95529532432556));
+float sdf_8 = NeoSimpleMappable(pos_8, vec3(0.0211365222930908, 0.0150528848171234, 0.554759681224823),0.999995231628418,0.126579701900482);
+float mat_3 = 3.0;
+vec2 res_9 = MatSolidV3(sdf_8, mat_3);
+vec2 sdf_10 = Union(sdf_7, res_9);
+vec3 pos_9 = Translate3D(pos_0, vec3(0.000623983854893595, -0.0416345708072186, -0.302023708820343));
+vec3 pos_10 = AxisAngleRotate3D(pos_9, vec3(1.32468497753143, -1.1304817199707, 1.32705950737));
+float sdf_11 = NeoSimpleMappable(pos_10, vec3(2.38418579101563e-07, 0.00430041551589966, 0.17241108417511),0.998684763908386,0.128509283065796);
+float mat_4 = 4.0;
+vec2 res_12 = MatSolidV3(sdf_11, mat_4);
+vec2 sdf_13 = Union(sdf_10, res_12);
+vec3 pos_11 = Translate3D(pos_0, vec3(-0.00124796922318637, 0.240032434463501, -0.572444379329681));
+vec3 pos_12 = AxisAngleRotate3D(pos_11, vec3(-2.04474830627441, -1.78028559684753, -1.10021960735321));
+float sdf_14 = NeoSimpleMappable(pos_12, vec3(0.0279406309127808, 0.120299637317657, 0.116584688425064),0.00000128149986267090,0.0812999010086060);
+float mat_5 = 5.0;
+vec2 res_15 = MatSolidV3(sdf_14, mat_5);
+vec2 sdf_16 = Union(sdf_13, res_15);
+vec3 pos_13 = Translate3D(pos_0, vec3(0.00266219745390117, -0.252265363931656, 0.204692557454109));
+vec3 pos_14 = AxisAngleRotate3D(pos_13, vec3(-0.0563836880028248, 0.0135074332356453, 0.00338158686645329));
+float sdf_17 = NeoSimpleMappable(pos_14, vec3(0.0974476039409637, 0.140691220760345, 0.353004187345505),2.08616256713867E-7,0.0822104513645172);
+float mat_6 = 6.0;
+vec2 res_18 = MatSolidV3(sdf_17, mat_6);
+vec2 sdf_19 = Union(sdf_16, res_18);
+vec3 pos_15 = Translate3D(pos_0, vec3(-6.55950934742577e-05, -0.338639378547668, -0.359851717948914));
+vec3 pos_16 = AxisAngleRotate3D(pos_15, vec3(0.00294998264871538, 0.00103486992884427, -0.113884888589382));
+float sdf_20 = NeoSimpleMappable(pos_16, vec3(0.0709778666496277, 0.0607171356678009, 0.348675727844238),0.915979444980621,0.0438292622566223);
+float mat_7 = 7.0;
+vec2 res_21 = MatSolidV3(sdf_20, mat_7);
+vec2 sdf_22 = Union(sdf_19, res_21);
+vec3 pos_17 = Translate3D(pos_0, vec3(0.000630202644970268, 0.214840814471245, 0.109838701784611));
+vec3 pos_18 = AxisAngleRotate3D(pos_17, vec3(-1.81178081035614, -0.0299318768084049, -0.0384072884917259));
+float sdf_23 = NeoSimpleMappable(pos_18, vec3(0.0379519462585449, 0.450958102941513, 0.0974912643432617),0.00000306963920593262,0.0759963989257813);
+float mat_8 = 8.0;
+vec2 res_24 = MatSolidV3(sdf_23, mat_8);
+vec2 sdf_25 = Union(sdf_22, res_24);
+vec3 pos_19 = Translate3D(pos_0, vec3(-0.0149662299081683, -0.191773816943169, -0.179310739040375));
+vec3 pos_20 = AxisAngleRotate3D(pos_19, vec3(-2.33258843421936, -2.24928402900696, -0.689933061599731));
+float sdf_26 = NeoSimpleMappable(pos_20, vec3(0.0360133349895477, 0.120246738195419, 0.348511129617691),0.00497469305992126,0.0298128426074982);
+float mat_9 = 9.0;
+vec2 res_27 = MatSolidV3(sdf_26, mat_9);
+vec2 sdf_28 = Union(sdf_25, res_27);
+vec3 pos_21 = Translate3D(pos_0, vec3(-0.010497285053134, 0.196581721305847, -0.238105863332748));
+vec3 pos_22 = AxisAngleRotate3D(pos_21, vec3(0.0489106327295303, -0.124946750700474, 0.509683191776276));
+float sdf_29 = NeoSimpleMappable(pos_22, vec3(0.206998139619827, 0.139452874660492, 0.364893972873688),0.427532732486725,0.0349033772945404);
+float mat_10 = 10.0;
+vec2 res_30 = MatSolidV3(sdf_29, mat_10);
+vec2 sdf_31 = Union(sdf_28, res_30);
+vec3 pos_23 = Translate3D(pos_0, vec3(-0.256121665239334, -0.0126994410529733, -0.326179385185242));
+vec3 pos_24 = AxisAngleRotate3D(pos_23, vec3(0.0668639168143272, -2.20948362350464, -1.35938155651093));
+float sdf_32 = NeoSimpleMappable(pos_24, vec3(0.297102689743042, 0.00165754556655884, 0.016917496919632),0.992993116378784,0.0570918023586273);
+float mat_11 = 11.0;
+vec2 res_33 = MatSolidV3(sdf_32, mat_11);
+vec2 sdf_34 = Union(sdf_31, res_33);
+vec3 pos_25 = Translate3D(pos_0, vec3(0.024270061403513, -0.259544789791107, -0.021548530086875));
+vec3 pos_26 = AxisAngleRotate3D(pos_25, vec3(-0.583646476268768, -2.9428608417511, -1.20419824123383));
+float sdf_35 = NeoSimpleMappable(pos_26, vec3(0.188986003398895, 0.0381854474544525, 0.336438953876495),0.315609633922577,0.0231423377990723);
+float mat_12 = 12.0;
+vec2 res_36 = MatSolidV3(sdf_35, mat_12);
+vec2 sdf_37 = Union(sdf_34, res_36);
+return sdf_37;
+}
+
+// Module: LightPackage
+#define SPECULAR_GGX 0
+#define SPECULAR_BLINN 1
+#define SPECULAR_BECKMANN 2
+#define SPECULAR_MODE SPECULAR_GGX
+struct DirectionalLight {
+    vec3 direction;
+    vec3 color;
+    float energy;
+    float shadow_dist;
+};
+vec3 totalRayleigh()
+{
+    return (8.0 * pow(PI, 3.0) * pow(pow(_AS_n, 2.0) - 1.0, 2.0) * (6.0 + 3.0 * _AS_pn)) / (3.0 * _AS_N * pow(_lambda, vec3(4.0)) * (6.0 - 7.0 * _AS_pn));
+}
+float rayleighPhase(float cosTheta)
+{
+    return (3.0 / (16.0*PI)) * (1.0 + pow(cosTheta, 2.0));
+}
+vec3 totalMie()
+{
+    float c = (0.2 * _turbidity) * 10E-18;
+    return 0.434 * c * PI * pow((2.0 * PI) / _lambda, vec3(_V - 2.0)) * _K;
+}
+float hgPhase(float cosTheta, float g)
+{
+    return (1.0 / (4.0*PI)) * ((1.0 - pow(g, 2.0)) / pow(1.0 - 2.0*g*cosTheta + pow(g, 2.0), 1.5));
+}
+float sunIntensity(float zenithAngleCos)
+{
+    return max(0.0, 1.0 - exp(-((_cutoffAngle - acos(zenithAngleCos))/_steepness)));
+}
+void AtmosphericScattering(DirectionalLight light, vec3 worldNormal, 
+    out float cosTheta, out vec3 Lin, out vec3 Fex) 
+{
+    vec3 lightDirection = light.direction;
+    float lightEnergy = light.energy;
+    float sunfade = 1.0-clamp(1.0- exp(light.direction.z / 450000.0) ,0.0,1.0);
+    float reileigh = _reileighCoefficient - (1.0-sunfade);
+    vec3 betaR = totalRayleigh() * reileigh;
+    vec3 betaM = totalMie() * _mieCoefficient;
+    float zenithAngle = acos(max(0.0, dot(_up, worldNormal)));
+    float sR = _rayleighZenithLength / (cos(zenithAngle) + 0.15 * pow(93.885 - ((zenithAngle * 180.0) / PI), -1.253));
+    float sM = _mieZenithLength / (cos(zenithAngle) + 0.15 * pow(93.885 - ((zenithAngle * 180.0) / PI), -1.253));
+    Fex = exp(-(betaR * sR + betaM * sM));
+    cosTheta = dot(worldNormal, lightDirection);
+    float rPhase = rayleighPhase(cosTheta*0.5+0.5);
+    vec3 betaRTheta = betaR * rPhase;
+    float mPhase = hgPhase(cosTheta, _mieDirectionalG);
+    vec3 betaMTheta = betaM * mPhase;
+    Lin = pow(lightEnergy * ((betaRTheta + betaMTheta) / (betaR + betaM)) * (1.0 - Fex),vec3(1.5));
+    Lin *= mix(vec3(1.0),pow(lightEnergy * ((betaRTheta + betaMTheta) / (betaR + betaM)) * Fex,vec3(1.0/2.0)),clamp(pow(1.0-dot(_up, lightDirection),5.0),0.0,1.0));
+}
+vec3 Sky(DirectionalLight sun, vec3 viewDir) {
+    float cosElevOffset = cos(backgroundElevation);
+    float sinElevOffset = sin(backgroundElevation);
+    float cosAzimOffset = cos(backgroundAzimuth);
+    float sinAzimOffset = sin(backgroundAzimuth);
+    vec3 rotatedViewDir = viewDir;
+    float newX = rotatedViewDir.x * cosAzimOffset - rotatedViewDir.z * sinAzimOffset;
+    float newZ = rotatedViewDir.x * sinAzimOffset + rotatedViewDir.z * cosAzimOffset;
+    rotatedViewDir.x = newX;
+    rotatedViewDir.z = newZ;
+    float newY = rotatedViewDir.y * cosElevOffset - rotatedViewDir.z * sinElevOffset;
+    newZ = rotatedViewDir.y * sinElevOffset + rotatedViewDir.z * cosElevOffset;
+    rotatedViewDir.y = newY;
+    rotatedViewDir.z = newZ;
+    float CosTheta;
+    vec3 Lin;
+    vec3 Fex;
+    AtmosphericScattering(sun, rotatedViewDir, CosTheta, Lin, Fex);
+    float sundisk = smoothstep(AngularDiameterCos,AngularDiameterCos+0.00002,CosTheta);
+    vec3 L0 = sun.energy * 19000.0 * sundisk * Fex;
+    vec3 texColor = (Lin + L0) * 0.04;
+    texColor += vec3(0.0,0.001,0.0025)*0.3;
+    return texColor;
+}
+vec3 SkyExtinxtion(DirectionalLight light) 
+{
+    float sunfade = 1.0-clamp(1.0-exp(light.direction.z),0.0,1.0);
+    float reileigh = _reileighCoefficient - (1.0-sunfade);
+    vec3 betaR = totalRayleigh() * reileigh;
+    vec3 betaM = totalMie() * _mieCoefficient;
+    float zenithAngle = acos(max(0.0, dot(_up, light.direction)));
+    float sR = _rayleighZenithLength / (cos(zenithAngle) + 0.15 * pow(93.885 - ((zenithAngle * 180.0) / PI), -1.253));
+    float sM = _mieZenithLength / (cos(zenithAngle) + 0.15 * pow(93.885 - ((zenithAngle * 180.0) / PI), -1.253));
+    return exp(-(betaR * sR + betaM * sM));
+}
+vec3 Env(vec3 view, DirectionalLight sun) {
+    float cosTheta;
+    vec3 Lin;
+    vec3 Fex;
+    AtmosphericScattering(sun, view, cosTheta, Lin, Fex);
+    vec3 L0 = Fex * 0.1;
+    vec3 texColor = (Lin+L0) * 0.04;
+    texColor += vec3(0.0,0.001,0.0025)*0.3;
+    return texColor;
+}
+vec3 SkyAmbient(DirectionalLight sun) {
+    return Env(normalize(sun.direction*1.8 + vec3(0,0,1)), sun);
+}
+float phong_diffuse()
+{
+    return (1.0 / PI);
+}
+vec3 fresnel_factor(in vec3 f0, in float product)
+{
+    return mix(f0, vec3(1.0), pow(1.01 - product, 5.0));
+}
+float D_blinn(in float roughness, in float NdH)
+{
+    float m = roughness * roughness;
+    float m2 = m * m;
+    float n = 2.0 / m2 - 2.0;
+    return (n + 2.0) / (2.0 * PI) * pow(NdH, n);
+}
+float D_beckmann(in float roughness, in float NdH)
+{
+    float m = roughness * roughness;
+    float m2 = m * m;
+    float NdH2 = NdH * NdH;
+    return exp((NdH2 - 1.0) / (m2 * NdH2)) / (PI * m2 * NdH2 * NdH2);
+}
+float D_GGX(in float roughness, in float NdH)
+{
+    float m = roughness * roughness;
+    float m2 = m * m;
+    float d = (NdH * m2 - NdH) * NdH + 1.0;
+    return m2 / (PI * d * d);
+}
+float G_schlick(in float roughness, in float NdV, in float NdL)
+{
+    float k = roughness * roughness * 0.5;
+    float _V = NdV * (1.0 - k) + k;
+    float L = NdL * (1.0 - k) + k;
+    return 0.25 / (_V * L);
+}
+vec3 cooktorrance_specular(in float NdL, in float NdV, in float NdH, in vec3 specular, in float roughness)
+{
+#if SPECULAR_MODE == SPECULAR_BLINN
+    float D = D_blinn(roughness, NdH);
+#elif SPECULAR_MODE == SPECULAR_BECKMANN
+    float D = D_beckmann(roughness, NdH);
+#elif SPECULAR_MODE == SPECULAR_GGX
+    float D = D_GGX(roughness, NdH);
+#endif
+    float G = G_schlick(roughness, NdV, NdL);
+    float rim = mix(1.0 - roughness * 0.9, 1.0, NdV);
+    return max((1.0 / rim) * specular * G * D, 0.0);
+}
+float Specular(vec3 l, vec3 n, vec3 r, float k)
+{
+    vec3 half_dir = normalize(l + r);
+    float spec_angle = max(dot(half_dir, n), 0.0);
+    return pow(spec_angle, k);
+}
+float AmbientOcclusion(vec3 p,vec3 n) {
+    const float SCALE = _AO_MAX_DIST / pow(2.0, float(_AO_STEPS))*2.0;
+    float ocl = 0.0;
+    for(int i = 1; i <= _AO_STEPS; ++i) {
+        float dist = pow(2.0, float(i)) * SCALE;
+        ocl += 1.0 - (max(0.0, SCENE_EXPRESSION(p + n * dist).x) / dist);
+    }
+    return min(1.0-(ocl / float(_AO_STEPS)),1.0);
+}
+float Shadow(vec3 p,vec3 l, float d, float r)
+{
+    float res = 1.0;
+    float t = 0.1;
+    for (int i = 0; i < _SHADOW_MAX_STEPS; ++i) {
+        if (res < 0.0 || t > d)
+            break;
+        float h = SCENE_EXPRESSION(p+t*l).x;
+        res = min(res, r * h / t);
+        t += h;    
+    }    
+    return clamp(res, 0.0, 1.0);
+}
+vec3 Shade(DirectionalLight sun, Material mat, vec3 p, vec3 rd, vec3 n, 
+    vec3 reflection, vec3 clearcoat) 
+{
+    vec3 ambient = SkyAmbient(sun) * 0.7;
+    ambient *= AmbientOcclusion(p, n);
+    vec3 specular = mix(vec3(0.02), mat.albedo, mat.metallic);
+    vec3 L = sun.direction;
+    vec3 N = n;
+    vec3 _V = -rd;
+    vec3 H = normalize(_V+L);
+    float NdL = max(0.000, dot(N, L));
+    float NdV = max(0.001, dot(N, _V));
+    float NdH = max(0.001, dot(N, H));
+    float HdV = max(0.001, dot(H, _V));
+    vec3 specfresnel = fresnel_factor(specular, HdV);
+    vec3 specref = cooktorrance_specular(NdL, NdV, NdH, specfresnel, mat.roughness);
+    specref *= vec3(NdL);
+    vec3 diffref = (vec3(1.0) - specfresnel) * phong_diffuse() * NdL;
+    float s = Shadow(p+n*0.1, L, sun.shadow_dist, 20.0);
+    vec3 reflected_light = vec3(0);
+    vec3 diffuse_light = vec3(0);
+    vec3 light_color = sun.color * sun.energy * 0.01;
+    reflected_light += specref * light_color * s;
+    diffuse_light += diffref * light_color * s;
+    reflected_light += min(vec3(0.99), fresnel_factor(specular, NdV)) * reflection;
+    reflected_light += min(vec3(0.99), fresnel_factor(vec3(0.02), NdV)) * clearcoat * 0.2;
+    diffuse_light += ambient * (1.0 / PI);
+    vec3 result = diffuse_light * mix(mat.albedo, vec3(0.0), mat.metallic);
+    result += reflected_light;
+    result += mat.emissive;
+    return result;
+}
+
+// Module: SphereTraceV2
+vec2 SphereTrace(in vec3 ro, in vec3 rd, float e, out bool _h,out int _s){
+    vec2 res = vec2(-1.0,-1.0);
+    float b = dot(ro, ro) - _SCENE_RADIUS*_SCENE_RADIUS;
+    float c = dot(ro, rd);
+    float disc = c*c - b;
+    if (disc <= 0.0) {
+        _h = false;
+        _s = 0;
+        return res;
+    }
+    float s   = sqrt(disc);
+    float t0  = -c - s;
+    float t1  = -c + s;
+    if (t1 < 0.0) {
+        _h = false;
+        _s = 0;
+        return res;
+    }                   // both intersections behind camera
+    float tmin = max(1.0, t0);
+    float tmax = min(20.0, t1);
+    if (_ADD_FLOOR_PLANE) {
+        float tp = -ro.y / rd.y;
+        if (tp > 0.0 && tp < tmax) {
+            tmax = tp;
+            res = vec2(tp, 1.0);
+            _h = true;
+            _s = 0;
+        }
+    }
+    vec3 inv_rd = 1.0 / rd;  // hoist reciprocal
+    vec3 tA = ( _SCENE_BOX_CENTER - _SCENE_BOX_SIZE - ro ) * inv_rd;
+    vec3 tB = ( _SCENE_BOX_CENTER + _SCENE_BOX_SIZE - ro ) * inv_rd;
+    vec3 tMin3 = min(tA, tB);
+    vec3 tMax3 = max(tA, tB);
+    float tbmin = max( max(tMin3.x, tMin3.y), tMin3.z );
+    float tbmax = min( min(tMax3.x, tMax3.y), tMax3.z );
+    if (tbmin < tbmax && tbmax > 0.0 && tbmin < tmax) {
+        tmin = max(tmin, tbmin);
+        tmax = min(tmax, tbmax);
+        float t = tmin;
+        for (int i = _ZERO; i < _RAYCAST_MAX_STEPS && t < tmax; i++) {
+            vec2 h = SCENE_EXPRESSION(ro + rd * t);
+            if (abs(h.x) < 0.0001 * t) {
+                res = vec2(t, h.y);
+                _h = true;
+                _s = i;
+                break;
+            }
+            t += h.x * _RAYCAST_CONSERVATIVE_STEPPING_RATE;
+        }
+    }
+    return res;
+}
+
+// Module: SCENE_NORMAL
+vec3 SCENE_NORMAL(in vec3 p )
+{
+  float eps = 0.001;
+  vec3 n;
+  float v = SCENE_EXPRESSION(p).x;
+  n.x = SCENE_EXPRESSION( vec3(p.x+eps, p.y, p.z) ).x - v;
+  n.y = SCENE_EXPRESSION( vec3(p.x, p.y+eps, p.z) ).x - v;
+  n.z = SCENE_EXPRESSION( vec3(p.x, p.y, p.z+eps) ).x - v;
+  return normalize(n);
+}
+
+// Module: BasicSun
+DirectionalLight BasicSun()
+{
+    DirectionalLight sun;
+    float x = cos(sunElevation) * sin(sunAzimuth);
+    float y = sin(sunElevation);
+    float z = cos(sunElevation) * cos(sunAzimuth);
+    sun.direction = normalize(vec3(x, y, z));
+    sun.color = SkyExtinxtion(sun)* 19.0;
+    sun.energy = sunIntensity(max(0.0, sun.direction.z)) * _EE;
+    sun.shadow_dist = 100.0;
+    return sun;
+}
+
+// Module: background
+vec3 background(vec3 r, DirectionalLight sun)
+{
+    return Sky(sun, r);
+}
+
+// Module: ShadeRay
+vec3 ShadeRay(DirectionalLight sun, vec3 ro, vec3 rd, out int steps) {
+    bool hit = false;
+    int s = 0;
+    vec2 res = SphereTrace(ro, rd, 100.0, hit, s);
+    float t = res.x;
+    steps += s;
+    vec3 pt = ro + t * rd;
+    if (!hit)
+        return background(rd, sun);
+    vec3 n = SCENE_NORMAL(pt);
+    Material mat = SCENE_MATERIAL(pt, n, res.y);
+    vec3 reflect_dir = reflect(rd, n);
+    vec3 clearcoat = vec3(0);
+    vec3 reflection;
+    if (mat.clearcoat > 0.0 || mat.roughness == 0.0) {
+        s = 0;
+        res = SphereTrace(pt+n*0.01, reflect_dir, 100.0, hit, s);
+        t = res.x;
+        steps += s;
+        if (hit) {
+            vec3 rpt = pt + t * reflect_dir;
+            vec3 rn = SCENE_NORMAL(rpt);
+            Material rmat = SCENE_MATERIAL(rpt, rn, res.y);
+            vec3 sec_reflection = Env(reflect(reflect_dir, rn), sun);
+            clearcoat = Shade(sun, rmat, rpt, reflect_dir, rn, 
+                            sec_reflection, sec_reflection*mat.clearcoat);
+        } else
+            clearcoat = Env(reflect_dir, sun);
+    }
+    if (mat.roughness == 0.0)
+        reflection = clearcoat;
+    else {
+        float r = 1.0/max(mat.roughness, 0.00001);
+        float v = Shadow(pt+n*0.1, reflect_dir, 1000.0, r);
+        reflection = mix(SkyAmbient(sun)*0.1, Env(reflect_dir, sun), v);
+    }
+    clearcoat *= mat.clearcoat;
+    return Shade(sun, mat, pt, rd, n, reflection, clearcoat);
+}
+
+// Module: mainImage_v3
+void mainImage(out vec4 color, in vec2 pxy )
+{
+    vec2 mo = vec2(0.0, 0.0);
+    vec3 ta = vec3( 0.0, 1.0, -0.0 ) + cameraOrigin;
+    vec3 ro = ta + cameraDistance * vec3(
+        cos(cameraAngleX) * sin(cameraAngleY), // X component
+        sin(cameraAngleX),                     // Y component (elevation)
+        cos(cameraAngleX) * cos(cameraAngleY)  // Z component
+    );
+    mat3 ca = setCamera( ro, ta, 0.0 );
+    vec3 tot = vec3(0.0);
+    DirectionalLight sun = BasicSun();
+    int s = 0;
+    for( int m=_ZERO; m<_AA; m++ )
+    for( int n=_ZERO; n<_AA; n++ )
+    {
+        vec2 o = vec2(float(m),float(n)) / float(_AA) - 0.5;
+        vec2 p = (2.0*(pxy+o)-resolution.xy)/resolution.xy;
+        vec3 rd = ca * normalize( vec3(p, _FOCAL_LENGTH) );
+        vec3 rgb = ShadeRay(sun, ro, rd, s);
+        rgb = ToneMapping(rgb);
+        tot += rgb;
+    }
+    tot /= float(_AA*_AA);
+    color = vec4( tot, 1.0 );
+}
+
+
+void main(void)
+{
+  
+  mainImage(fragColor, gl_FragCoord.xy);
+}`;
+
+  // Uniform values storage (for ALL uniforms used by both ReGL and TWGL)
+  const uniformValues = {
+    
+    
+    resolution: [512, 512],
+    
+    
+    
+    sunAzimuth: 0.0,
+    
+    
+    
+    sunElevation: 0.5,
+    
+    
+    
+    backgroundAzimuth: 0.0,
+    
+    
+    
+    cameraAngleX: 0.7853981633974483,
+    
+    
+    
+    backgroundElevation: 0.0,
+    
+    
+    
+    cameraDistance: 5.0,
+    
+    
+    
+    cameraOrigin: [0, 0.5, 0],
+    
+    
+    
+    cameraAngleY: 0.39269908169872414,
+    
+    
+    
+    // Resolution control (managed by scale)
+    resolutionScale: 1.0,
+    
+  };
+
+  const canvas = document.getElementById('glcanvas');
+  const gl = canvas.getContext('webgl2');
+  if (!gl) throw new Error("WebGL2 not supported");
+
+  
+  // Vector uniform component tracking (for UI controls only)
+  const vectorComponents = {};
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  vectorComponents['cameraOrigin'] = {};
+  
+  
+  
+  vectorComponents['cameraOrigin']['x'] = 0;
+  
+  vectorComponents['cameraOrigin']['y'] = 0.5;
+  
+  vectorComponents['cameraOrigin']['z'] = 0;
+  
+  
+  
+
+  // Function to update vector uniform from components
+  function updateVectorUniform(uniformName, vectorType) {
+    const components = vectorComponents[uniformName];
+    if (!components) return;
+    
+    if (vectorType === 'vec2') {
+      uniformValues[uniformName] = [components.x || 0, components.y || 0];
+    } else if (vectorType === 'vec3') {
+      uniformValues[uniformName] = [components.x || 0, components.y || 0, components.z || 0];
+    } else if (vectorType === 'vec4') {
+      uniformValues[uniformName] = [components.x || 0, components.y || 0, components.z || 0, components.w || 0];
+    }
+  }
+  
+
+  // Function to resize canvas
+  function resizeCanvas() {
+    
+    // Resolution via scale: calculate backing buffer size based on scale
+    const W = canvas.clientWidth;
+    const H = canvas.clientHeight;
+    
+    // Backing-buffer size
+    const scale = uniformValues.resolutionScale;
+    const w = Math.max(1, Math.floor(W * scale));
+    const h = Math.max(1, Math.floor(H * scale));
+    
+    // Set the GL buffer to the scaled size
+    canvas.width = w;
+    canvas.height = h;
+    
+    // Update resolution uniform
+    uniformValues.resolution = [w, h];
+    
+    
+    // Update viewport (TWGL specific, but harmless for ReGL)
+    gl.viewport(0, 0, canvas.width, canvas.height);
+  }
+
+  // Initial resize
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  
+  // Mouse controls for camera
+  let dragging = false, shiftPressed = false;
+  let last = { x: 0, y: 0 };
+
+  canvas.addEventListener('mousedown', e => {
+    dragging = true;
+    last = { x: e.clientX, y: e.clientY };
+  });
+  
+  window.addEventListener('mouseup', () => dragging = false);
+  window.addEventListener('keydown', e => { if (e.key === 'Shift') shiftPressed = true; });
+  window.addEventListener('keyup', e => { if (e.key === 'Shift') shiftPressed = false; });
+
+  canvas.addEventListener('wheel', e => {
+    e.preventDefault();
+    const delta = e.deltaY < 0 ? 0.98 : 1.02;
+    uniformValues.cameraDistance = Math.min(10, Math.max(0.1, uniformValues.cameraDistance * delta));
+  }, { passive: false });
+
+  window.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const dx = last.x - e.clientX;
+    const dy = last.y - e.clientY;
+
+    if (shiftPressed) {
+      // Pan: adjust cameraOrigin in world space
+      const { cameraAngleX, cameraAngleY, cameraDistance } = uniformValues;
+      
+      // Get current cameraOrigin
+      let cameraOrigin = uniformValues.cameraOrigin || [0, 0, 0];
+      
+      // Compute forward/right vectors
+      const forward = [
+        -Math.sin(cameraAngleY) * Math.cos(cameraAngleX),
+         Math.sin(cameraAngleX),
+        -Math.cos(cameraAngleY) * Math.cos(cameraAngleX),
+      ];
+      const worldUp = [0, 1, 0];
+      const right = [
+        forward[1] * worldUp[2] - forward[2] * worldUp[1],
+        forward[2] * worldUp[0] - forward[0] * worldUp[2],
+        forward[0] * worldUp[1] - forward[1] * worldUp[0],
+      ];
+      const len = Math.hypot(...right);
+      const normR = right.map(v => v / len);
+      const scale = 0.005 * cameraDistance;
+      
+      const newOrigin = [
+        cameraOrigin[0] + dx * scale * normR[0],
+        cameraOrigin[1] - dy * scale,
+        cameraOrigin[2] + dx * scale * normR[2],
+      ];
+      
+      // Update cameraOrigin
+      uniformValues.cameraOrigin = newOrigin;
+      
+      if (vectorComponents['cameraOrigin']) {
+        vectorComponents['cameraOrigin']['x'] = newOrigin[0];
+        vectorComponents['cameraOrigin']['y'] = newOrigin[1];
+        vectorComponents['cameraOrigin']['z'] = newOrigin[2];
+      }
+      
+    } else {
+      // Orbit: adjust camera angles
+      uniformValues.cameraAngleX = Math.max(-Math.PI/2, Math.min(Math.PI/2,
+        uniformValues.cameraAngleX + dy * 0.01
+      ));
+      uniformValues.cameraAngleY += dx * 0.01;
+    }
+
+    last = { x: e.clientX, y: e.clientY };
+  });
+  
+
+  
+  // Canvas size controls
+  document.getElementById('canvasWidth').addEventListener('input', (e) => {
+    const value = parseInt(e.target.value);
+    document.getElementById('canvasWidth_value').textContent = value;
+    document.getElementById('canvas-container').style.width = value + 'px';
+    resizeCanvas();
+  });
+
+  document.getElementById('canvasHeight').addEventListener('input', (e) => {
+    const value = parseInt(e.target.value);
+    document.getElementById('canvasHeight_value').textContent = value;
+    document.getElementById('canvas-container').style.height = value + 'px';
+    resizeCanvas();
+  });
+
+  // Setup control event listeners
+  
+  
+  document.getElementById('sunAzimuth').addEventListener('input', (e) => {
+    const value = parseFloat(e.target.value);
+    uniformValues.sunAzimuth = value;
+    document.getElementById('sunAzimuth_value').textContent = e.target.value;
+  });
+  
+  
+  
+  document.getElementById('sunElevation').addEventListener('input', (e) => {
+    const value = parseFloat(e.target.value);
+    uniformValues.sunElevation = value;
+    document.getElementById('sunElevation_value').textContent = e.target.value;
+  });
+  
+  
+  
+  document.getElementById('backgroundAzimuth').addEventListener('input', (e) => {
+    const value = parseFloat(e.target.value);
+    uniformValues.backgroundAzimuth = value;
+    document.getElementById('backgroundAzimuth_value').textContent = e.target.value;
+  });
+  
+  
+  
+  document.getElementById('backgroundElevation').addEventListener('input', (e) => {
+    const value = parseFloat(e.target.value);
+    uniformValues.backgroundElevation = value;
+    document.getElementById('backgroundElevation_value').textContent = e.target.value;
+  });
+  
+  
+  
+  
+  
+  
+  
+  document.getElementById('cameraOrigin_x').addEventListener('input', (e) => {
+    const value = parseFloat(e.target.value);
+    vectorComponents['cameraOrigin']['x'] = value;
+    updateVectorUniform('cameraOrigin', 'vec3');
+    document.getElementById('cameraOrigin_x_value').textContent = e.target.value;
+  });
+  
+  
+  document.getElementById('cameraOrigin_y').addEventListener('input', (e) => {
+    const value = parseFloat(e.target.value);
+    vectorComponents['cameraOrigin']['y'] = value;
+    updateVectorUniform('cameraOrigin', 'vec3');
+    document.getElementById('cameraOrigin_y_value').textContent = e.target.value;
+  });
+  
+  
+  document.getElementById('cameraOrigin_z').addEventListener('input', (e) => {
+    const value = parseFloat(e.target.value);
+    vectorComponents['cameraOrigin']['z'] = value;
+    updateVectorUniform('cameraOrigin', 'vec3');
+    document.getElementById('cameraOrigin_z_value').textContent = e.target.value;
+  });
+  
+  
+  
+
+  
+  // Resolution scale control
+  document.getElementById('resolutionScale').addEventListener('input', (e) => {
+    const value = parseFloat(e.target.value);
+    uniformValues.resolutionScale = value;
+    document.getElementById('resolutionScale_value').textContent = e.target.value;
+    // Trigger resize to recalculate resolution
+    resizeCanvas();
+  });
+  
+
+  // Static shader code for reset (loaded from template)
+  const staticShaderCode = `#version 300 es
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+out vec4 FragColor;  // Define the output color variable
+
+float dot2( in vec2 v ) { return dot(v,v); }
+float dot2( in vec3 v ) { return dot(v,v); }
+float ndot( in vec2 a, in vec2 b ) { return a.x*b.x - a.y*b.y; }
+float cro(vec2 v1, vec2 v2) {
+    return v1.x * v2.y - v1.y * v2.x;
+}
+
+
+vec2 iBox( in vec3 ro, in vec3 rd, in vec3 rad ) 
+{
+    vec3 m = 1.0/rd;
+    vec3 n = m*ro;
+    vec3 k = abs(m)*rad;
+    vec3 t1 = -n - k;
+    vec3 t2 = -n + k;
+	return vec2( max( max( t1.x, t1.y ), t1.z ),
+	             min( min( t2.x, t2.y ), t2.z ) );
+}
+
+
+float Box3D( vec3 p, vec3 b )
+{
+    vec3 size = b / 2.0;
+    vec3 d = abs(p) - size;
+    return min(max(d.x,max(d.y,d.z)),0.0) + length(max(d,0.0));
+}
+
+
+float SPACE_LIMIT=10.0;
+
+vec2 OBJECT_SDF_AND_MATERIAL( in vec3 pos )
+{
+    vec2 res = vec2( pos.y, 0.0 );
+    if( Box3D( pos, vec3(SPACE_LIMIT, SPACE_LIMIT, SPACE_LIMIT) ) < res.x )
+    {   
+        res = vec2(Box3D( pos, vec3(0.0, 0.0, 0.0)), 2.0);
+        
+    }
+    return res;
+}
+
+// Need to be coupled with a
+// OBJECT_SDF_AND_MATERIAL
+// utils
+const float SCENE_RADIUS = 100.0;
+const vec3 BOX_CENTER    = vec3(0.0, 0.5, 0.0);
+const vec3 BOX_HALF_SIZE = vec3(10.0, 5.0, 10.0);
+
+
+vec2 raycast(in vec3 ro, in vec3 rd) {
+
+    vec2 res = vec2(-1.0,-1.0);
+
+    // 1) Sphere cull: cheap dot/mul vs. complex SDF
+    float b = dot(ro, ro) - SCENE_RADIUS*SCENE_RADIUS;
+    float c = dot(ro, rd);
+    float disc = c*c - b;
+    if (disc <= 0.0) return res;                // no intersection with sphere
+    float s   = sqrt(disc);
+    float t0  = -c - s;
+    float t1  = -c + s;
+    if (t1 < 0.0) return res;                   // both intersections behind camera
+
+    float tmin = max(1.0, t0);
+    float tmax = min(20.0, t1);
+
+    // 2) Floor-plane (y=0) test
+    float tp = -ro.y / rd.y;
+    if (tp > 0.0 && tp < tmax) {
+        tmax = tp;
+        res = vec2(tp, 1.0);
+    }
+
+    // 3) AABB test
+    vec3 inv_rd = 1.0 / rd;  // hoist reciprocal
+    vec3 tA = ( BOX_CENTER - BOX_HALF_SIZE - ro ) * inv_rd;
+    vec3 tB = ( BOX_CENTER + BOX_HALF_SIZE - ro ) * inv_rd;
+
+    vec3 tMin3 = min(tA, tB);
+    vec3 tMax3 = max(tA, tB);
+
+    float tbmin = max( max(tMin3.x, tMin3.y), tMin3.z );
+    float tbmax = min( min(tMax3.x, tMax3.y), tMax3.z );
+
+    if (tbmin < tbmax && tbmax > 0.0 && tbmin < tmax) {
+        tmin = max(tmin, tbmin);
+        tmax = min(tmax, tbmax);
+
+        // 4) Ray‐march only in [tmin, tmax]
+        float t = tmin;
+        for (int i = 0; i < 70 && t < tmax; i++) {
+            vec2 h = OBJECT_SDF_AND_MATERIAL(ro + rd * t);
+            if (abs(h.x) < 0.0001 * t) {
+                res = vec2(t, h.y);
+                break;
+            }
+            t += h.x;
+        }
+    }
+
+    return res;
+}
+
+
+float calcSoftshadow( in vec3 ro, in vec3 rd, in float mint, in float tmax )
+{
+    // bounding volume
+    float tp = (0.8-ro.y)/rd.y; 
+    if( tp>0.0 ) tmax = min( tmax, tp );
+
+    float res = 1.0;
+    float t = mint;
+    for( int i=0; i<64; i++ )
+    {
+		float h = OBJECT_SDF_AND_MATERIAL( ro + rd*t ).x;
+        float s = clamp(8.0*h/t,0.0,1.0);
+        res = min( res, s );
+        t += clamp( h, 0.01, 0.2 );
+        if( res<0.004 || t>tmax ) break;
+    }
+    res = clamp( res, 0.0, 1.0 );
+    return res*res*(3.0-2.0*res);
+}
+
+// https://iquilezles.org/articles/normalsSDF
+vec3 calcNormal( in vec3 pos )
+{
+    // inspired by tdhooper and klems - a way to prevent the compiler from inlining OBJECT_SDF_AND_MATERIAL() 4 times
+    vec3 n = vec3(0.0);
+    for( int i=0; i<4; i++ )
+    {
+        vec3 e = 0.5773*(2.0*vec3((((i+3)>>1)&1),((i>>1)&1),(i&1))-1.0);
+        n += e*OBJECT_SDF_AND_MATERIAL(pos+0.0005*e).x;
+      //if( n.x+n.y+n.z>100.0 ) break;
+    }
+    return normalize(n);
+}
+
+
+
+// https://iquilezles.org/articles/nvscene2008/rwwtt.pdf
+float calcAO( in vec3 pos, in vec3 nor )
+{
+	float occ = 0.0;
+    float sca = 1.0;
+    for( int i=0; i<5; i++ )
+    {
+        float h = 0.01 + 0.12*float(i)/4.0;
+        float d = OBJECT_SDF_AND_MATERIAL( pos + h*nor ).x;
+        occ += (h-d)*sca;
+        sca *= 0.95;
+        if( occ>0.35 ) break;
+    }
+    return clamp( 1.0 - 3.0*occ, 0.0, 1.0 ) * (0.5+0.5*nor.y);
+}
+
+// https://iquilezles.org/articles/checkerfiltering
+float checkersGradBox( in vec2 p, in vec2 dpdx, in vec2 dpdy )
+{
+    // filter kernel
+    vec2 w = abs(dpdx)+abs(dpdy) + 0.001;
+    // analytical integral (box filter)
+    vec2 i = 2.0*(abs(fract((p-0.5*w)*0.5)-0.5)-abs(fract((p+0.5*w)*0.5)-0.5))/w;
+    // xor pattern
+    return 0.5 - 0.5*i.x*i.y;                  
+}
+
+struct Material {
+    vec3 albedo;
+    float ks;
+};
+
+// Choose material properties based on hit id
+Material getMaterial(float m, vec3 pos, vec3 ro, vec3 rd, vec3 rdx, vec3 rdy) {
+    Material mat;
+    if (m < 1.5) {
+        // Floor checker
+        vec3 dpdx = ro.y * (rd / rd.y - rdx / rdx.y);
+        vec3 dpdy = ro.y * (rd / rd.y - rdy / rdy.y);
+        float f = checkersGradBox(3.0 * pos.xz, 3.0 * dpdx.xz, 3.0 * dpdy.xz);
+        mat.albedo = vec3(0.15) + f * vec3(0.05);
+        mat.ks     = 0.4;
+    } else {
+        // Object color
+        mat.albedo = 0.2 + 0.2 * sin(m * 2.0 + vec3(0.0, 1.0, 2.0));
+        mat.ks     = 1.0;
+    }
+    return mat;
+}
+
+// Compute lighting for a hit
+vec3 calcLighting(vec3 pos, vec3 nor, vec3 ref, vec3 rd, Material mat, vec3 lig) {
+    float occ = calcAO(pos, nor);
+    vec3 lin = vec3(0.0);
+
+    // Sun light
+    // vec3 lig = normalize(vec3(-0.5, 0.4, -0.6));
+    vec3 hal = normalize(lig - rd);
+    float dif = clamp(dot(nor, lig), 0.0, 1.0);
+    dif *= calcSoftshadow(pos, lig, 0.02, 2.5);
+    float spe = pow(clamp(dot(nor, hal), 0.0, 1.0), 16.0);
+    spe *= dif * (0.04 + 0.96 * pow(clamp(1.0 - dot(hal, lig), 0.0, 1.0), 5.0));
+    lin += mat.albedo * 2.2 * dif * vec3(1.3, 1.0, 0.7);
+    lin += 5.0 * spe * vec3(1.3, 1.0, 0.7) * mat.ks;
+
+    // Sky light
+    dif = sqrt(clamp(0.5 + 0.5 * nor.y, 0.0, 1.0));
+    dif *= occ;
+    spe = smoothstep(-0.2, 0.2, ref.y);
+    spe *= dif * (0.04 + 0.96 * pow(clamp(1.0 + dot(nor, rd), 0.0, 1.0), 5.0));
+    spe *= calcSoftshadow(pos, ref, 0.02, 2.5);
+    lin += mat.albedo * 0.6 * dif * vec3(0.4, 0.6, 1.15);
+    lin += 2.0 * spe * vec3(0.4, 0.6, 1.30) * mat.ks;
+
+    // Back light
+    dif = clamp(dot(nor, normalize(vec3(0.5, 0.0, 0.6))), 0.0, 1.0) * clamp(1.0 - pos.y, 0.0, 1.0);
+    dif *= occ;
+    lin += mat.albedo * 0.55 * dif * vec3(0.25);
+
+    // Subsurface
+    dif = pow(clamp(1.0 + dot(nor, rd), 0.0, 1.0), 2.0);
+    dif *= occ;
+    lin += mat.albedo * 0.25 * dif;
+
+    return lin;
+}
+
+// Cleaned-up render function
+vec3 render(in vec3 ro, in vec3 rd, in vec3 rdx, in vec3 rdy, vec3 lig) {
+    // Background
+    vec3 bg = vec3(0.7, 0.7, 0.9) - max(rd.y, 0.0) * 0.3;
+
+    // Raycast
+    vec2 hit = raycast(ro, rd);
+    if (hit.x < 0.0) return bg;
+
+    float t  = hit.x;
+    float m  = hit.y;
+    vec3  pos = ro + rd * t;
+    vec3  nor = (m < 1.5) ? vec3(0.0, 1.0, 0.0) : calcNormal(pos);
+    vec3  ref = reflect(rd, nor);
+
+    // Material determination
+    Material mat = getMaterial(m, pos, ro, rd, rdx, rdy);
+
+    // Lighting
+    vec3 color = calcLighting(pos, nor, ref, rd, mat, lig);
+
+    // Fog
+    float fogFactor = 1.0 - exp(-0.0001 * t * t * t);
+    return mix(color, bg, fogFactor);
+}
+
+
+uniform float globalStateStep;
+
+// uniform vec3 origin;
+uniform vec2 resolution;
+uniform float cameraAngleX;
+uniform float cameraAngleY;
+uniform float cameraDistance;
+uniform vec3 cameraOrigin;
+uniform float sunAzimuth;    // 0…2π, rotation around the Y-axis
+uniform float sunElevation;  // –π/2…+π/2, angle above the horizon
+// vec3 origin = vec3(0.0, 0.5, 0.0);
+// float cameraAngleX = 0.25;
+// float cameraAngleY = 0.5;
+// float cameraDistance = 4.0;
+int ZERO = 0;
+
+
+// focal length
+const float fl = 2.5;
+#define AA 1   // make this 2 or 3 for antialiasing
+
+
+mat3 setCamera( in vec3 ro, in vec3 ta, float cr )
+{
+	vec3 cw = normalize(ta-ro);
+	vec3 cp = vec3(sin(cr), cos(cr),0.0);
+	vec3 cu = normalize( cross(cw,cp) );
+	vec3 cv =          ( cross(cu,cw) );
+    return mat3( cu, cv, cw );
+}
+
+vec3 getSunDirection() {
+    // Y-up convention: elevation = 0 → horizon, +π/2 → straight up
+    float x =  cos(sunElevation) * sin(sunAzimuth);
+    float y =  sin(sunElevation);
+    float z =  cos(sunElevation) * cos(sunAzimuth);
+    return normalize(vec3(x, y, z));
+}
+
+
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    vec2 mo = vec2(0.0, 0.0);
+    // camera	
+    vec3 ta = vec3( 0.0, 1.0, -0.0 ) + cameraOrigin;
+    vec3 ro = ta + cameraDistance * vec3(
+        cos(cameraAngleX) * sin(cameraAngleY), // X component
+        sin(cameraAngleX),                     // Y component (elevation)
+        cos(cameraAngleX) * cos(cameraAngleY)  // Z component
+    );
+    // camera-to-world transformation
+    mat3 ca = setCamera( ro, ta, 0.0 );
+    vec3 tot = vec3(0.0);
+    vec3 lig = getSunDirection();
+    for( int m=ZERO; m<AA; m++ )
+    for( int n=ZERO; n<AA; n++ )
+    {
+        // pixel coordinates
+        vec2 o = vec2(float(m),float(n)) / float(AA) - 0.5;
+
+
+        vec2 p = (2.0*(fragCoord+o)-resolution.xy)/resolution.xy;
+
+        vec3 rd = ca * normalize( vec3(p,fl) );
+
+
+        vec2 px = (2.0 * (fragCoord + vec2(1.0, 0.0)) - resolution.xy) / resolution.xy;
+        vec2 py = (2.0 * (fragCoord + vec2(0.0, 1.0)) - resolution.xy) / resolution.xy;
+
+        vec3 rdx = ca * normalize(vec3(px, fl));
+        vec3 rdy = ca * normalize(vec3(py, fl));
+
+        // render	
+        vec3 col = render( ro, rd, rdx, rdy , lig);
+
+        // gain
+        // col = col*3.0/(2.5+col);
+        
+		// gamma
+        col = pow( col, vec3(0.4545) );
+
+        tot += col;
+    }
+    tot /= float(AA*AA);
+    
+    fragColor = vec4( tot, 1.0 );
+}
+
+
+void main(void)
+{
+  mainImage(FragColor, gl_FragCoord.xy);
+} `;
+
+  // Common save render functionality
+  function saveRender(renderFunction) {
+    try {
+      // Force a render to ensure the current frame is captured
+      if (renderFunction) {
+        renderFunction();
+        
+        // Ensure WebGL commands are executed
+        gl.finish();
+        
+        // Read pixels from the framebuffer
+        const width = canvas.width;
+        const height = canvas.height;
+        const pixels = new Uint8Array(width * height * 4);
+        gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+        
+        // Create a temporary canvas to process the pixel data
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = width;
+        tempCanvas.height = height;
+        const tempCtx = tempCanvas.getContext('2d');
+        
+        // Create ImageData from the pixels
+        const imageData = new ImageData(width, height);
+        
+        // Copy and flip the pixels (WebGL has origin at bottom-left, canvas at top-left)
+        for (let y = 0; y < height; y++) {
+          for (let x = 0; x < width; x++) {
+            const srcIndex = ((height - 1 - y) * width + x) * 4;
+            const dstIndex = (y * width + x) * 4;
+            imageData.data[dstIndex] = pixels[srcIndex];         // R
+            imageData.data[dstIndex + 1] = pixels[srcIndex + 1]; // G
+            imageData.data[dstIndex + 2] = pixels[srcIndex + 2]; // B
+            imageData.data[dstIndex + 3] = pixels[srcIndex + 3]; // A
+          }
+        }
+        
+        // Put the image data on the temporary canvas
+        tempCtx.putImageData(imageData, 0, 0);
+        
+        // Convert to blob and download
+        tempCanvas.toBlob((blob) => {
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `shader_render_${Date.now()}.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            console.log('Render saved successfully');
+          } else {
+            console.error('Failed to create blob from canvas');
+          }
+        }, 'image/png');
+      } else {
+        console.error('No shader loaded to save');
+      }
+    } catch (error) {
+      console.error('Error saving render:', error);
+    }
+  }
+
+  // Common reset uniform values function
+  function resetUniformValues() {
+    
+    
+    document.getElementById('sunAzimuth').value = 0.0;
+    uniformValues.sunAzimuth = 0.0;
+    document.getElementById('sunAzimuth_value').textContent = 0.0;
+    
+    
+    
+    document.getElementById('sunElevation').value = 0.5;
+    uniformValues.sunElevation = 0.5;
+    document.getElementById('sunElevation_value').textContent = 0.5;
+    
+    
+    
+    document.getElementById('backgroundAzimuth').value = 0.0;
+    uniformValues.backgroundAzimuth = 0.0;
+    document.getElementById('backgroundAzimuth_value').textContent = 0.0;
+    
+    
+    
+    document.getElementById('backgroundElevation').value = 0.0;
+    uniformValues.backgroundElevation = 0.0;
+    document.getElementById('backgroundElevation_value').textContent = 0.0;
+    
+    
+    
+    
+    
+    
+    
+    document.getElementById('cameraOrigin_x').value = 0;
+    vectorComponents['cameraOrigin']['x'] = 0;
+    document.getElementById('cameraOrigin_x_value').textContent = 0;
+    
+    
+    document.getElementById('cameraOrigin_y').value = 0.5;
+    vectorComponents['cameraOrigin']['y'] = 0.5;
+    document.getElementById('cameraOrigin_y_value').textContent = 0.5;
+    
+    
+    document.getElementById('cameraOrigin_z').value = 0;
+    vectorComponents['cameraOrigin']['z'] = 0;
+    document.getElementById('cameraOrigin_z_value').textContent = 0;
+    
+    uniformValues.cameraOrigin = [0, 0.5, 0];
+    
+    
+    
+    
+    // Reset resolution scale
+    document.getElementById('resolutionScale').value = 1.0;
+    uniformValues.resolutionScale = 1.0;
+    document.getElementById('resolutionScale_value').textContent = '1.0';
+    resizeCanvas(); // Recalculate resolution
+    
+    
+    // Reset canvas size
+    document.getElementById('canvasWidth').value = 512;
+    document.getElementById('canvasHeight').value = 512;
+    document.getElementById('canvasWidth_value').textContent = '512';
+    document.getElementById('canvasHeight_value').textContent = '512';
+    document.getElementById('canvas-container').style.width = '512px';
+    document.getElementById('canvas-container').style.height = '512px';
+    resizeCanvas();
+  }
+   
+
+
+
+
+
+  // Extract texture registry from Jinja
+  const textureRegistry = {
+    
+  };
+
+  // Extract UBO registry from Jinja
+  const uboRegistry = {
+    
+  };
+
+  // === TWGL-specific code ===
+  
+  // Vertex shader source
+  const vertexShaderSource = `#version 300 es
+  precision mediump float;
+  in vec2 position;
+  void main() {
+    gl_Position = vec4(position, 0.0, 1.0);
+  }`;
+
+  // Variables to hold current program and buffers
+  let currentProgramInfo = null;
+  let currentBufferInfo = null;
+  let loadedTextures = {};  // <<== this is the fix
+
+  // Create buffer info for fullscreen quad
+  const arrays = {
+    position: {
+      numComponents: 2,
+      data: [
+        -1, -1,
+         1, -1,
+        -1,  1,
+         1,  1
+      ]
+    }
+  };
+  currentBufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
+
+  // Function to create/recreate the program
+  function createProgram(fragmentShader) {
+    try {
+      const programInfo = twgl.createProgramInfo(gl, [vertexShaderSource, fragmentShader]);
+      
+      
+      
+      return programInfo;
+    } catch (error) {
+      console.error('Error creating shader program:', error);
+      throw error;
+    }
+  }
+
+  
+  // TWGL-specific button event listeners
+  document.getElementById('reset-shader-code').addEventListener('click', () => {
+    try {
+      currentProgramInfo = createProgram(staticShaderCode);
+      console.log('Shader code reset to static version');
+    } catch (error) {
+      console.error('Error resetting shader code:', error);
+    }
+  });
+
+  document.getElementById('save-render').addEventListener('click', () => {
+    saveRender(() => {
+      if (currentProgramInfo) {
+        render();
+      }
+    });
+  });
+
+  // Reset button functionality
+  document.getElementById('reset-shader').addEventListener('click', () => {
+    resetUniformValues();
+    
+    // Reset shader code to original
+    try {
+      currentProgramInfo = createProgram(originalShaderCode);
+      console.log('Shader reset to original version');
+    } catch (error) {
+      console.error('Error resetting to original shader:', error);
+    }
+  });
+  
+
+  async function init() {
+  // Initialize the program
+    currentProgramInfo = createProgram(originalShaderCode);
+    
+    
+    
+    // Render function
+    function render() {
+      if (!currentProgramInfo) return;
+      
+      // Clear the canvas
+      gl.clearColor(0, 0, 0, 1);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+
+      // Use the program
+      gl.useProgram(currentProgramInfo.program);
+
+      // Prepare uniforms
+      const uniforms = {
+        time: performance.now() / 1000,
+        
+        resolution: uniformValues.resolution,
+        
+        sunAzimuth: uniformValues.sunAzimuth,
+        
+        sunElevation: uniformValues.sunElevation,
+        
+        backgroundAzimuth: uniformValues.backgroundAzimuth,
+        
+        cameraAngleX: uniformValues.cameraAngleX,
+        
+        backgroundElevation: uniformValues.backgroundElevation,
+        
+        cameraDistance: uniformValues.cameraDistance,
+        
+        cameraOrigin: uniformValues.cameraOrigin,
+        
+        cameraAngleY: uniformValues.cameraAngleY,
+        
+        
+      };
+
+      // Set uniforms
+      twgl.setUniforms(currentProgramInfo, uniforms);
+
+      // Set up attributes
+      twgl.setBuffersAndAttributes(gl, currentProgramInfo, currentBufferInfo);
+
+      // Draw
+      twgl.drawBufferInfo(gl, currentBufferInfo, gl.TRIANGLE_STRIP);
+    }
+
+    // Render loop
+    function renderLoop() {
+      render();
+      requestAnimationFrame(renderLoop);
+    }
+
+    // Start render loop
+    renderLoop();
+}
+
+init();  // call once
+</script> 
+
+
+
+  </main>
+
+</body>
+</html>

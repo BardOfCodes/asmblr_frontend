@@ -86,51 +86,71 @@ export const HybridControlPanel: React.FC<HybridControlPanelProps> = ({
     try {
       console.log('Testing iframe functionality...');
       
-      // Create test HTML content
-      const testHTML = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>Test HTML</title>
-          <style>
-            body { 
-              font-family: 'Lato', sans-serif; 
-              margin: 40px; 
-              background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
-              color: white;
-              text-align: center;
-            }
-            .container {
-              background: rgba(255,255,255,0.1);
-              padding: 40px;
-              border-radius: 10px;
-              margin-top: 50px;
-            }
-            h1 { font-size: 2.5em; margin-bottom: 20px; }
-            p { font-size: 1.2em; line-height: 1.6; }
-            .timestamp { 
-              font-size: 0.9em; 
-              opacity: 0.8; 
-              margin-top: 20px; 
-            }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <h1>🚀 Test HTML Content</h1>
-            <p>This HTML was generated for iframe testing!</p>
-            <p>The iframe viewer is working correctly.</p>
-            <div class="timestamp">Generated at: ${new Date().toLocaleString()}</div>
-          </div>
-        </body>
-        </html>
-      `;
-
-      if (viewerRef.current && viewerRef.current.loadHTML) {
-        viewerRef.current.loadHTML(testHTML);
-        console.log('Loaded test HTML into iframe');
-      } else {
-        console.log('Viewer does not support loadHTML method');
+      // Load the simple_iframe_test.html file
+      try {
+        const response = await fetch('/src/assets/simple_iframe_test.html');
+        if (response.ok) {
+          const htmlContent = await response.text();
+          
+          if (viewerRef.current && viewerRef.current.loadHTML) {
+            viewerRef.current.loadHTML(htmlContent);
+            console.log('Loaded simple_iframe_test.html into iframe');
+          } else {
+            console.log('Viewer does not support loadHTML method');
+          }
+        } else {
+          throw new Error(`Failed to load HTML file: ${response.status}`);
+        }
+      } catch (fetchError) {
+        console.warn('Could not load simple_iframe_test.html, using fallback:', fetchError);
+        
+        // Fallback HTML if file loading fails
+        const fallbackHTML = `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>Fallback Test HTML</title>
+            <style>
+              body { 
+                font-family: 'Lato', sans-serif; 
+                margin: 40px; 
+                background: linear-gradient(45deg, #ff6b6b 0%, #ee5a24 100%);
+                color: white;
+                text-align: center;
+              }
+              .container {
+                background: rgba(255,255,255,0.1);
+                padding: 40px;
+                border-radius: 10px;
+                margin-top: 50px;
+              }
+              h1 { font-size: 2.5em; margin-bottom: 20px; }
+              p { font-size: 1.2em; line-height: 1.6; }
+              .error { 
+                font-size: 0.9em; 
+                opacity: 0.8; 
+                margin-top: 20px;
+                background: rgba(255,0,0,0.2);
+                padding: 10px;
+                border-radius: 5px;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h1>⚠️ Fallback HTML Content</h1>
+              <p>Could not load simple_iframe_test.html</p>
+              <p>Using fallback content instead.</p>
+              <div class="error">Error: ${fetchError instanceof Error ? fetchError.message : 'Unknown error'}</div>
+            </div>
+          </body>
+          </html>
+        `;
+        
+        if (viewerRef.current && viewerRef.current.loadHTML) {
+          viewerRef.current.loadHTML(fallbackHTML);
+          console.log('Loaded fallback HTML into iframe');
+        }
       }
     } catch (error) {
       console.error('Error testing iframe:', error);

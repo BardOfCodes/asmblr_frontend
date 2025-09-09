@@ -47,6 +47,8 @@ export const SimpleControlPanel: React.FC<SimpleControlPanelProps> = ({
   const handleGenerateShader = () => {
     // TODO: Wire up shader generation logic
     console.log('Generate Shader clicked');
+    console.log('Editor:', editor);
+    console.log('Viewer ref:', viewerRef.current);
   };
 
   return (
