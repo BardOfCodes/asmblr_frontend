@@ -1,17 +1,47 @@
 // modes/types.ts
+import React from 'react';
 
+// Legacy interfaces for backward compatibility
 export interface ViewerHandle {
   setShaderCode?: (code: string) => void;
   setUniform?: (name: string, value: any) => void;
   captureScreenshot?: () => void;
   [key: string]: any;
 }
+
 export interface EditorHandle {
   view: React.ReactNode;
   [key: string]: any;
 }
 
-// Make AsmblrMode generic over the viewer handle
+// New clean mode architecture
+export interface ModeEditor {
+  Component: React.ComponentType;
+  // Editor-specific configuration can go here
+}
+
+export interface ModeViewer {
+  Component: React.ForwardRefExoticComponent<React.RefAttributes<ViewerHandle>>;
+  // Viewer-specific configuration can go here
+}
+
+export interface ModeControlPanel {
+  Component: React.ComponentType;
+  // Control panel-specific configuration can go here
+}
+
+export interface CleanAsmblrMode {
+  name: string;
+  label: string;
+  editor: ModeEditor;
+  viewer: ModeViewer;
+  controlPanel: ModeControlPanel;
+  // Mode-specific initialization and configuration
+  initialize?: () => void;
+  cleanup?: () => void;
+}
+
+// Legacy mode interface for backward compatibility
 export interface AsmblrMode<TViewerHandle extends ViewerHandle = ViewerHandle> {
   name: string;
   label: string;
