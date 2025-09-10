@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Modal, Switch, Divider, Space, Button, Select, Input } from 'antd';
+import { Modal, Switch, Divider, Space, Button, Select, Input, Collapse } from 'antd';
 import { useSettings, EditorType, ViewerType, ShaderSettings } from '../../store/SettingsContext';
 import { theme } from '../../design/theme';
 
@@ -155,141 +155,155 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose })
           Close
         </Button>,
       ]}
-      width={900}
+      width={1200}
     >
-      <Space direction="vertical" style={{ width: '100%' }} size="large">
-        <div>
-          <SectionTitle>Panel Visibility</SectionTitle>
-          <SectionDescription>
-            Show or hide different parts of the interface to customize your workspace.
-          </SectionDescription>
-        </div>
+      <Collapse
+        defaultActiveKey={['panel-visibility', 'component-selection']}
+        ghost
+        size="large"
+        items={[
+          {
+            key: 'panel-visibility',
+            label: (
+              <div>
+                <SectionTitle style={{ margin: 0 }}>Panel Visibility</SectionTitle>
+                <SectionDescription style={{ margin: 0, marginTop: '4px' }}>
+                  Show or hide different parts of the interface to customize your workspace.
+                </SectionDescription>
+              </div>
+            ),
+            children: (
+              <div>
+                <SettingRow>
+                  <SettingInfo>
+                    <SettingTitle>Header/Navigation</SettingTitle>
+                    <SettingDescription>
+                      Top navigation bar with menu items (always visible)
+                    </SettingDescription>
+                  </SettingInfo>
+                  <Switch
+                    checked={true}
+                    disabled={true}
+                    title="Header must remain visible to access settings"
+                  />
+                </SettingRow>
 
-        <div>
-          <SettingRow>
-            <SettingInfo>
-              <SettingTitle>Header/Navigation</SettingTitle>
-              <SettingDescription>
-                Top navigation bar with menu items (always visible)
-              </SettingDescription>
-            </SettingInfo>
-            <Switch
-              checked={true}
-              disabled={true}
-              title="Header must remain visible to access settings"
-            />
-          </SettingRow>
+                <SettingRow>
+                  <SettingInfo>
+                    <SettingTitle>Node Editor</SettingTitle>
+                    <SettingDescription>
+                      Visual node-based programming interface for creating geometry
+                    </SettingDescription>
+                  </SettingInfo>
+                  <Switch
+                    checked={layout.nodeEditor.visible}
+                    onChange={(checked) => handlePanelVisibilityChange('nodeEditor', checked)}
+                  />
+                </SettingRow>
 
-          <SettingRow>
-            <SettingInfo>
-              <SettingTitle>Node Editor</SettingTitle>
-              <SettingDescription>
-                Visual node-based programming interface for creating geometry
-              </SettingDescription>
-            </SettingInfo>
-            <Switch
-              checked={layout.nodeEditor.visible}
-              onChange={(checked) => handlePanelVisibilityChange('nodeEditor', checked)}
-            />
-          </SettingRow>
+                <SettingRow>
+                  <SettingInfo>
+                    <SettingTitle>Viewer/Visualizer</SettingTitle>
+                    <SettingDescription>
+                      3D geometry and shader visualization with real-time rendering
+                    </SettingDescription>
+                  </SettingInfo>
+                  <Switch
+                    checked={layout.viewer.visible}
+                    onChange={(checked) => handlePanelVisibilityChange('viewer', checked)}
+                  />
+                </SettingRow>
 
-          <SettingRow>
-            <SettingInfo>
-              <SettingTitle>Viewer/Visualizer</SettingTitle>
-              <SettingDescription>
-                3D geometry and shader visualization with real-time rendering
-              </SettingDescription>
-            </SettingInfo>
-            <Switch
-              checked={layout.viewer.visible}
-              onChange={(checked) => handlePanelVisibilityChange('viewer', checked)}
-            />
-          </SettingRow>
+                <SettingRow>
+                  <SettingInfo>
+                    <SettingTitle>Control Panel</SettingTitle>
+                    <SettingDescription>
+                      Operations, uniforms, and export controls for geometry processing
+                    </SettingDescription>
+                  </SettingInfo>
+                  <Switch
+                    checked={layout.controlPanel.visible}
+                    onChange={(checked) => handlePanelVisibilityChange('controlPanel', checked)}
+                  />
+                </SettingRow>
+              </div>
+            ),
+          },
+          {
+            key: 'component-selection',
+            label: (
+              <div>
+                <SectionTitle style={{ margin: 0 }}>Component Selection</SectionTitle>
+                <SectionDescription style={{ margin: 0, marginTop: '4px' }}>
+                  Choose which editor and viewer components to use in your workspace.
+                </SectionDescription>
+              </div>
+            ),
+            children: (
+              <div>
+                <SettingRow>
+                  <SettingInfo>
+                    <SettingTitle>Node Editor Type</SettingTitle>
+                    <SettingDescription>
+                      Select the type of editor for creating and editing node graphs
+                    </SettingDescription>
+                  </SettingInfo>
+                  <Select
+                    value={settings.ui.components.selectedEditor}
+                    onChange={(value: EditorType) => dispatch({ type: 'SET_EDITOR_TYPE', payload: value })}
+                    style={{ width: 200 }}
+                    options={[
+                      { value: 'rete_node_editor', label: 'Rete.js Node Editor' },
+                      { value: 'code_editor', label: 'Code Editor' }
+                    ]}
+                  />
+                </SettingRow>
 
-          <SettingRow>
-            <SettingInfo>
-              <SettingTitle>Control Panel</SettingTitle>
-              <SettingDescription>
-                Operations, uniforms, and export controls for geometry processing
-              </SettingDescription>
-            </SettingInfo>
-            <Switch
-              checked={layout.controlPanel.visible}
-              onChange={(checked) => handlePanelVisibilityChange('controlPanel', checked)}
-            />
-          </SettingRow>
-        </div>
-
-        <Divider />
-
-        <div>
-          <SectionTitle>Component Selection</SectionTitle>
-          <SectionDescription>
-            Choose which editor and viewer components to use in your workspace.
-          </SectionDescription>
-        </div>
-
-        <div>
-          <SettingRow>
-            <SettingInfo>
-              <SettingTitle>Node Editor Type</SettingTitle>
-              <SettingDescription>
-                Select the type of editor for creating and editing node graphs
-              </SettingDescription>
-            </SettingInfo>
-            <Select
-              value={settings.ui.components.selectedEditor}
-              onChange={(value: EditorType) => dispatch({ type: 'SET_EDITOR_TYPE', payload: value })}
-              style={{ width: 200 }}
-              options={[
-                { value: 'rete_node_editor', label: 'Rete.js Node Editor' },
-                { value: 'code_editor', label: 'Code Editor' }
-              ]}
-            />
-          </SettingRow>
-
-          <SettingRow>
-            <SettingInfo>
-              <SettingTitle>Viewer Type</SettingTitle>
-              <SettingDescription>
-                Select the type of viewer for visualizing your creations
-              </SettingDescription>
-            </SettingInfo>
-            <Select
-              value={settings.ui.components.selectedViewer}
-              onChange={(value: ViewerType) => dispatch({ type: 'SET_VIEWER_TYPE', payload: value })}
-              style={{ width: 200 }}
-              options={[
-                { value: 'iframe_viewer', label: 'HTML/iframe Viewer' },
-                { value: 'shader_viewer', label: 'TWGL Shader Viewer' }
-              ]}
-            />
-          </SettingRow>
-        </div>
-
-        <Divider />
-
-        <div>
-          <SectionTitle>Shader Generation Settings</SectionTitle>
-          <SectionDescription>
-            Configure shader generation parameters as JSON. Leave empty to use backend defaults.
-          </SectionDescription>
-        </div>
-
-        <div>
-          <SettingRow style={{ alignItems: 'flex-start' }}>
-            <SettingInfo>
-              <SettingTitle>Shader Settings JSON</SettingTitle>
-              <SettingDescription>
-                JSON configuration for shader generation (render_mode, variables, etc.). 
-                Empty means backend will use default settings.
-              </SettingDescription>
-            </SettingInfo>
-            <div style={{ width: '500px' }}>
-              <TextArea
-                value={shaderSettingsText}
-                onChange={(e) => handleShaderSettingsChange(e.target.value)}
-                placeholder={`{
+                <SettingRow>
+                  <SettingInfo>
+                    <SettingTitle>Viewer Type</SettingTitle>
+                    <SettingDescription>
+                      Select the type of viewer for visualizing your creations
+                    </SettingDescription>
+                  </SettingInfo>
+                  <Select
+                    value={settings.ui.components.selectedViewer}
+                    onChange={(value: ViewerType) => dispatch({ type: 'SET_VIEWER_TYPE', payload: value })}
+                    style={{ width: 200 }}
+                    options={[
+                      { value: 'iframe_viewer', label: 'HTML/iframe Viewer' },
+                      { value: 'shader_viewer', label: 'TWGL Shader Viewer' }
+                    ]}
+                  />
+                </SettingRow>
+              </div>
+            ),
+          },
+          {
+            key: 'shader-settings',
+            label: (
+              <div>
+                <SectionTitle style={{ margin: 0 }}>Shader Generation Settings</SectionTitle>
+                <SectionDescription style={{ margin: 0, marginTop: '4px' }}>
+                  Configure shader generation parameters as JSON. Leave empty to use backend defaults.
+                </SectionDescription>
+              </div>
+            ),
+            children: (
+              <div>
+                <SettingRow style={{ alignItems: 'flex-start' }}>
+                  <SettingInfo>
+                    <SettingTitle>Shader Settings JSON</SettingTitle>
+                    <SettingDescription>
+                      JSON configuration for shader generation (render_mode, variables, etc.). 
+                      Empty means backend will use default settings.
+                    </SettingDescription>
+                  </SettingInfo>
+                  <div style={{ width: '600px' }}>
+                    <TextArea
+                      value={shaderSettingsText}
+                      onChange={(e) => handleShaderSettingsChange(e.target.value)}
+                      placeholder={`{
   "render_mode": "v3",
   "variables": {
     "_ADD_FLOOR_PLANE": false,
@@ -301,28 +315,40 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose })
   "extract_vars": false,
   "use_define_vars": true
 }`}
-                rows={8}
-                style={{ 
-                  fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
-                  fontSize: '12px'
-                }}
-              />
-            </div>
-          </SettingRow>
-        </div>
-
-        <Divider />
-
-        <div>
-          <SectionTitle>Layout Information</SectionTitle>
-          <SectionDescription>
-            The interface automatically adjusts based on your panel visibility settings. 
-            Hidden panels won't take up space in the layout. The header remains visible 
-            so you can always access settings and navigation. You can resize panels by 
-            dragging the borders between them.
-          </SectionDescription>
-        </div>
-      </Space>
+                      rows={10}
+                      style={{ 
+                        fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
+                        fontSize: '12px'
+                      }}
+                    />
+                  </div>
+                </SettingRow>
+              </div>
+            ),
+          },
+          {
+            key: 'layout-info',
+            label: (
+              <div>
+                <SectionTitle style={{ margin: 0 }}>Layout Information</SectionTitle>
+                <SectionDescription style={{ margin: 0, marginTop: '4px' }}>
+                  Information about how the interface layout works.
+                </SectionDescription>
+              </div>
+            ),
+            children: (
+              <div>
+                <SectionDescription>
+                  The interface automatically adjusts based on your panel visibility settings. 
+                  Hidden panels won't take up space in the layout. The header remains visible 
+                  so you can always access settings and navigation. You can resize panels by 
+                  dragging the borders between them.
+                </SectionDescription>
+              </div>
+            ),
+          },
+        ]}
+      />
     </StyledModal>
   );
 };

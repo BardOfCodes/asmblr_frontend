@@ -8,12 +8,27 @@ const Container = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   background: ${theme.colors.backgroundSecondary};
+  padding: ${theme.spacing.lg};
+  box-sizing: border-box;
+`;
+
+const IFrameContainer = styled.div`
+  width: 100%;
+  max-width: 1200px; /* Reasonable max width */
+  height: 80%; /* Don't use full height */
+  display: flex;
+  flex-direction: column;
+  border-radius: ${theme.borderRadius.md};
+  overflow: hidden;
+  box-shadow: ${theme.shadows.sm};
 `;
 
 const IFrame = styled.iframe`
   width: 100%;
-  height: 100%;
+  flex: 1;
   border: none;
   background: white;
 `;
@@ -96,15 +111,17 @@ export const IFrameViewer = forwardRef<IFrameViewerHandle>((_, ref) => {
 
   return (
     <Container>
-      <StatusBar>
-        {status}
-      </StatusBar>
-      <IFrame
-        ref={iframeRef}
-        onLoad={handleIFrameLoad}
-        onError={handleIFrameError}
-        title="HTML Viewer"
-      />
+      <IFrameContainer>
+        <StatusBar>
+          {status}
+        </StatusBar>
+        <IFrame
+          ref={iframeRef}
+          onLoad={handleIFrameLoad}
+          onError={handleIFrameError}
+          title="HTML Viewer"
+        />
+      </IFrameContainer>
     </Container>
   );
 });

@@ -257,6 +257,12 @@ export const StatusBadge = styled.span<{ $status: 'success' | 'warning' | 'error
 export const HeaderContainer = styled.header`
   background: ${theme.colors.headerBackground};
   border-bottom: none;
+  width: 100%;
+  height: 56px;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
 `;
 
 export const HeaderContent = styled.div`
@@ -264,8 +270,9 @@ export const HeaderContent = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 0 ${theme.spacing.lg};
-  height: 56px;
-  max-width: none;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
 `;
 
 export const HeaderTitle = styled.h1`
@@ -306,4 +313,72 @@ export const HeaderButton = styled.button<{ $active?: boolean }>`
   &:focus-visible {
     outline: none;
   }
+`;
+
+// Header Panel Wrapper - for proper layout integration
+export const HeaderPanel = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  background: ${theme.colors.headerBackground};
+  box-sizing: border-box;
+`;
+
+// Header Section - for grouping header elements
+export const HeaderSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${theme.spacing.md};
+  height: 100%;
+`;
+
+// Header Divider
+export const HeaderDivider = styled.div`
+  width: 1px;
+  height: 16px;
+  background: ${theme.colors.textMuted};
+  margin: 0 ${theme.spacing.lg};
+  opacity: 0.3;
+`;
+
+// Mode Picker Dropdown
+export const HeaderModePicker = styled.select`
+  background: transparent;
+  border: none;
+  color: ${theme.colors.textPrimary};
+  padding: ${theme.spacing.xs} ${theme.spacing.md};
+  padding-right: ${theme.spacing.lg};
+  border-radius: 0;
+  font-family: ${theme.typography.fontFamily.sans};
+  font-size: ${theme.typography.fontSize.md};
+  font-weight: ${theme.typography.fontWeight.normal};
+  cursor: pointer;
+  transition: color ${theme.transitions.fast};
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23525252' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right ${theme.spacing.xs} center;
+  background-repeat: no-repeat;
+  background-size: 12px;
+  
+  &:hover {
+    color: ${theme.colors.textPrimary};
+  }
+  
+  &:focus {
+    outline: none;
+  }
+  
+  option {
+    background: ${theme.colors.white};
+    color: ${theme.colors.textPrimary};
+    padding: ${theme.spacing.xs};
+    font-size: ${theme.typography.fontSize.md};
+  }
+`;
+
+// Icon Wrapper for header buttons
+export const HeaderIconWrapper = styled.span`
+  display: inline-flex;
+  margin-right: ${theme.spacing.xs};
 `;

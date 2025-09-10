@@ -86,10 +86,16 @@ const defaultSettings: SettingsState = {
   },
   shaderGeneration: {
     shaderSettings: {
-      render_mode: "",
-      variables: {},
+      render_mode: "v3",
+      variables: {
+        "_ADD_FLOOR_PLANE": false,
+        "_RAYCAST_MAX_STEPS": 200,
+        "_RAYCAST_CONSERVATIVE_STEPPING_RATE": 0.99,
+        "_AA": 2,
+        "castShadows": false
+      },
       extract_vars: false,
-      use_define_vars: false
+      use_define_vars: true
     }
   }
 };

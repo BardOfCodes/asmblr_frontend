@@ -29,20 +29,63 @@ export interface ShaderVisViewerProps {
   textures?: Record<string, any>;
 }
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: row;
+const OuterContainer = styled.div`
+  width: 100%;
   height: 100%;
-  gap: 1.5rem;
-  padding: 1rem;
-  background: white;
-  overflow: hidden;
+  display: flex;
+  align-items: flex-start; /* Changed from center to flex-start for better scrolling */
+  justify-content: center;
+  background: ${props => props.theme?.colors?.backgroundSecondary || '#f5f5f5'};
+  padding: ${props => props.theme?.spacing?.lg || '2rem'};
+  box-sizing: border-box;
+  overflow-y: auto; /* Add vertical scrolling */
+  overflow-x: hidden;
+  
+  /* Custom scrollbar styling */
+  &::-webkit-scrollbar {
+    width: 12px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 6px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 6px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+  }
 `;
 
-const CanvasContainer = styled.div`
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1400px; /* Reasonable max width */
+  width: 100%;
+  min-height: fit-content; /* Changed from fixed height to fit content */
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: ${props => props.theme?.borderRadius?.lg || '0.75rem'};
+  box-shadow: ${props => props.theme?.shadows?.md || '0 4px 6px -1px rgba(0, 0, 0, 0.1)'};
+  margin: 1rem 0; /* Add margin for better spacing when scrolling */
+  
+  /* Resize handle for vertical resizing */
+  resize: vertical;
+  overflow: auto;
+  min-height: 400px; /* Minimum height */
+  max-height: none; /* Remove max height constraint */
+`;
+
+const CanvasContainer = styled.div<{ $width: number; $height: number }>`
   flex-shrink: 0;
-  width: 512px;
-  height: 512px;
+  width: ${props => props.$width}px;
+  height: ${props => props.$height}px;
   background: #000000;
   border-radius: 0.5rem;
   overflow: hidden;
@@ -57,8 +100,9 @@ const Canvas = styled.canvas`
 `;
 
 const ControlsContainer = styled.div`
-  flex: 1;
-  height: 512px;
+  width: 100%;
+  max-width: 800px; /* Fixed max width for controls */
+  height: 300px; /* Fixed height for scrolling */
   overflow-y: auto;
   padding: 1rem;
   background: #f9fafb;
@@ -292,17 +336,13 @@ const ShaderVisViewer = forwardRef<ShaderVisViewerHandle, ShaderVisViewerProps>(
   const animationFrameRef = useRef<number | null>(null);
   const loadedTexturesRef = useRef<Record<string, any>>({});
 
-  // Mouse control state (matching common_script.js.html.j2)
-  const mouseStateRef = useRef({
-    dragging: false,
-    shiftPressed: false,
-    last: { x: 0, y: 0 }
-  });
+  // Mouse controls are now handled by the improved mouseControls utility
 
   const [shaderData, setShaderData] = useState<ShaderData | null>(null);
   const [uniformValues, setUniformValues] = useState<Record<string, any>>({});
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [canvasSize, setCanvasSize] = useState({ width: 512, height: 512 });
 
   // Initialize WebGL and TWGL
   const initializeGL = useCallback(() => {
@@ -501,6 +541,14 @@ const ShaderVisViewer = forwardRef<ShaderVisViewerHandle, ShaderVisViewerProps>(
   const handleUniformChange = useCallback((name: string, value: any) => {
     setUniformValues(prev => ({ ...prev, [name]: value }));
     uniformValuesRef.current = { ...uniformValuesRef.current, [name]: value };
+    
+    // Handle resolution changes to resize canvas
+    if (name === 'resolution' && Array.isArray(value) && value.length >= 2) {
+      const [width, height] = value;
+      if (typeof width === 'number' && typeof height === 'number' && width > 0 && height > 0) {
+        setCanvasSize({ width: Math.min(width, 1024), height: Math.min(height, 1024) }); // Cap at 1024 for performance
+      }
+    }
   }, []);
 
   // Initialize on mount
@@ -637,24 +685,23 @@ const ShaderVisViewer = forwardRef<ShaderVisViewerHandle, ShaderVisViewerProps>(
     }
   }, [shaderCode, uniformsDict, textures, loadShaderData, convertSYSLUniformsToSpecs]);
 
-  // Resize canvas
+  // Update canvas size when canvasSize state changes
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const resizeObserver = new ResizeObserver(() => {
-      const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width * window.devicePixelRatio;
-      canvas.height = rect.height * window.devicePixelRatio;
-      canvas.style.width = rect.width + 'px';
-      canvas.style.height = rect.height + 'px';
-    });
+    canvas.width = canvasSize.width * window.devicePixelRatio;
+    canvas.height = canvasSize.height * window.devicePixelRatio;
+    canvas.style.width = canvasSize.width + 'px';
+    canvas.style.height = canvasSize.height + 'px';
+    
+    // Update WebGL viewport if context exists
+    if (glRef.current) {
+      glRef.current.viewport(0, 0, canvas.width, canvas.height);
+    }
+  }, [canvasSize]);
 
-    resizeObserver.observe(canvas);
-    return () => resizeObserver.disconnect();
-  }, []);
-
-  // Mouse controls for camera (matching common_script.js.html.j2)
+  // Direct mouse controls for shader canvas - scoped to this component only
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -671,49 +718,37 @@ const ShaderVisViewer = forwardRef<ShaderVisViewerHandle, ShaderVisViewerProps>(
     setUniformValues(prev => ({ ...cameraDefaults, ...prev }));
     uniformValuesRef.current = { ...cameraDefaults, ...uniformValuesRef.current };
 
+    // Local mouse state
+    let isDragging = false;
+    let isShiftPressed = false;
+    let lastMousePos = { x: 0, y: 0 };
+
+    // Helper to update uniforms
+    const updateCameraUniforms = (updates: Record<string, any>) => {
+      setUniformValues(prev => ({ ...prev, ...updates }));
+      uniformValuesRef.current = { ...uniformValuesRef.current, ...updates };
+    };
+
+    // Mouse event handlers - scoped to this canvas only
     const handleMouseDown = (e: MouseEvent) => {
-      mouseStateRef.current.dragging = true;
-      mouseStateRef.current.last = { x: e.clientX, y: e.clientY };
-    };
-
-    const handleMouseUp = () => {
-      mouseStateRef.current.dragging = false;
-    };
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Shift') {
-        mouseStateRef.current.shiftPressed = true;
-      }
-    };
-
-    const handleKeyUp = (e: KeyboardEvent) => {
-      if (e.key === 'Shift') {
-        mouseStateRef.current.shiftPressed = false;
-      }
-    };
-
-    const handleWheel = (e: WheelEvent) => {
+      if (e.target !== canvas) return;
       e.preventDefault();
-      const delta = e.deltaY > 0 ? 1.1 : 0.9;
-      const currentDistance = uniformValuesRef.current.cameraDistance || 3.0;
-      const newDistance = Math.min(10, Math.max(0.1, currentDistance * delta));
-      
-      setUniformValues(prev => ({ ...prev, cameraDistance: newDistance }));
-      uniformValuesRef.current = { ...uniformValuesRef.current, cameraDistance: newDistance };
+      isDragging = true;
+      lastMousePos = { x: e.clientX, y: e.clientY };
     };
 
     const handleMouseMove = (e: MouseEvent) => {
-      if (!mouseStateRef.current.dragging) return;
-      
-      const dx = mouseStateRef.current.last.x - e.clientX;
-      const dy = mouseStateRef.current.last.y - e.clientY;
-      
-      if (mouseStateRef.current.shiftPressed) {
-        // Pan: adjust cameraOrigin in world space (matching common_script.js.html.j2)
+      if (!isDragging) return;
+      e.preventDefault();
+
+      const deltaX = lastMousePos.x - e.clientX;
+      const deltaY = lastMousePos.y - e.clientY;
+
+      if (isShiftPressed) {
+        // Pan: adjust cameraOrigin
         const { cameraAngleX, cameraAngleY, cameraDistance } = uniformValuesRef.current;
         const currentOrigin = uniformValuesRef.current.cameraOrigin || [0, 0, 0];
         
-        // Compute forward/right vectors
         const forward = [
           -Math.sin(cameraAngleY || 0) * Math.cos(cameraAngleX || 0),
            Math.sin(cameraAngleX || 0),
@@ -730,52 +765,67 @@ const ShaderVisViewer = forwardRef<ShaderVisViewerHandle, ShaderVisViewerProps>(
         const scale = 0.005 * (cameraDistance || 3.0);
         
         const newOrigin = [
-          currentOrigin[0] + dx * scale * normR[0],
-          currentOrigin[1] - dy * scale,
-          currentOrigin[2] + dx * scale * normR[2],
+          currentOrigin[0] + deltaX * scale * normR[0],
+          currentOrigin[1] - deltaY * scale,
+          currentOrigin[2] + deltaX * scale * normR[2],
         ];
         
-        setUniformValues(prev => ({ ...prev, cameraOrigin: newOrigin }));
-        uniformValuesRef.current = { ...uniformValuesRef.current, cameraOrigin: newOrigin };
+        updateCameraUniforms({ cameraOrigin: newOrigin });
       } else {
         // Orbit: adjust camera angles
         const currentAngleX = uniformValuesRef.current.cameraAngleX || 0.0;
         const currentAngleY = uniformValuesRef.current.cameraAngleY || 0.0;
         
-        const newAngleX = currentAngleX + dy * 0.01;
-        const newAngleY = currentAngleY + dx * 0.01;
-        
-        setUniformValues(prev => ({ 
-          ...prev, 
-          cameraAngleX: newAngleX,
-          cameraAngleY: newAngleY
-        }));
-        uniformValuesRef.current = { 
-          ...uniformValuesRef.current, 
-          cameraAngleX: newAngleX,
-          cameraAngleY: newAngleY
-        };
+        updateCameraUniforms({
+          cameraAngleX: Math.max(-Math.PI / 2, Math.min(Math.PI / 2, currentAngleX + deltaY * 0.01)),
+          cameraAngleY: currentAngleY + deltaX * 0.01
+        });
       }
       
-      mouseStateRef.current.last = { x: e.clientX, y: e.clientY };
+      lastMousePos = { x: e.clientX, y: e.clientY };
     };
 
-    // Add event listeners
+    const handleMouseUp = (e: MouseEvent) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      isDragging = false;
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Shift') isShiftPressed = true;
+    };
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.key === 'Shift') isShiftPressed = false;
+    };
+
+    const handleWheel = (e: WheelEvent) => {
+      if (e.target !== canvas) return;
+      e.preventDefault();
+      
+      const delta = e.deltaY > 0 ? 1.1 : 0.9;
+      const currentDistance = uniformValuesRef.current.cameraDistance || 3.0;
+      const newDistance = Math.min(10, Math.max(0.1, currentDistance * delta));
+      
+      updateCameraUniforms({ cameraDistance: newDistance });
+    };
+
+    // Add event listeners - minimal and scoped
     canvas.addEventListener('mousedown', handleMouseDown);
-    window.addEventListener('mouseup', handleMouseUp);
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
     canvas.addEventListener('wheel', handleWheel, { passive: false });
-    window.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
 
     // Cleanup
     return () => {
       canvas.removeEventListener('mousedown', handleMouseDown);
-      window.removeEventListener('mouseup', handleMouseUp);
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
       canvas.removeEventListener('wheel', handleWheel);
-      window.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keyup', handleKeyUp);
     };
   }, []);
 
@@ -892,39 +942,41 @@ const ShaderVisViewer = forwardRef<ShaderVisViewerHandle, ShaderVisViewerProps>(
   };
 
   return (
-    <Container>
-      <CanvasContainer>
-        {error ? (
-          <ErrorMessage>{error}</ErrorMessage>
-        ) : isLoading ? (
-          <LoadingMessage>Loading shader...</LoadingMessage>
-        ) : (
-          <Canvas ref={canvasRef} width={512} height={512} />
+    <OuterContainer>
+      <Container>
+        <CanvasContainer $width={canvasSize.width} $height={canvasSize.height}>
+          {error ? (
+            <ErrorMessage>{error}</ErrorMessage>
+          ) : isLoading ? (
+            <LoadingMessage>Loading shader...</LoadingMessage>
+          ) : (
+            <Canvas ref={canvasRef} width={canvasSize.width} height={canvasSize.height} />
+          )}
+        </CanvasContainer>
+        
+        {shaderData && Object.keys(groupedUniforms).length > 0 && (
+          <ControlsContainer>
+            {Object.entries(groupedUniforms).map(([groupName, uniforms]) => (
+              <ControlGroup key={groupName} open>
+                <GroupTitle>{groupName}</GroupTitle>
+                <GroupContent>
+                  {uniforms.map(renderUniformControl)}
+                </GroupContent>
+              </ControlGroup>
+            ))}
+            
+            <MouseControlsInfo>
+              <MouseControlsTitle>Mouse Controls</MouseControlsTitle>
+              <MouseControlsContent>
+                <MouseControlItem><strong>Drag:</strong> Orbit camera</MouseControlItem>
+                <MouseControlItem><strong>Wheel:</strong> Zoom in/out</MouseControlItem>
+                <MouseControlItem><strong>Shift + Drag:</strong> Pan camera</MouseControlItem>
+              </MouseControlsContent>
+            </MouseControlsInfo>
+          </ControlsContainer>
         )}
-      </CanvasContainer>
-      
-      {shaderData && Object.keys(groupedUniforms).length > 0 && (
-        <ControlsContainer>
-          {Object.entries(groupedUniforms).map(([groupName, uniforms]) => (
-            <ControlGroup key={groupName} open>
-              <GroupTitle>{groupName}</GroupTitle>
-              <GroupContent>
-                {uniforms.map(renderUniformControl)}
-              </GroupContent>
-            </ControlGroup>
-          ))}
-          
-          <MouseControlsInfo>
-            <MouseControlsTitle>Mouse Controls</MouseControlsTitle>
-            <MouseControlsContent>
-              <MouseControlItem><strong>Drag:</strong> Orbit camera</MouseControlItem>
-              <MouseControlItem><strong>Wheel:</strong> Zoom in/out</MouseControlItem>
-              <MouseControlItem><strong>Shift + Drag:</strong> Pan camera</MouseControlItem>
-            </MouseControlsContent>
-          </MouseControlsInfo>
-        </ControlsContainer>
-      )}
-    </Container>
+      </Container>
+    </OuterContainer>
   );
 });
 

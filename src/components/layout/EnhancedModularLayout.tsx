@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { useSettings } from '../../store/SettingsContext';
-import { Card, Text, Title } from '../../design/components';
+import { Card, Text, Title, HeaderPanel } from '../../design/components';
 import { theme } from '../../design/theme';
 import { ResizableLayout } from './ResizableLayout';
 import type { AsmblrMode, ViewerHandle } from '../../modes/types';
@@ -35,6 +35,7 @@ const ViewerContainer = styled.div`
   border-radius: 0;
   overflow: hidden;
   background: ${theme.colors.backgroundSecondary};
+  padding-left: 10px; /* Add left padding to prevent resize handle interference */
 `;
 
 const EmptyState = styled.div`
@@ -92,15 +93,13 @@ export const EnhancedModularLayout: React.FC<EnhancedModularLayoutProps> = ({
     return (
       <ResizableLayout
         header={(
-          <PanelContent>
-            <StyledCard>
-              <mode.HeaderComponent 
-                editor={editor} 
-                modeName={modeName} 
-                setMode={setMode} 
-              />
-            </StyledCard>
-          </PanelContent>
+          <HeaderPanel>
+            <mode.HeaderComponent 
+              editor={editor} 
+              modeName={modeName} 
+              setMode={setMode} 
+            />
+          </HeaderPanel>
         )}
       >
         <EmptyStateContent style={{ margin: 'auto', gridArea: 'main' }}>
@@ -116,15 +115,13 @@ export const EnhancedModularLayout: React.FC<EnhancedModularLayoutProps> = ({
   return (
     <ResizableLayout
       header={(
-        <PanelContent>
-          <StyledCard>
-            <mode.HeaderComponent 
-              editor={editor} 
-              modeName={modeName} 
-              setMode={setMode} 
-            />
-          </StyledCard>
-        </PanelContent>
+        <HeaderPanel>
+          <mode.HeaderComponent 
+            editor={editor} 
+            modeName={modeName} 
+            setMode={setMode} 
+          />
+        </HeaderPanel>
       )}
 
       editor={layout.nodeEditor.visible ? (

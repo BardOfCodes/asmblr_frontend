@@ -37,13 +37,13 @@ const Panel = styled.div<{ $gridArea: string; $visible: boolean }>`
 const ResizeHandle = styled.div<{ $direction: 'horizontal' | 'vertical' }>`
   position: absolute;
   background: transparent;
-  z-index: 10;
+  z-index: 1000; /* Higher z-index to ensure it's above canvas elements */
   transition: all 0.2s ease;
   
   ${props => props.$direction === 'horizontal' ? `
-    width: 6px;
+    width: 24px;
     height: 100%;
-    right: -3px;
+    right: -12px;
     top: 0;
     cursor: col-resize;
     
@@ -53,17 +53,17 @@ const ResizeHandle = styled.div<{ $direction: 'horizontal' | 'vertical' }>`
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
-      width: 2px;
-      height: 40px;
+      width: 3px;
+      height: 60px;
       background: ${props.theme?.colors?.border || '#555'};
-      border-radius: 1px;
+      border-radius: 2px;
       opacity: 0;
       transition: opacity 0.2s ease;
     }
   ` : `
-    height: 6px;
+    height: 24px;
     width: 100%;
-    bottom: -3px;
+    bottom: -12px;
     left: 0;
     cursor: row-resize;
     
@@ -73,10 +73,10 @@ const ResizeHandle = styled.div<{ $direction: 'horizontal' | 'vertical' }>`
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
-      width: 40px;
-      height: 2px;
+      width: 60px;
+      height: 3px;
       background: ${props.theme?.colors?.border || '#555'};
-      border-radius: 1px;
+      border-radius: 2px;
       opacity: 0;
       transition: opacity 0.2s ease;
     }
@@ -90,9 +90,12 @@ const ResizeHandle = styled.div<{ $direction: 'horizontal' | 'vertical' }>`
       background: ${props => props.theme?.colors?.primary || '#007acc'};
     }
   }
+  
+  /* Subtle visual indicator for better UX */
+  background: rgba(0, 122, 204, 0.03);
 
   &:active {
-    background: ${props => props.theme?.colors?.primary || '#007acc'}40;
+    background: ${props => props.theme?.colors?.primary || '#007acc'}30;
     
     &::before {
       opacity: 1;
@@ -102,10 +105,11 @@ const ResizeHandle = styled.div<{ $direction: 'horizontal' | 'vertical' }>`
 `;
 
 const STORAGE_KEY = 'asmblr-panel-sizes';
-const MIN_PANEL_SIZE = 200;
+const MIN_PANEL_SIZE = 120;
+const MIN_CONTROL_PANEL_SIZE = 80; // Smaller minimum for control panel
 const DEFAULT_SIZES: PanelSizes = {
   editorWidth: 500,
-  controlPanelHeight: 250,
+  controlPanelHeight: 200,
   headerHeight: 60,
 };
 
@@ -134,13 +138,21 @@ export const ResizableLayout: React.FC<ResizableLayoutProps> = ({
 
   const handleMouseDown = useCallback((handle: string, e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(handle);
     startPositionRef.current = { x: e.clientX, y: e.clientY };
     startSizesRef.current = sizes;
+    
+    // Add visual feedback immediately
+    document.body.style.cursor = handle.includes('right') ? 'col-resize' : 'row-resize';
+    document.body.style.userSelect = 'none';
   }, [sizes]);
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!isDragging || !containerRef.current) return;
+
+    e.preventDefault();
+    e.stopPropagation();
 
     const deltaX = e.clientX - startPositionRef.current.x;
     const deltaY = e.clientY - startPositionRef.current.y;
@@ -162,9 +174,9 @@ export const ResizableLayout: React.FC<ResizableLayoutProps> = ({
           break;
 
         case 'control-top':
-          // Vertical resize for control panel
+          // Vertical resize for control panel with smaller minimum
           newSizes.controlPanelHeight = Math.max(
-            MIN_PANEL_SIZE,
+            MIN_CONTROL_PANEL_SIZE,
             Math.min(
               containerRect.height - sizes.headerHeight - MIN_PANEL_SIZE,
               startSizesRef.current.controlPanelHeight - deltaY
