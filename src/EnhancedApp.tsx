@@ -17,26 +17,30 @@ const EnhancedAppContent: React.FC = () => {
     console.log('Saved mode:', saved);
     console.log('Available modes:', Object.keys(EnhancedModes));
     
-    // Use saved mode if available, otherwise default to Neo Graph
-    const selectedMode = (saved && EnhancedModes[saved]) ? saved : 'Neo Graph';
-    
-    if (selectedMode && EnhancedModes[selectedMode]) {
-      console.log('Setting mode:', selectedMode);
-      setModeName(selectedMode);
-      setMode(EnhancedModes[selectedMode]);
-      
-      // Save the default mode if none was saved before
-      if (!saved) {
-        saveEnhancedModeToDisk(selectedMode);
-      }
+    // Only auto-load if there's a saved mode, otherwise show mode picker
+    if (saved && EnhancedModes[saved]) {
+      console.log('Loading saved mode:', saved);
+      setModeName(saved);
+      setMode(EnhancedModes[saved]);
+    } else {
+      console.log('No saved mode found, showing mode picker');
+      // Leave modeName and mode as null to show the picker
     }
   }, []);
 
   const handleModeChange = (name: string) => {
     console.log('Mode changed to:', name);
-    saveEnhancedModeToDisk(name);
-    setModeName(name);
-    setMode(EnhancedModes[name]);
+    console.log('Available modes:', Object.keys(EnhancedModes));
+    console.log('Selected mode exists:', !!EnhancedModes[name]);
+    
+    if (EnhancedModes[name]) {
+      saveEnhancedModeToDisk(name);
+      setModeName(name);
+      setMode(EnhancedModes[name]);
+      console.log('Mode set successfully:', name);
+    } else {
+      console.error('Mode not found:', name);
+    }
   };
 
   console.log('Current state - modeName:', modeName, 'mode:', mode);
@@ -50,6 +54,13 @@ const EnhancedAppContent: React.FC = () => {
         onChange={handleModeChange}
       />
     );
+  }
+
+  // Ensure we have a valid mode name
+  if (!modeName) {
+    console.warn('Mode is set but modeName is null, using fallback');
+    const fallbackName = Object.keys(EnhancedModes)[0];
+    setModeName(fallbackName);
   }
 
   console.log('Showing enhanced modular layout');

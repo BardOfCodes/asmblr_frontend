@@ -1,6 +1,7 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import { useSettings } from '../../store/SettingsContext';
+import { theme } from '../../design/theme';
 
 interface PanelSizes {
   editorWidth: number;
@@ -21,15 +22,15 @@ const LayoutContainer = styled.div`
   height: 100vh;
   width: 100vw;
   overflow: hidden;
-  background: ${props => props.theme?.colors?.background || '#1a1a1a'};
+  background: ${theme.colors.background};
   position: relative;
 `;
 
 const Panel = styled.div<{ $gridArea: string; $visible: boolean }>`
   grid-area: ${props => props.$gridArea};
   overflow: hidden;
-  background: ${props => props.theme?.colors?.surface || '#2a2a2a'};
-  border: 1px solid ${props => props.theme?.colors?.border || '#404040'};
+  background: ${theme.colors.white};
+  border: 1px solid ${theme.colors.borderDark};
   display: ${props => props.$visible ? 'block' : 'none'};
   position: relative;
 `;
@@ -55,7 +56,7 @@ const ResizeHandle = styled.div<{ $direction: 'horizontal' | 'vertical' }>`
       transform: translate(-50%, -50%);
       width: 3px;
       height: 60px;
-      background: ${props.theme?.colors?.border || '#555'};
+      background: ${theme.colors.borderDark};
       border-radius: 2px;
       opacity: 0;
       transition: opacity 0.2s ease;
@@ -75,7 +76,7 @@ const ResizeHandle = styled.div<{ $direction: 'horizontal' | 'vertical' }>`
       transform: translate(-50%, -50%);
       width: 60px;
       height: 3px;
-      background: ${props.theme?.colors?.border || '#555'};
+      background: ${theme.colors.borderDark};
       border-radius: 2px;
       opacity: 0;
       transition: opacity 0.2s ease;
@@ -83,11 +84,11 @@ const ResizeHandle = styled.div<{ $direction: 'horizontal' | 'vertical' }>`
   `}
 
   &:hover {
-    background: ${props => props.theme?.colors?.primary || '#007acc'}20;
+    background: ${theme.colors.primary}20;
     
     &::before {
       opacity: 1;
-      background: ${props => props.theme?.colors?.primary || '#007acc'};
+      background: ${theme.colors.primary};
     }
   }
   
@@ -99,7 +100,7 @@ const ResizeHandle = styled.div<{ $direction: 'horizontal' | 'vertical' }>`
     
     &::before {
       opacity: 1;
-      background: ${props => props.theme?.colors?.primary || '#007acc'};
+      background: ${theme.colors.primary};
     }
   }
 `;
@@ -110,7 +111,7 @@ const MIN_CONTROL_PANEL_SIZE = 80; // Smaller minimum for control panel
 const DEFAULT_SIZES: PanelSizes = {
   editorWidth: 500,
   controlPanelHeight: 200,
-  headerHeight: 60,
+  headerHeight: 56, // Match the HeaderContainer height from design/components.ts
 };
 
 export const ResizableLayout: React.FC<ResizableLayoutProps> = ({
@@ -270,6 +271,11 @@ export const ResizableLayout: React.FC<ResizableLayoutProps> = ({
   };
 
   const gridTemplate = buildGridTemplate();
+  
+  // Debug grid template
+  console.log('Grid template:', gridTemplate);
+  console.log('Visible panels:', visiblePanels);
+  console.log('Panel sizes:', sizes);
 
   return (
     <LayoutContainer 

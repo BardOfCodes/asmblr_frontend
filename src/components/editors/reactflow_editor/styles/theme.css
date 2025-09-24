@@ -1,0 +1,440 @@
+/* React Flow Editor Theme System */
+/* CSS Variables for easy theming */
+
+:root {
+  /* Node Colors */
+  --rf-node-bg: #D2E8E3;
+  --rf-node-border: #2C3532;
+  --rf-node-text: #646464;
+  --rf-node-selected-bg: #FFCB9A;
+  --rf-node-selected-border: red;
+  --rf-node-hover-bg: #f2f2f2;
+  
+  /* Node Dimensions */
+  --rf-node-border-radius: 6px;
+  --rf-node-border-width: 2px;
+  --rf-node-min-width: 180px;
+  --rf-node-header-height: 32px;
+  --rf-node-control-height: 28px;
+  
+  /* Handle/Socket Colors */
+  --rf-handle-expr: #ff6b6b;
+  --rf-handle-float: #4ecdc4;
+  --rf-handle-vector: #45b7d1;
+  --rf-handle-bool: #96ceb4;
+  --rf-handle-string: #feca57;
+  --rf-handle-size: 12px;
+  --rf-handle-border: 2px solid #2C3532;
+  
+  /* Control Colors */
+  --rf-control-text: #646464;
+  --rf-control-label: #646464;
+  --rf-control-bg: rgba(255, 255, 255, 0.9);
+  --rf-control-border: rgba(44, 53, 50, 0.3);
+  --rf-control-focus: #1890ff;
+  
+  /* Spacing */
+  --rf-spacing-xs: 2px;
+  --rf-spacing-sm: 4px;
+  --rf-spacing-md: 8px;
+  --rf-spacing-lg: 12px;
+  --rf-spacing-xl: 16px;
+  --rf-spacing-xxl: 20px;
+  
+  /* Typography */
+  --rf-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  --rf-font-size-xs: 7px;
+  --rf-font-size-sm: 8px;
+  --rf-font-size-md: 9px;
+  --rf-font-size-lg: 10px;
+  --rf-font-size-xl: 13px;
+  
+  /* Shadows */
+  --rf-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --rf-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
+  --rf-shadow-focus: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+/* Dark Theme Variables */
+[data-theme="dark"] {
+  --rf-node-bg: #2a2a2a;
+  --rf-node-border: #4a4a4a;
+  --rf-node-text: #e0e0e0;
+  --rf-node-selected-bg: #3a3a3a;
+  --rf-node-selected-border: #ff6b6b;
+  --rf-node-hover-bg: #353535;
+  
+  --rf-control-text: #e0e0e0;
+  --rf-control-label: #c0c0c0;
+  --rf-control-bg: rgba(0, 0, 0, 0.3);
+  --rf-control-border: rgba(255, 255, 255, 0.2);
+}
+
+/* High Contrast Theme */
+[data-theme="high-contrast"] {
+  --rf-node-bg: #ffffff;
+  --rf-node-border: #000000;
+  --rf-node-text: #000000;
+  --rf-node-selected-bg: #ffff00;
+  --rf-node-selected-border: #ff0000;
+  --rf-node-hover-bg: #f0f0f0;
+  
+  --rf-handle-expr: #ff0000;
+  --rf-handle-float: #0000ff;
+  --rf-handle-vector: #00ff00;
+  --rf-handle-bool: #ff00ff;
+  --rf-handle-string: #ffff00;
+}
+
+/* Editor Container */
+.reactflow-editor {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: #fafafa;
+  font-family: var(--rf-font-family);
+}
+
+/* Node Base Styles */
+.reactflow-custom-node {
+  background: var(--rf-node-bg);
+  border: var(--rf-node-border-width) solid var(--rf-node-border);
+  border-radius: var(--rf-node-border-radius);
+  min-width: var(--rf-node-min-width);
+  width: auto;
+  height: auto;
+  box-shadow: var(--rf-shadow-sm);
+  font-family: var(--rf-font-family);
+  color: var(--rf-node-text);
+  padding: 0;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.reactflow-custom-node.selected {
+  border-color: var(--rf-node-selected-border);
+  background: var(--rf-node-selected-bg);
+  box-shadow: 0 0 0 2px rgba(255, 203, 154, 0.3);
+}
+
+.reactflow-custom-node:hover {
+  background: var(--rf-node-hover-bg);
+  box-shadow: var(--rf-shadow-md);
+}
+
+.reactflow-custom-node.selected:hover {
+  background: var(--rf-node-selected-bg);
+}
+
+/* Node Dimension Classes */
+.node-default { width: var(--rf-node-min-width); }
+.node-180x80 { width: 180px; height: 80px; }
+.node-200x100 { width: 200px; height: 100px; }
+.node-220x120 { width: 220px; height: 120px; }
+.node-240x140 { width: 240px; height: 140px; }
+.node-260x160 { width: 260px; height: 160px; }
+
+/* Dynamic width based on content complexity */
+.node-simple { width: 180px; }
+.node-medium { width: 220px; }
+.node-complex { width: 260px; }
+.node-very-complex { width: 300px; }
+
+/* Node by Category */
+[data-node-category="Primitives"] {
+  --rf-node-bg: #e8f5e8;
+}
+
+[data-node-category="Transforms"] {
+  --rf-node-bg: #e8e8f5;
+}
+
+[data-node-category="Combinators"] {
+  --rf-node-bg: #f5e8e8;
+}
+
+[data-node-category="Variables"] {
+  --rf-node-bg: #f5f5e8;
+}
+
+/* Node Header */
+.reactflow-node-header {
+  padding: var(--rf-spacing-md) var(--rf-spacing-lg);
+  background: rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(44, 53, 50, 0.2);
+  border-radius: 4px 4px 0 0;
+  text-align: center;
+  height: var(--rf-node-header-height);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reactflow-node-title {
+  font-weight: 600;
+  font-size: var(--rf-font-size-xl);
+  color: var(--rf-node-text);
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* Node Body */
+.reactflow-node-body {
+  padding: 0;
+  min-height: var(--rf-spacing-xxl);
+  width: 100%;
+  box-sizing: border-box;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Handles/Sockets */
+.reactflow-handle {
+  width: var(--rf-handle-size);
+  height: var(--rf-handle-size);
+  border-radius: 50%;
+  border: var(--rf-handle-border);
+  position: absolute;
+}
+
+/* Socket Type Colors */
+.handle-exprsocket { background-color: var(--rf-handle-expr); }
+.handle-floatsocket { background-color: var(--rf-handle-float); }
+.handle-vectorsocket { background-color: var(--rf-handle-vector); }
+.handle-boolsocket { background-color: var(--rf-handle-bool); }
+.handle-stringsocket { background-color: var(--rf-handle-string); }
+
+/* Let React Flow handle positioning automatically - no custom positioning needed */
+
+/* Input/Output Labels - Let React Flow handle positioning */
+.reactflow-input-label,
+.reactflow-output-label {
+  font-size: var(--rf-font-size-lg);
+  color: var(--rf-node-text);
+  font-weight: 500;
+}
+
+/* Node Controls */
+.reactflow-node-controls {
+  padding: var(--rf-spacing-md);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: var(--rf-spacing-md);
+}
+
+.reactflow-node-control {
+  padding: var(--rf-spacing-md);
+  width: 100%;
+  box-sizing: border-box;
+  min-height: var(--rf-node-control-height);
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(44, 53, 50, 0.1);
+  border-radius: var(--rf-spacing-sm);
+}
+
+.reactflow-node-control.hidden {
+  display: none;
+}
+
+/* Control Components */
+.reactflow-control {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.reactflow-control-label {
+  font-size: var(--rf-font-size-sm);
+  font-weight: 500;
+  color: var(--rf-control-label);
+  margin-bottom: var(--rf-spacing-xs);
+  text-align: left;
+}
+
+.reactflow-control-input {
+  display: flex;
+  align-items: center;
+  gap: var(--rf-spacing-md);
+  flex-wrap: nowrap;
+  width: 100%;
+  max-width: 220px;
+  box-sizing: border-box;
+  padding: var(--rf-spacing-xs);
+}
+
+/* Adjust max-width based on node complexity */
+.node-simple .reactflow-control-input { max-width: 140px; }
+.node-medium .reactflow-control-input { max-width: 180px; }
+.node-complex .reactflow-control-input { max-width: 220px; }
+.node-very-complex .reactflow-control-input { max-width: 260px; }
+
+/* Ant Design Input Overrides */
+.reactflow-float-input {
+  width: 80px !important;
+}
+
+.reactflow-float-input .ant-input-number-handler-wrap {
+  opacity: 1 !important;
+}
+
+.reactflow-float-input .ant-input-number-handler {
+  border-left: 1px solid #d9d9d9 !important;
+}
+
+.reactflow-float-input:hover .ant-input-number-handler-wrap {
+  opacity: 1 !important;
+}
+
+.reactflow-vector-input {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 35px !important;
+  flex: 1 !important;
+}
+
+.reactflow-vector-input .ant-input-number-handler-wrap {
+  opacity: 1 !important;
+}
+
+.reactflow-vector-input .ant-input-number-handler {
+  border-left: 1px solid #d9d9d9 !important;
+}
+
+.reactflow-vector-input:hover .ant-input-number-handler-wrap {
+  opacity: 1 !important;
+}
+
+/* Vector Controls */
+.vector-inputs {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 150px;
+  box-sizing: border-box;
+  justify-content: space-between;
+  padding: var(--rf-spacing-xs);
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: var(--rf-spacing-xs);
+  gap: 0; /* Remove gap, use justify-content: space-between instead */
+}
+
+.vector-input-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--rf-spacing-xs);
+  flex: 1;
+  min-width: 0;
+  max-width: none; /* Allow equal distribution */
+  margin: 0 var(--rf-spacing-xs); /* Small margin between groups */
+}
+
+.vector-input-group:first-child {
+  margin-left: 0;
+}
+
+.vector-input-group:last-child {
+  margin-right: 0;
+}
+
+.vector-dimension-label {
+  font-size: var(--rf-font-size-xs);
+  font-weight: 600;
+  color: #8c8c8c;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* Vector Control Variants */
+.vector2-control .vector-inputs { 
+  max-width: 100px; 
+}
+.vector3-control .vector-inputs { 
+  max-width: 140px; 
+}
+.vector4-control .vector-inputs { 
+  max-width: 180px; 
+}
+
+/* Scale vector controls with node complexity */
+.node-complex .vector2-control .vector-inputs,
+.node-very-complex .vector2-control .vector-inputs { max-width: 120px; }
+
+.node-complex .vector3-control .vector-inputs,
+.node-very-complex .vector3-control .vector-inputs { max-width: 160px; }
+
+.node-complex .vector4-control .vector-inputs,
+.node-very-complex .vector4-control .vector-inputs { max-width: 200px; }
+
+/* Control Units */
+.reactflow-control-units {
+  font-size: var(--rf-font-size-lg);
+  color: #8c8c8c;
+  margin-left: var(--rf-spacing-sm);
+}
+
+/* Uniform Controls */
+.uniform-control .reactflow-control-label {
+  color: var(--rf-control-focus);
+  font-weight: 600;
+}
+
+.uniform-indicator {
+  margin-top: var(--rf-spacing-sm);
+  padding: var(--rf-spacing-xs) var(--rf-spacing-md);
+  background: rgba(24, 144, 255, 0.1);
+  border-radius: 3px;
+  font-size: var(--rf-font-size-lg);
+}
+
+.uniform-name {
+  color: var(--rf-control-focus);
+  font-weight: 500;
+}
+
+/* Context Menu */
+.reactflow-context-menu {
+  position: absolute;
+  background: white;
+  border: 1px solid var(--rf-node-border);
+  border-radius: var(--rf-node-border-radius);
+  box-shadow: var(--rf-shadow-md);
+  z-index: 1000;
+  min-width: 200px;
+}
+
+.reactflow-context-menu-item {
+  padding: var(--rf-spacing-md);
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+
+.reactflow-context-menu-item:hover {
+  background: var(--rf-node-hover-bg);
+}
+
+.reactflow-context-menu-item:last-child {
+  border-bottom: none;
+}
+
+.reactflow-context-menu-category {
+  font-weight: 600;
+  color: var(--rf-control-label);
+  font-size: var(--rf-font-size-md);
+}
+
+.reactflow-context-menu-node {
+  padding-left: var(--rf-spacing-xl);
+  font-size: var(--rf-font-size-md);
+}

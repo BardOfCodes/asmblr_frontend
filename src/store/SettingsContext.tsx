@@ -13,7 +13,7 @@ export interface LayoutSettings {
   controlPanel: PanelSettings;
 }
 
-export type EditorType = 'rete_node_editor' | 'code_editor';
+export type EditorType = 'rete_node_editor' | 'code_editor' | 'reactflow_editor';
 export type ViewerType = 'iframe_viewer' | 'shader_viewer';
 
 export interface ShaderSettings {
@@ -52,7 +52,8 @@ type SettingsAction =
   | { type: 'SET_VIEWER_TYPE'; payload: ViewerType }
   | { type: 'SET_SHADER_SETTINGS'; payload: ShaderSettings }
   | { type: 'RESET_LAYOUT' }
-  | { type: 'LOAD_SETTINGS'; payload: SettingsState };
+  | { type: 'LOAD_SETTINGS'; payload: SettingsState }
+  | { type: 'LOAD_DEFAULT_SETTINGS' };
 
 const defaultSettings: SettingsState = {
   ui: {
@@ -194,6 +195,17 @@ function settingsReducer(state: SettingsState, action: SettingsAction): Settings
     case 'LOAD_SETTINGS':
       return action.payload;
 
+    case 'LOAD_DEFAULT_SETTINGS':
+      try {
+        const defaultSettings = localStorage.getItem('asmblr-default-settings');
+        if (defaultSettings) {
+          return JSON.parse(defaultSettings) as SettingsState;
+        }
+      } catch (error) {
+        console.warn('Failed to load default settings:', error);
+      }
+      return state;
+
     default:
       return state;
   }
@@ -221,10 +233,21 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 
   const loadSettings = () => {
     try {
-      const saved = localStorage.getItem(SETTINGS_STORAGE_KEY);
-      if (saved) {
-        const parsedSettings = JSON.parse(saved) as SettingsState;
+      // Try to load default settings first if they exist
+      const defaultSettings = localStorage.getItem('asmblr-default-settings');
+      
+      if (defaultSettings) {
+        console.log('Loading saved default settings');
+        const parsedSettings = JSON.parse(defaultSettings) as SettingsState;
         dispatch({ type: 'LOAD_SETTINGS', payload: parsedSettings });
+      } else {
+        // Fallback to current session settings if no defaults are saved
+        const sessionSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
+        if (sessionSettings) {
+          console.log('Loading session settings (no defaults found)');
+          const parsedSettings = JSON.parse(sessionSettings) as SettingsState;
+          dispatch({ type: 'LOAD_SETTINGS', payload: parsedSettings });
+        }
       }
     } catch (error) {
       console.warn('Failed to load settings:', error);

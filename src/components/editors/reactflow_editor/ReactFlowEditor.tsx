@@ -1,0 +1,410 @@
+// Main React Flow Editor Component
+// The primary editor component that manages the React Flow canvas and node interactions
+
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import ReactFlow, {
+  addEdge,
+  useNodesState,
+  useEdgesState,
+  Connection,
+  Background,
+  Controls,
+  MiniMap,
+  ReactFlowProvider,
+  useReactFlow,
+  NodeTypes,
+} from 'reactflow';
+import 'reactflow/dist/style.css';
+import './styles/theme.css';
+
+import { CustomNode } from './components/CustomNode';
+import SmartReactFlowNode from './components/SmartReactFlowNode';
+import EnhancedContextMenu from './components/EnhancedContextMenu';
+import NodeSearchModal from './components/NodeSearchModal';
+import { ReactFlowNode, ReactFlowEdge, ReactFlowNodeData } from './types';
+import { NodeRegistry, NodeFactory } from './definitions';
+import * as AutoNodes from './nodes/auto_nodes';
+import { DEFAULT_NODE_THEME } from './theme';
+import { projectService } from './services/ProjectService';
+import { setReactFlowRef } from './hooks/useProjectActions';
+
+// Create global registry and factory instances
+const globalNodeRegistry = new NodeRegistry();
+const globalNodeFactory = new NodeFactory(globalNodeRegistry);
+
+// Load all auto-generated nodes on initialization
+const initializeRegistry = () => {
+  const nodeDefinitions = Object.values(AutoNodes).filter(
+    (item): item is any => item && typeof item === 'object' && 'type' in item
+  );
+  
+  globalNodeRegistry.registerMany(nodeDefinitions);
+  console.log('[ReactFlowEditor] Loaded', nodeDefinitions.length, 'node definitions');
+};
+
+// Initialize once
+initializeRegistry();
+
+// Initialize project service
+projectService.initialize(globalNodeRegistry);
+
+// Define custom node types
+const nodeTypes: NodeTypes = {
+  custom: CustomNode,
+  'smart-node': SmartReactFlowNode,
+};
+
+interface ReactFlowEditorProps {
+  modeName: string;
+  onNodesChange?: (nodes: ReactFlowNode[]) => void;
+  onEdgesChange?: (edges: ReactFlowEdge[]) => void;
+  onNodeControlChange?: (nodeId: string, controlId: string, value: any) => void;
+  className?: string;
+}
+
+/**
+ * Inner React Flow Editor Component (inside ReactFlowProvider)
+ */
+const ReactFlowEditorInner: React.FC<ReactFlowEditorProps> = ({
+  onNodesChange,
+  onEdgesChange,
+  onNodeControlChange,
+  className = ''
+}) => {
+  const reactFlowInstance = useReactFlow();
+  const [nodes, setNodes, onNodesStateChange] = useNodesState<ReactFlowNodeData>([]);
+  const [edges, setEdges, onEdgesStateChange] = useEdgesState([]);
+  const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
+  const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const editorRef = useRef<HTMLDivElement>(null);
+
+  // Project management is now handled by the lightweight ProjectService
+  // Register React Flow functions for project operations
+  
+  useEffect(() => {
+    console.log('ReactFlowEditor: Setting up project actions ref');
+    setReactFlowRef({
+      getNodes: reactFlowInstance.getNodes,
+      getEdges: reactFlowInstance.getEdges,
+      getViewport: reactFlowInstance.getViewport,
+      setNodes,
+      setEdges,
+      setViewport: reactFlowInstance.setViewport,
+      fitView: reactFlowInstance.fitView
+    });
+
+    // Cleanup on unmount
+    return () => {
+      console.log('ReactFlowEditor: Cleaning up project actions ref');
+      setReactFlowRef(null);
+    };
+  }, [reactFlowInstance, setNodes, setEdges]);
+
+  // Handle connection creation with validation and variadic rules
+  const onConnect = useCallback(
+    (params: Connection) => {
+      // Basic validation
+      if (!params.source || !params.sourceHandle || !params.target || !params.targetHandle) {
+        console.log('[Connection] Missing required connection parameters');
+        return;
+      }
+
+      // Validation 1: Prevent self-connections
+      if (params.source === params.target) {
+        console.log('[Connection] ❌ Self-connection not allowed');
+        return;
+      }
+
+      // Find source and target nodes
+      const sourceNode = nodes.find(node => node.id === params.source);
+      const targetNode = nodes.find(node => node.id === params.target);
+      
+      if (!sourceNode || !targetNode) {
+        console.log('[Connection] Source or target node not found');
+        return;
+      }
+
+      // Get node definitions
+      const sourceDefinition = globalNodeRegistry.get((sourceNode.data as any).nodeType || sourceNode.data.type);
+      const targetDefinition = globalNodeRegistry.get((targetNode.data as any).nodeType || targetNode.data.type);
+      
+      if (!sourceDefinition || !targetDefinition) {
+        console.log('[Connection] Node definitions not found');
+        return;
+      }
+
+      // Validation 2: Ensure source is an output and target is an input
+      const sourceOutput = sourceDefinition.outputs.find(output => output.key === params.sourceHandle);
+      const targetInput = targetDefinition.inputs.find(input => input.key === params.targetHandle);
+
+      if (!sourceOutput) {
+        console.log('[Connection] ❌ Source handle is not a valid output:', params.sourceHandle);
+        return;
+      }
+
+      if (!targetInput) {
+        console.log('[Connection] ❌ Target handle is not a valid input:', params.targetHandle);
+        return;
+      }
+      
+      // Find the input definition to check variadic property
+      const inputDefinition = targetDefinition.inputs.find(input => input.key === params.targetHandle);
+      if (!inputDefinition) {
+        console.log(`[Connection] Input definition not found for handle: ${params.targetHandle}`);
+        return;
+      }
+      
+      let updatedEdges = [...edges];
+      
+      // If input is NOT variadic, remove existing connections to this input
+      if (!inputDefinition.variadic) {
+        updatedEdges = updatedEdges.filter(edge => 
+          !(edge.target === params.target && edge.targetHandle === params.targetHandle)
+        );
+      }
+      
+      // Add the new connection
+      const newEdges = addEdge(params, updatedEdges);
+      setEdges(newEdges);
+      onEdgesChange?.(newEdges);
+    },
+    [edges, setEdges, onEdgesChange, nodes]
+  );
+
+  // Handle node control changes
+  useEffect(() => {
+    const handleNodeControlChange = (event: CustomEvent) => {
+      const { nodeId, controlId, value } = event.detail;
+      
+      // Update the node's control values
+      setNodes((nds) =>
+        nds.map((node) => {
+          if (node.id === nodeId) {
+            const updatedControlValues = {
+              ...node.data.controlValues,
+              [controlId]: value
+            };
+            
+            return {
+              ...node,
+              data: {
+                ...node.data,
+                controlValues: updatedControlValues
+              }
+            };
+          }
+          return node;
+        })
+      );
+
+      // Notify parent component
+      onNodeControlChange?.(nodeId, controlId, value);
+    };
+
+    window.addEventListener('nodeControlChange', handleNodeControlChange as EventListener);
+    
+    return () => {
+      window.removeEventListener('nodeControlChange', handleNodeControlChange as EventListener);
+    };
+  }, [setNodes, onNodeControlChange]);
+
+  // Handle context menu
+  const onPaneContextMenu = useCallback((event: React.MouseEvent) => {
+    event.preventDefault();
+    
+    const bounds = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    setContextMenuPosition({
+      x: event.clientX - bounds.left,
+      y: event.clientY - bounds.top,
+    });
+    setIsContextMenuOpen(true);
+  }, []);
+
+  // Close context menu
+  const closeContextMenu = useCallback(() => {
+    setIsContextMenuOpen(false);
+  }, []);
+
+  // Handle keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Check if editor has focus or is the active element
+      const isEditorFocused = editorRef.current?.contains(document.activeElement) || 
+                              document.activeElement === editorRef.current;
+      
+      if (!isEditorFocused) return;
+
+      // Cmd+G (Mac) or Ctrl+G (Windows/Linux) to open search modal
+      if ((e.metaKey || e.ctrlKey) && e.key === 'g') {
+        e.preventDefault();
+        setIsSearchModalOpen(true);
+        setIsContextMenuOpen(false); // Close context menu if open
+      }
+      
+      // Escape to close modals
+      if (e.key === 'Escape') {
+        setIsContextMenuOpen(false);
+        setIsSearchModalOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Add node from context menu
+  const addNode = useCallback((nodeType: string, customPosition?: { x: number; y: number }) => {
+    try {
+      let position: { x: number; y: number };
+      
+      if (customPosition) {
+        // Use provided position (from search modal)
+        position = reactFlowInstance.project(customPosition);
+      } else {
+        // Use context menu position
+        position = reactFlowInstance.project({
+          x: contextMenuPosition.x,
+          y: contextMenuPosition.y,
+        });
+      }
+
+      const result = globalNodeFactory.createNode(nodeType, { position });
+      
+      if (result.success && result.node) {
+        // Convert ReactFlowNodeCore to ReactFlow node format
+        const nodeData = result.node.getAllData();
+        
+        // Get the node definition to create proper data structure
+        const definition = globalNodeRegistry.get(result.node.type);
+        if (!definition) {
+          console.error('Node definition not found for type:', result.node.type);
+          return;
+        }
+
+        const reactFlowNode = {
+          id: result.node.id,
+          type: 'smart-node', // Use our smart node component
+          position: result.node.position,
+          data: {
+            id: result.node.id,
+            type: result.node.type,
+            label: definition.label,
+            category: definition.category,
+            inputs: definition.inputs || [],
+            outputs: definition.outputs || [],
+            controls: definition.controls || [],
+            controlValues: nodeData.controlValues || {},
+            nodeType: result.node.type, // This is what SmartReactFlowNode uses
+            registry: globalNodeRegistry
+          } as unknown as ReactFlowNodeData
+        };
+        
+        setNodes((nds) => [...nds, reactFlowNode]);
+        onNodesChange?.([...nodes, reactFlowNode]);
+      } else {
+        console.error('Failed to create node:', result.errors);
+      }
+      
+      closeContextMenu();
+    } catch (error) {
+      console.error('Error adding node:', error);
+    }
+  }, [contextMenuPosition, reactFlowInstance, setNodes, nodes, onNodesChange, closeContextMenu]);
+
+  // Handle nodes change
+  const handleNodesChange = useCallback((changes: any) => {
+    onNodesStateChange(changes);
+    // Get updated nodes after change
+    setTimeout(() => {
+      onNodesChange?.(nodes);
+    }, 0);
+  }, [onNodesStateChange, onNodesChange, nodes]);
+
+  // Handle edges change
+  const handleEdgesChange = useCallback((changes: any) => {
+    onEdgesStateChange(changes);
+    // Get updated edges after change
+    setTimeout(() => {
+      onEdgesChange?.(edges);
+    }, 0);
+  }, [onEdgesStateChange, onEdgesChange, edges]);
+
+  // Get all node definitions for context menu and search
+  const allNodeDefinitions = useMemo(() => {
+    return globalNodeRegistry.getAll();
+  }, []);
+
+  // Debug connection theme
+  console.log('[ReactFlowEditor] Connection theme values:', {
+    strokeWidth: DEFAULT_NODE_THEME.connections.strokeWidth,
+    color: DEFAULT_NODE_THEME.connections.color,
+    type: DEFAULT_NODE_THEME.connections.type
+  });
+
+  return (
+    <div 
+      ref={editorRef}
+      className={`reactflow-editor ${className}`} 
+      style={{ width: '100%', height: '100%' }}
+      tabIndex={0} // Make div focusable for keyboard shortcuts
+    >
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={handleNodesChange}
+        onEdgesChange={handleEdgesChange}
+        onConnect={onConnect}
+        onPaneContextMenu={onPaneContextMenu}
+        onPaneClick={closeContextMenu}
+        nodeTypes={nodeTypes}
+        fitView
+        attributionPosition="bottom-left"
+        defaultEdgeOptions={{
+          style: { 
+            strokeWidth: DEFAULT_NODE_THEME.connections.strokeWidth,
+            stroke: DEFAULT_NODE_THEME.connections.color
+          },
+          type: DEFAULT_NODE_THEME.connections.type,
+          animated: DEFAULT_NODE_THEME.connections.animated
+        }}
+      >
+        <Background />
+        <Controls />
+        <MiniMap />
+      </ReactFlow>
+
+      {/* Enhanced Context Menu */}
+      <EnhancedContextMenu
+        isOpen={isContextMenuOpen}
+        position={contextMenuPosition}
+        nodeDefinitions={allNodeDefinitions}
+        onNodeSelect={(nodeType) => addNode(nodeType)}
+        onClose={closeContextMenu}
+      />
+
+      {/* Node Search Modal */}
+      <NodeSearchModal
+        isOpen={isSearchModalOpen}
+        nodeDefinitions={allNodeDefinitions}
+        onNodeSelect={(nodeType, position) => {
+          addNode(nodeType, position);
+          setIsSearchModalOpen(false);
+        }}
+        onClose={() => setIsSearchModalOpen(false)}
+        editorBounds={editorRef.current?.getBoundingClientRect()}
+      />
+    </div>
+  );
+};
+
+/**
+ * Main React Flow Editor Component (with ReactFlowProvider wrapper)
+ */
+export const ReactFlowEditor: React.FC<ReactFlowEditorProps> = (props) => {
+  return (
+    <ReactFlowProvider>
+      <ReactFlowEditorInner {...props} />
+    </ReactFlowProvider>
+  );
+};

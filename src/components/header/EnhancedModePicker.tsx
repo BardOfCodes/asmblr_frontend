@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, Button, Typography, Space } from 'antd';
+import TestComponent from '../editors/reactflow_editor/core/TestComponent';
 
 const { Title, Text } = Typography;
 
@@ -13,7 +14,24 @@ export const EnhancedModePicker: React.FC<EnhancedModePickerProps> = ({
   selected, 
   options, 
   onChange 
-}) => (
+}) => {
+  const [showTests, setShowTests] = useState(false);
+
+  if (showTests) {
+    return (
+      <div style={{ padding: '2rem', minHeight: '100vh', background: '#f5f5f5' }}>
+        <Button 
+          onClick={() => setShowTests(false)}
+          style={{ marginBottom: '20px' }}
+        >
+          ← Back to Mode Selection
+        </Button>
+        <TestComponent />
+      </div>
+    );
+  }
+
+  return (
   <div style={{ 
     padding: '2rem', 
     minHeight: '100vh',
@@ -64,7 +82,16 @@ export const EnhancedModePicker: React.FC<EnhancedModePickerProps> = ({
         <Text type="secondary" style={{ fontSize: '12px' }}>
           You can change the mode anytime from the header menu
         </Text>
+
+        <Button 
+          onClick={() => setShowTests(true)}
+          style={{ marginTop: '20px' }}
+          type="dashed"
+        >
+          🧪 Test Core System (Development)
+        </Button>
       </Space>
     </Card>
   </div>
-);
+  );
+};

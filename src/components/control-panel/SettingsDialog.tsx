@@ -109,6 +109,39 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose })
     dispatch({ type: 'RESET_LAYOUT' });
   };
 
+  const handleSetAsDefault = () => {
+    // Save current settings as the new default
+    try {
+      const currentSettingsJson = JSON.stringify(settings);
+      localStorage.setItem('asmblr-default-settings', currentSettingsJson);
+      
+      // Show confirmation
+      console.log('Current settings saved as default:', {
+        editor: settings.ui.components.selectedEditor,
+        viewer: settings.ui.components.selectedViewer,
+        panelVisibility: {
+          nodeEditor: settings.ui.layout.nodeEditor.visible,
+          viewer: settings.ui.layout.viewer.visible,
+          controlPanel: settings.ui.layout.controlPanel.visible
+        }
+      });
+      
+      // Show a temporary success message
+      const originalTitle = document.title;
+      document.title = '✓ Settings saved as default - ASMBLR';
+      setTimeout(() => {
+        document.title = originalTitle;
+      }, 2000);
+      
+    } catch (error) {
+      console.error('Failed to save default settings:', error);
+    }
+  };
+
+  const handleLoadDefaults = () => {
+    dispatch({ type: 'LOAD_DEFAULT_SETTINGS' });
+  };
+
   const handleShaderSettingsChange = (value: string) => {
     setShaderSettingsText(value);
     
@@ -149,7 +182,13 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose })
       onCancel={onClose}
       footer={[
         <Button key="reset" onClick={handleResetLayout}>
-          Reset to Default
+          Reset Layout
+        </Button>,
+        <Button key="loadDefaults" onClick={handleLoadDefaults}>
+          Load Defaults
+        </Button>,
+        <Button key="setDefault" onClick={handleSetAsDefault} type="default">
+          Set as Default
         </Button>,
         <Button key="close" type="primary" onClick={onClose}>
           Close
@@ -254,7 +293,8 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose })
                     style={{ width: 200 }}
                     options={[
                       { value: 'rete_node_editor', label: 'Rete.js Node Editor' },
-                      { value: 'code_editor', label: 'Code Editor' }
+                      { value: 'code_editor', label: 'Code Editor' },
+                      { value: 'reactflow_editor', label: 'React Flow Editor (Beta)' }
                     ]}
                   />
                 </SettingRow>
