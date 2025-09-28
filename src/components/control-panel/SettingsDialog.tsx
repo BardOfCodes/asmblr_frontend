@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Modal, Switch, Divider, Space, Button, Select, Input, Collapse } from 'antd';
+import { Modal, Switch, Button, Select, Input, Collapse } from 'antd';
 import { useSettings, EditorType, ViewerType, ShaderSettings } from '../../store/SettingsContext';
 import { theme } from '../../design/theme';
 
@@ -292,9 +292,8 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose })
                     onChange={(value: EditorType) => dispatch({ type: 'SET_EDITOR_TYPE', payload: value })}
                     style={{ width: 200 }}
                     options={[
-                      { value: 'rete_node_editor', label: 'Rete.js Node Editor' },
-                      { value: 'code_editor', label: 'Code Editor' },
-                      { value: 'reactflow_editor', label: 'React Flow Editor (Beta)' }
+                      { value: 'reactflow_editor', label: 'React Flow Editor' },
+                      { value: 'code_editor', label: 'Code Editor' }
                     ]}
                   />
                 </SettingRow>

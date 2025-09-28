@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
-import { useEditor } from '../../components/editors/NodeEditor';
+import { useReactFlowEditor } from '../../components/editors/reactflow_editor';
 import { useModeContext } from '../ModeContext';
 
 export const NeoEditor: React.FC = () => {
   const { actions } = useModeContext();
-  const editor = useEditor({ modeName: 'neo' });
+  const editor = useReactFlowEditor({ modeName: 'neo' });
 
   // Update the mode context when the editor changes
   useEffect(() => {

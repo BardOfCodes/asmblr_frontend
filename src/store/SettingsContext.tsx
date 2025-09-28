@@ -13,7 +13,7 @@ export interface LayoutSettings {
   controlPanel: PanelSettings;
 }
 
-export type EditorType = 'rete_node_editor' | 'code_editor' | 'reactflow_editor';
+export type EditorType = 'code_editor' | 'reactflow_editor';
 export type ViewerType = 'iframe_viewer' | 'shader_viewer';
 
 export interface ShaderSettings {
@@ -81,7 +81,7 @@ const defaultSettings: SettingsState = {
       }
     },
     components: {
-      selectedEditor: 'rete_node_editor',
+      selectedEditor: 'reactflow_editor',
       selectedViewer: 'iframe_viewer'
     }
   },

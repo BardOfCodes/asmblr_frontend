@@ -4,14 +4,14 @@
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import { ControlDefinition } from '../definitions';
-import { EnhancedConnectionState } from '../hooks';
+import { ConnectionState } from '../hooks';
 
 /**
  * Props for NodeControls component
  */
 export interface NodeControlsProps {
   controls: ControlDefinition[];
-  connectionState: EnhancedConnectionState;
+  connectionState: ConnectionState;
   nodeData: Record<string, any>;
   onControlChange: (controlKey: string, value: any) => void;
   nodeId: string;

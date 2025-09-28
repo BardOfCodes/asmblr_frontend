@@ -119,10 +119,12 @@ const EnhancedContextMenu: React.FC<ContextMenuProps> = ({
     if (isOpen) {
       setSearchTerm('');
       setSelectedIndex(0);
-      // Auto-focus search input
-      setTimeout(() => {
+      // Auto-focus search input with cleanup
+      const timer = setTimeout(() => {
         searchInputRef.current?.focus();
       }, 100);
+      
+      return () => clearTimeout(timer);
     }
   }, [isOpen]);
 

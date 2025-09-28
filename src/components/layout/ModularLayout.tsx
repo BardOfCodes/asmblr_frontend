@@ -1,88 +1,42 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { useSettings } from '../../store/SettingsContext';
-import { Card, Panel, Stack, Text, Title } from '../../design/components';
+import { Card, Text, Title, HeaderPanel } from '../../design/components';
 import { theme } from '../../design/theme';
+import { ResizableLayout } from './ResizableLayout';
 import type { AsmblrMode, ViewerHandle } from '../../modes/types';
-
-interface LayoutProps {
-  $headerVisible: boolean;
-  $nodeEditorVisible: boolean;
-  $viewerVisible: boolean;
-  $controlPanelVisible: boolean;
-}
-
-const Container = styled.div<LayoutProps>`
-  display: grid;
-  height: 100vh;
-  width: 100%;
-  overflow: hidden;
-  background: ${theme.colors.backgroundSecondary};
-  
-  grid-template-rows: ${props => {
-    const rows = [];
-    if (props.$headerVisible) rows.push('auto');
-    
-    const hasMainContent = props.$nodeEditorVisible || props.$viewerVisible;
-    if (hasMainContent) rows.push('1fr');
-    
-    if (props.$controlPanelVisible) rows.push('auto');
-    
-    return rows.join(' ') || '1fr';
-  }};
-  
-  grid-template-columns: ${props => {
-    if (!props.$nodeEditorVisible && !props.$viewerVisible) return '1fr';
-    if (props.$nodeEditorVisible && !props.$viewerVisible) return '1fr';
-    if (!props.$nodeEditorVisible && props.$viewerVisible) return '1fr';
-    return '1fr 1fr'; // Both visible - equal width
-  }};
-  
-  grid-template-areas: ${props => {
-    const areas = [];
-    
-    if (props.$headerVisible) {
-      areas.push('"header header"');
-    }
-    
-    if (props.$nodeEditorVisible && props.$viewerVisible) {
-      areas.push('"editor viewer"');
-    } else if (props.$nodeEditorVisible) {
-      areas.push('"editor editor"');
-    } else if (props.$viewerVisible) {
-      areas.push('"viewer viewer"');
-    }
-    
-    if (props.$controlPanelVisible) {
-      areas.push('"controls controls"');
-    }
-    
-    return areas.join(' ') || '"main"';
-  }};
-  
-  gap: ${theme.spacing.md};
-  padding: ${theme.spacing.md};
-`;
+import { debug } from '../../utils/debug';
 
 const StyledCard = styled(Card)`
   height: 100%;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  margin: 0;
+  border-radius: 0;
+  border: none;
+  background: ${theme.colors.white};
+  box-shadow: none;
+  transition: none;
 `;
 
-const SquareContainer = styled.div`
+const PanelContent = styled.div`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+`;
+
+const ViewerContainer = styled.div`
   position: relative;
   width: 100%;
-  padding-top: 100%; /* Maintain 1:1 aspect ratio */
-`;
-
-const SquareContent = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  height: 100%;
+  min-height: 400px;
+  border-radius: 0;
+  overflow: hidden;
+  background: ${theme.colors.backgroundSecondary};
+  padding-left: 10px; /* Add left padding to prevent resize handle interference */
 `;
 
 const EmptyState = styled.div`
@@ -108,78 +62,119 @@ interface ModularLayoutProps {
   setMode: (name: string) => void;
 }
 
-export const ModularLayout: React.FC<ModularLayoutProps> = ({ mode, modeName, setMode }) => {
-  const { settings } = useSettings();
-  const { layout } = settings.ui;
-  const viewerRef = useRef<ViewerHandle>(null);
+export const ModularLayout: React.FC<ModularLayoutProps> = ({ 
+  mode, 
+  modeName, 
+  setMode 
+}) => {
+  debug.log('ModularLayout rendering with:', { mode, modeName });
   
-  const editor = mode.useEditor();
-  const Viewer = mode.ViewerComponent;
-  const ControlPanel = mode.ControlPanelComponent;
+  try {
+    const { settings } = useSettings();
+    debug.log('Settings loaded:', settings);
+    
+    const viewerRef = useRef<ViewerHandle>(null);
+    
+    debug.log('Getting editor...');
+    const editor = mode.useEditor();
+    debug.log('Editor loaded:', editor);
+    
+    debug.log('Getting components...');
+    const Viewer = mode.ViewerComponent;
+    const ControlPanel = mode.ControlPanelComponent;
+    debug.log('Components loaded:', { Viewer, ControlPanel });
 
-  // Check if any main content is visible
-  const hasVisibleContent = layout.header.visible || layout.nodeEditor.visible || 
-                           layout.viewer.visible || layout.controlPanel.visible;
+  // Header should always be visible so users can access settings
+  // Check if any other panels are visible
+  const { layout } = settings.ui;
+  const hasMainContent = layout.nodeEditor.visible || layout.viewer.visible || layout.controlPanel.visible;
 
-  if (!hasVisibleContent) {
+  if (!hasMainContent) {
+    // Still show header even when main content is hidden
     return (
-      <EmptyState>
-        <EmptyStateContent>
-          <Title $level={3}>All panels are hidden</Title>
-          <Text $variant="secondary" $size="sm">
-            Open Settings to show interface panels
-          </Text>
-        </EmptyStateContent>
-      </EmptyState>
-    );
-  }
-
-  return (
-    <Container
-      $headerVisible={layout.header.visible}
-      $nodeEditorVisible={layout.nodeEditor.visible}
-      $viewerVisible={layout.viewer.visible}
-      $controlPanelVisible={layout.controlPanel.visible}
-    >
-      {layout.header.visible && (
-        <Panel $area="header">
-          <StyledCard>
+      <ResizableLayout
+        header={(
+          <HeaderPanel>
             <mode.HeaderComponent 
               editor={editor} 
               modeName={modeName} 
               setMode={setMode} 
             />
-          </StyledCard>
-        </Panel>
+          </HeaderPanel>
+        )}
+      >
+        <EmptyStateContent style={{ margin: 'auto', gridArea: 'main' }}>
+          <Title $level={3}>Main panels are hidden</Title>
+          <Text $variant="secondary" $size="sm">
+            Use the Settings button above to show editor, viewer, or control panel
+          </Text>
+        </EmptyStateContent>
+      </ResizableLayout>
+    );
+  }
+
+  return (
+    <ResizableLayout
+      header={(
+        <HeaderPanel>
+          <mode.HeaderComponent 
+            editor={editor} 
+            modeName={modeName} 
+            setMode={setMode} 
+          />
+        </HeaderPanel>
       )}
 
-      {layout.nodeEditor.visible && (
-        <Panel $area="editor">
+      editor={layout.nodeEditor.visible ? (
+        <PanelContent>
           <StyledCard>
             {editor.view}
           </StyledCard>
-        </Panel>
-      )}
+        </PanelContent>
+      ) : undefined}
 
-      {layout.viewer.visible && (
-        <Panel $area="viewer">
+      viewer={layout.viewer.visible ? (
+        <PanelContent>
           <StyledCard>
-            <SquareContainer>
-              <SquareContent>
-                <Viewer ref={viewerRef} />
-              </SquareContent>
-            </SquareContainer>
+            <ViewerContainer>
+              <Viewer ref={viewerRef} />
+            </ViewerContainer>
           </StyledCard>
-        </Panel>
-      )}
+        </PanelContent>
+      ) : undefined}
 
-      {layout.controlPanel.visible && (
-        <Panel $area="controls">
+      controlPanel={layout.controlPanel.visible ? (
+        <PanelContent>
           <StyledCard>
             <ControlPanel editor={editor} viewerRef={viewerRef} />
           </StyledCard>
-        </Panel>
-      )}
-    </Container>
+        </PanelContent>
+      ) : undefined}
+    />
   );
+  
+  } catch (error) {
+    debug.error('Error in ModularLayout:', error);
+    return (
+      <div style={{ 
+        padding: '2rem', 
+        textAlign: 'center',
+        height: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column'
+      }}>
+        <h2>Error Loading Interface</h2>
+        <p>Mode: {modeName}</p>
+        <p>Error: {error instanceof Error ? error.message : 'Unknown error'}</p>
+        <button onClick={() => {
+          localStorage.removeItem('asmblr-enhanced-mode');
+          window.location.reload();
+        }}>
+          Reset and Reload
+        </button>
+      </div>
+    );
+  }
 };

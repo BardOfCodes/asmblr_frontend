@@ -3,7 +3,7 @@
 
 import React, { useCallback, useMemo } from 'react';
 import { Handle, Position, NodeProps, useReactFlow } from 'reactflow';
-import { ReactFlowNodeData, SocketType } from '../types';
+import { ReactFlowNodeData } from '../types';
 import { getControlComponent, isUniformControl } from '../controls';
 
 // Handle styling is now managed through CSS classes and CSS variables
@@ -120,7 +120,7 @@ export const CustomNode: React.FC<NodeProps<ReactFlowNodeData>> = ({
       data-node-category={data.category}
     >
       {/* Input Handles - positioned by React Flow */}
-      {data.inputs.map((input, index) => (
+      {data.inputs.map((input) => (
         <Handle
           key={`input-${input.id}`}
           type="target"
@@ -132,7 +132,7 @@ export const CustomNode: React.FC<NodeProps<ReactFlowNodeData>> = ({
       ))}
       
       {/* Output Handles - positioned by React Flow */}
-      {data.outputs.map((output, index) => (
+      {data.outputs.map((output) => (
         <Handle
           key={`output-${output.id}`}
           type="source"

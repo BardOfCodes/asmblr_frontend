@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import { theme } from '../../design/theme';
 import { generateShaderHtml, generateTWGLShaderCode, APIError } from '../../API';
 import { useSettings } from '../../store/SettingsContext';
+import { debug } from '../../utils/debug';
+import { EditorHandle } from '../../types/editor';
+import { ViewerHandle } from '../../types/viewer';
 
 const Container = styled.div`
   display: flex;
@@ -53,8 +56,8 @@ const InfoSection = styled.div`
 `;
 
 interface HybridControlPanelProps {
-  editor: any;
-  viewerRef: React.RefObject<any>;
+  editor: EditorHandle;
+  viewerRef: React.RefObject<ViewerHandle>;
 }
 
 export const HybridControlPanel: React.FC<HybridControlPanelProps> = ({ 
@@ -70,38 +73,38 @@ export const HybridControlPanel: React.FC<HybridControlPanelProps> = ({
   const handleGenerateShader = async () => {
     setIsGeneratingShader(true);
     try {
-      console.log('Generating shader via backend...');
+      debug.log('Generating shader via backend...');
       
       // Extract serializable data from editor (avoid circular references)
       let moduleData = {};
       try {
         if (editor && typeof editor === 'object') {
-          console.log('Editor keys:', Object.keys(editor));
+          debug.log('Editor keys:', Object.keys(editor));
           
-          // Try to extract specific serializable properties
-          if (editor.modules && typeof editor.modules.list === 'object') {
-            console.log('Using editor.modules.list');
-            moduleData = editor.modules.list;
-          } else if (editor.list) {
-            console.log('Using editor.list');
-            moduleData = editor.list;
+          // ReactFlow editor - get nodes and edges
+          if (editor.getNodes && editor.getEdges) {
+            debug.log('Using ReactFlow editor data');
+            moduleData = {
+              nodes: editor.getNodes(),
+              edges: editor.getEdges()
+            };
           } else {
             // For now, send empty object to test backend connection
-            console.log('Editor structure not recognized, sending empty payload');
-            console.log('Available editor properties:', Object.keys(editor));
+            debug.log('Editor structure not recognized, sending empty payload');
+            debug.log('Available editor properties:', Object.keys(editor));
             moduleData = {};
           }
         } else {
-          console.log('Editor is null or not an object:', typeof editor);
+          debug.log('Editor is null or not an object:', typeof editor);
           moduleData = {};
         }
       } catch (extractError) {
-        console.warn('Could not extract editor data, using empty payload:', extractError);
+        debug.warn('Could not extract editor data, using empty payload:', extractError);
         moduleData = {};
       }
       
-      console.log('Sending moduleData:', moduleData);
-      console.log('Selected viewer:', selectedViewer);
+      debug.log('Sending moduleData:', moduleData);
+      debug.log('Selected viewer:', selectedViewer);
       
       if (selectedViewer === 'shader_viewer') {
         // Generate shader code for TWGL viewer using the new TWGL endpoint
@@ -113,9 +116,9 @@ export const HybridControlPanel: React.FC<HybridControlPanelProps> = ({
         
         if (result.shaderCode && viewerRef.current && viewerRef.current.loadShaderCode) {
           viewerRef.current.loadShaderCode(result.shaderCode, result.uniforms, result.textures);
-          console.log('Successfully loaded TWGL shader code into viewer');
+          debug.log('Successfully loaded TWGL shader code into viewer');
         } else {
-          console.error('Backend response missing shaderCode or loadShaderCode method not available:', result);
+          debug.error('Backend response missing shaderCode or loadShaderCode method not available:', result);
         }
       } else {
         // Generate HTML for iframe viewer
@@ -126,19 +129,19 @@ export const HybridControlPanel: React.FC<HybridControlPanelProps> = ({
         
         if (result.html && viewerRef.current && viewerRef.current.loadHTML) {
           viewerRef.current.loadHTML(result.html);
-          console.log('Successfully loaded generated shader HTML into iframe');
+          debug.log('Successfully loaded generated shader HTML into iframe');
         } else {
-          console.error('Backend response missing html field or loadHTML method not available:', result);
+          debug.error('Backend response missing html field or loadHTML method not available:', result);
         }
       }
     } catch (error) {
       if (error instanceof APIError) {
-        console.error(`API Error [${error.endpoint}]:`, error.message);
+        debug.error(`API Error [${error.endpoint}]:`, error.message);
         if (error.status) {
-          console.error('Status:', error.status);
+          debug.error('Status:', error.status);
         }
       } else {
-        console.error('Unexpected error generating shader:', error);
+        debug.error('Unexpected error generating shader:', error);
       }
     } finally {
       setIsGeneratingShader(false);
@@ -148,11 +151,11 @@ export const HybridControlPanel: React.FC<HybridControlPanelProps> = ({
   const handleTestIframe = async () => {
     setIsTestingIframe(true);
     try {
-      console.log('Testing iframe functionality...');
+      debug.log('Testing iframe functionality...');
       
       // First, try to ping the backend for HTML content
       try {
-        console.log('Attempting to fetch HTML from backend...');
+        debug.log('Attempting to fetch HTML from backend...');
         const backendResponse = await fetch('/api/test-html', {
           method: 'GET',
           headers: {
@@ -167,21 +170,21 @@ export const HybridControlPanel: React.FC<HybridControlPanelProps> = ({
           
           if (viewerRef.current && viewerRef.current.loadHTML) {
             viewerRef.current.loadHTML(htmlContent);
-            console.log('Successfully loaded HTML from backend into iframe');
+            debug.log('Successfully loaded HTML from backend into iframe');
             return; // Success, exit early
           } else {
-            console.log('Viewer does not support loadHTML method');
+            debug.log('Viewer does not support loadHTML method');
             return;
           }
         } else {
           throw new Error(`Backend responded with status: ${backendResponse.status}`);
         }
       } catch (backendError) {
-        console.warn('Backend request failed, falling back to default HTML file:', backendError);
+        debug.warn('Backend request failed, falling back to default HTML file:', backendError);
         
         // Fallback: Load the default_iframe_load.html file
         try {
-          console.log('Loading default iframe HTML file...');
+          debug.log('Loading default iframe HTML file...');
           const fileResponse = await fetch('/src/assets/default_iframe_load.html');
           
           if (fileResponse.ok) {
@@ -189,15 +192,15 @@ export const HybridControlPanel: React.FC<HybridControlPanelProps> = ({
             
             if (viewerRef.current && viewerRef.current.loadHTML) {
               viewerRef.current.loadHTML(htmlContent);
-              console.log('Successfully loaded default_iframe_load.html into iframe');
+              debug.log('Successfully loaded default_iframe_load.html into iframe');
             } else {
-              console.log('Viewer does not support loadHTML method');
+              debug.log('Viewer does not support loadHTML method');
             }
           } else {
             throw new Error(`Failed to load default HTML file: ${fileResponse.status}`);
           }
         } catch (fileError) {
-          console.error('Could not load default HTML file, using inline fallback:', fileError);
+          debug.error('Could not load default HTML file, using inline fallback:', fileError);
           
           // Final fallback: Inline HTML if both backend and file fail
           const fallbackHTML = `
@@ -249,12 +252,12 @@ export const HybridControlPanel: React.FC<HybridControlPanelProps> = ({
           
           if (viewerRef.current && viewerRef.current.loadHTML) {
             viewerRef.current.loadHTML(fallbackHTML);
-            console.log('Loaded emergency fallback HTML into iframe');
+            debug.log('Loaded emergency fallback HTML into iframe');
           }
         }
       }
     } catch (error) {
-      console.error('Unexpected error in iframe testing:', error);
+      debug.error('Unexpected error in iframe testing:', error);
     } finally {
       setIsTestingIframe(false);
     }

@@ -5,14 +5,14 @@ import React from 'react';
 import { Handle, Position } from 'reactflow';
 import styled from 'styled-components';
 import { InputDefinition } from '../definitions';
-import { EnhancedConnectionState } from '../hooks';
+import { ConnectionState } from '../hooks';
 
 /**
  * Props for NodeInputs component
  */
 export interface NodeInputsProps {
   inputs: InputDefinition[];
-  connectionState: EnhancedConnectionState;
+  connectionState: ConnectionState;
   nodeId: string;
 }
 

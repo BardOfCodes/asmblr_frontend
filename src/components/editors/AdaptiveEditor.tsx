@@ -1,6 +1,5 @@
 import { useState, useMemo } from 'react';
 import { useSettings, EditorType } from '../../store/SettingsContext';
-import { useEditor as useNodeEditor } from './NodeEditor';
 import { CodeEditor } from './CodeEditor';
 import { useReactFlowEditor } from './reactflow_editor';
 import { EditorHandle } from '../../modes/types';
@@ -13,9 +12,6 @@ interface AdaptiveEditorProps {
 export function useAdaptiveEditor({ modeName }: AdaptiveEditorProps): EditorHandle {
   const { settings } = useSettings();
   const selectedEditor = settings.ui.components.selectedEditor;
-  
-  // Node editor hook
-  const nodeEditor = useNodeEditor({ modeName });
   
   // React Flow editor hook
   const reactFlowEditor = useReactFlowEditor({ modeName });
@@ -34,11 +30,6 @@ export function useAdaptiveEditor({ modeName }: AdaptiveEditorProps): EditorHand
   // Return the appropriate editor based on settings
   return useMemo(() => {
     switch (selectedEditor) {
-      case 'reactflow_editor':
-        return {
-          ...reactFlowEditor,
-          type: 'reactflow_editor' as EditorType,
-        };
       case 'code_editor':
         return {
           view: codeEditorView,
@@ -47,14 +38,14 @@ export function useAdaptiveEditor({ modeName }: AdaptiveEditorProps): EditorHand
           setCode: setCode,
           // Add any other code editor specific methods
         };
+      case 'reactflow_editor':
       default:
         return {
-          ...nodeEditor,
-          type: 'rete_node_editor' as EditorType,
-          // Keep all existing node editor functionality
+          ...reactFlowEditor,
+          type: 'reactflow_editor' as EditorType,
         };
     }
-  }, [selectedEditor, reactFlowEditor, codeEditorView, nodeEditor, code]);
+  }, [selectedEditor, reactFlowEditor, codeEditorView, code]);
 }
 
 // Ensure Fast Refresh compatibility

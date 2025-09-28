@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
+import { debug } from './utils/debug';
 
 // Configuration
 const BASE_URL = 'http://127.0.0.1:5000';
@@ -79,7 +80,7 @@ const handleError = (error: any, endpoint: string): never => {
  */
 export const generateShaderHtml = async (payload: ConversionPayload = {}): Promise<ShaderHtmlResponse> => {
   try {
-    console.log('API: Calling /sysl-generate-shader with payload:', payload);
+    debug.log('API: Calling /sysl-generate-shader with payload:', payload);
     const response = await apiClient.post<ShaderHtmlResponse>('/sysl-generate-shader', payload);
     return handleResponse(response);
   } catch (error) {
@@ -92,7 +93,7 @@ export const generateShaderHtml = async (payload: ConversionPayload = {}): Promi
  */
 export const generateShaderCode = async (payload: ConversionPayload = {}): Promise<ShaderCodeResponse> => {
   try {
-    console.log('API: Calling /sysl-generate-shader-code with payload:', payload);
+    debug.log('API: Calling /sysl-generate-shader-code with payload:', payload);
     const response = await apiClient.post<ShaderCodeResponse>('/sysl-generate-shader-code', payload);
     return handleResponse(response);
   } catch (error) {
@@ -105,7 +106,7 @@ export const generateShaderCode = async (payload: ConversionPayload = {}): Promi
  */
 export const generateTWGLShaderCode = async (payload: ConversionPayload = {}): Promise<ShaderCodeResponse> => {
   try {
-    console.log('API: Calling /sysl-generate-twgl-shader with payload:', payload);
+    debug.log('API: Calling /sysl-generate-twgl-shader with payload:', payload);
     const response = await apiClient.post<ShaderCodeResponse>('/sysl-generate-twgl-shader', payload);
     return handleResponse(response);
   } catch (error) {

@@ -147,7 +147,7 @@ export class ProjectFileManager {
   } {
     // Validate version compatibility
     if (!this.isVersionCompatible(projectFile.version)) {
-      console.warn(`Project file version ${projectFile.version} may not be fully compatible with current version ${PROJECT_FILE_VERSION}`);
+      // Version mismatch - project may not be fully compatible
     }
     
     // Deserialize graph data - use the first available module name from the saved data
@@ -184,9 +184,7 @@ export class ProjectFileManager {
     
     try {
       localStorage.setItem(`asmblr-project-${key}`, JSON.stringify(projectFile, null, 2));
-      console.log(`Project saved to localStorage with key: asmblr-project-${key}`);
     } catch (error) {
-      console.error('Failed to save project to localStorage:', error);
       throw new Error('Failed to save project. Storage may be full.');
     }
   }
@@ -202,7 +200,6 @@ export class ProjectFileManager {
       const projectFile: ProjectFile = JSON.parse(data);
       return this.loadProjectFile(projectFile);
     } catch (error) {
-      console.error('Failed to load project from localStorage:', error);
       return null;
     }
   }
@@ -294,7 +291,7 @@ export class ProjectFileManager {
             });
           }
         } catch (error) {
-          console.warn(`Failed to parse project file ${key}:`, error);
+          // Failed to parse project file
         }
       }
     }
@@ -310,7 +307,6 @@ export class ProjectFileManager {
       localStorage.removeItem(`asmblr-project-${key}`);
       return true;
     } catch (error) {
-      console.error('Failed to delete project:', error);
       return false;
     }
   }

@@ -3,12 +3,12 @@
 
 import { useMemo } from 'react';
 import { useReactFlow } from 'reactflow';
-import { ConnectionState } from '../components/SmartReactFlowNode';
+import { ConnectionState as BasicConnectionState } from '../components/BasicNode';
 
 /**
- * Enhanced connection information
+ * Extended connection information
  */
-export interface EnhancedConnectionState extends ConnectionState {
+export interface ConnectionState extends BasicConnectionState {
   // Connection counts
   inputCount: number;
   outputCount: number;
@@ -32,7 +32,7 @@ export interface EnhancedConnectionState extends ConnectionState {
 export function useConnectionState(
   nodeId: string,
   requiredInputs: string[] = []
-): EnhancedConnectionState {
+): ConnectionState {
   const { getEdges } = useReactFlow();
   
   return useMemo(() => {

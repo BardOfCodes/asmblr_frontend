@@ -5,6 +5,7 @@ import { Card, Text, Title, HeaderPanel } from '../../design/components';
 import { theme } from '../../design/theme';
 import { ResizableLayout } from './ResizableLayout';
 import type { AsmblrMode, ViewerHandle } from '../../modes/types';
+import { debug } from '../../utils/debug';
 
 const StyledCard = styled(Card)`
   height: 100%;
@@ -66,22 +67,22 @@ export const EnhancedModularLayout: React.FC<EnhancedModularLayoutProps> = ({
   modeName, 
   setMode 
 }) => {
-  console.log('EnhancedModularLayout rendering with:', { mode, modeName });
+  debug.log('EnhancedModularLayout rendering with:', { mode, modeName });
   
   try {
     const { settings } = useSettings();
-    console.log('Settings loaded:', settings);
+    debug.log('Settings loaded:', settings);
     
     const viewerRef = useRef<ViewerHandle>(null);
     
-    console.log('Getting editor...');
+    debug.log('Getting editor...');
     const editor = mode.useEditor();
-    console.log('Editor loaded:', editor);
+    debug.log('Editor loaded:', editor);
     
-    console.log('Getting components...');
+    debug.log('Getting components...');
     const Viewer = mode.ViewerComponent;
     const ControlPanel = mode.ControlPanelComponent;
-    console.log('Components loaded:', { Viewer, ControlPanel });
+    debug.log('Components loaded:', { Viewer, ControlPanel });
 
   // Header should always be visible so users can access settings
   // Check if any other panels are visible
@@ -153,7 +154,7 @@ export const EnhancedModularLayout: React.FC<EnhancedModularLayoutProps> = ({
   );
   
   } catch (error) {
-    console.error('Error in EnhancedModularLayout:', error);
+    debug.error('Error in EnhancedModularLayout:', error);
     return (
       <div style={{ 
         padding: '2rem', 

@@ -2,7 +2,15 @@ import React, { useEffect, useImperativeHandle, useRef, forwardRef } from 'react
 import createREGL from 'regl';
 import { BaseViewer, ViewerCapabilities } from '../BaseViewer';
 import { initializeMouseControls } from '../../components/utils/mouseControls';
-import vertShader from '../../renderer/main.vert.glsl';
+import { CleanupManager } from '../../utils/eventListeners';
+// Import vertex shader as string
+const vertShader = `
+attribute vec3 position;
+uniform mat4 projection, view;
+void main() {
+  gl_Position = projection * view * vec4(position, 1.0);
+}
+`;
 
 export interface ReglViewerHandle {
   setShaderCode: (fragShader: string, vertShader?: string) => void;
@@ -16,6 +24,7 @@ class ReglViewerCore extends BaseViewer {
   private drawCommand?: any;
   private frameLoop?: any;
   private shaderCode = { frag: '', vert: vertShader };
+  private cleanupManager = new CleanupManager();
   private dynamicUniforms: { [key: string]: any } = {
     cameraAngleX: 0.25,
     cameraAngleY: 0.5,
@@ -59,12 +68,20 @@ class ReglViewerCore extends BaseViewer {
   }
 
   async destroy(): Promise<void> {
+    // Clean up all event listeners and timers
+    this.cleanupManager.cleanup();
+    
     if (this.frameLoop) {
       this.frameLoop.cancel();
+      this.frameLoop = null;
     }
     if (this.regl) {
       this.regl.destroy();
+      this.regl = null;
     }
+    this.canvas = undefined;
+    this.drawCommand = undefined;
+    this.dynamicUniforms = {};
   }
 
   resize(width: number, height: number): void {
@@ -161,7 +178,8 @@ class ReglViewerCore extends BaseViewer {
       }
     };
 
-    window.addEventListener('resize', handleResize);
+    // Use cleanup manager to track the resize listener
+    this.cleanupManager.addEventlistener(window, 'resize', handleResize);
     handleResize();
   }
 

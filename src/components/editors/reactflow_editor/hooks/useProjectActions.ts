@@ -21,14 +21,12 @@ let globalReactFlowRef: {
 } | null = null;
 
 export function setReactFlowRef(ref: any) {
-  console.log('Setting React Flow ref:', ref ? 'available' : 'null');
   globalReactFlowRef = ref;
 }
 
 export function useProjectActions() {
   const saveProject = useCallback(async (key?: string) => {
     if (!globalReactFlowRef) {
-      console.warn('React Flow editor not available');
       return { success: false, message: 'Editor not available' };
     }
 
@@ -41,7 +39,6 @@ export function useProjectActions() {
 
   const loadProject = useCallback(async (key?: string) => {
     if (!globalReactFlowRef) {
-      console.warn('React Flow editor not available');
       return { success: false, message: 'Editor not available' };
     }
 
@@ -64,7 +61,6 @@ export function useProjectActions() {
 
   const exportProject = useCallback(async (filename?: string) => {
     if (!globalReactFlowRef) {
-      console.warn('React Flow editor not available');
       return { success: false, message: 'Editor not available' };
     }
 
@@ -77,7 +73,6 @@ export function useProjectActions() {
 
   const newProject = useCallback(() => {
     if (!globalReactFlowRef) {
-      console.warn('React Flow editor not available');
       return { success: false, message: 'Editor not available' };
     }
 
@@ -89,7 +84,6 @@ export function useProjectActions() {
 
   const importProject = useCallback(async (file: File) => {
     if (!globalReactFlowRef) {
-      console.warn('React Flow editor not available');
       return { success: false, message: 'Editor not available' };
     }
 
@@ -115,9 +109,7 @@ export function useProjectActions() {
   }, []);
 
   const isAvailable = useCallback(() => {
-    const available = globalReactFlowRef !== null;
-    console.log('Project actions available check:', available, globalReactFlowRef ? 'ref exists' : 'ref is null');
-    return available;
+    return globalReactFlowRef !== null;
   }, []);
 
   return {

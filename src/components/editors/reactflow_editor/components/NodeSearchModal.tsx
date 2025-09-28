@@ -111,9 +111,12 @@ const NodeSearchModal: React.FC<NodeSearchModalProps> = ({
     if (isOpen) {
       setSearchTerm('');
       setSelectedIndex(0);
-      setTimeout(() => {
+      // Use a timer that gets cleaned up on unmount
+      const timer = setTimeout(() => {
         inputRef.current?.focus();
       }, 100);
+      
+      return () => clearTimeout(timer);
     }
   }, [isOpen]);
 

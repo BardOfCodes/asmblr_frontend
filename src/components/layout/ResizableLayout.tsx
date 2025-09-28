@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import { useSettings } from '../../store/SettingsContext';
 import { theme } from '../../design/theme';
@@ -210,20 +210,16 @@ export const ResizableLayout: React.FC<ResizableLayoutProps> = ({
     }
   }, [isDragging, handleMouseMove, handleMouseUp]);
 
-  // Build grid template based on visible panels
-  const visiblePanels = {
-    header: header,
-    editor: editor,
-    viewer: viewer,
-    controlPanel: controlPanel,
-  };
+  // Memoize visible panels to prevent recreating object on every render
+  const visiblePanels = useMemo(() => ({
+    header: !!header,
+    editor: !!editor,
+    viewer: !!viewer,
+    controlPanel: !!controlPanel,
+  }), [header, editor, viewer, controlPanel]);
 
-  const buildGridTemplate = () => {
-    // Layout structure:
-    // Header (full width, fixed height)
-    // Editor | Viewer (side by side, remaining height minus control panel)
-    // Control Panel (full width, fixed height)
-    
+  // Memoize grid template calculation to prevent recalculation on every render
+  const gridTemplate = useMemo(() => {
     const rows = [];
     const areas = [];
     
@@ -268,30 +264,23 @@ export const ResizableLayout: React.FC<ResizableLayoutProps> = ({
       gridTemplateColumns: cols,
       gridTemplateAreas: areas.join(' ') || '"main"',
     };
-  };
-
-  const gridTemplate = buildGridTemplate();
-  
-  // Debug grid template
-  console.log('Grid template:', gridTemplate);
-  console.log('Visible panels:', visiblePanels);
-  console.log('Panel sizes:', sizes);
+  }, [visiblePanels, sizes.headerHeight, sizes.editorWidth, sizes.controlPanelHeight]);
 
   return (
     <LayoutContainer 
       ref={containerRef}
       style={gridTemplate}
     >
-      {visiblePanels.header && (
+      {header && (
         <Panel $gridArea="header" $visible={true}>
           {header}
         </Panel>
       )}
 
-      {visiblePanels.editor && (
+      {editor && (
         <Panel $gridArea="editor" $visible={true}>
           {editor}
-          {visiblePanels.viewer && (
+          {viewer && (
             <ResizeHandle 
               $direction="horizontal"
               onMouseDown={(e) => handleMouseDown('editor-right', e)}
@@ -300,13 +289,13 @@ export const ResizableLayout: React.FC<ResizableLayoutProps> = ({
         </Panel>
       )}
 
-      {visiblePanels.viewer && (
+      {viewer && (
         <Panel $gridArea="viewer" $visible={true}>
           {viewer}
         </Panel>
       )}
 
-      {visiblePanels.controlPanel && (
+      {controlPanel && (
         <Panel $gridArea="control" $visible={true} data-grid-area="control">
           {controlPanel}
           <ResizeHandle 

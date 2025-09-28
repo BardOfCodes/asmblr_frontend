@@ -15,7 +15,7 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import styled from 'styled-components';
-import { SmartReactFlowNode } from './SmartReactFlowNode';
+import BasicNode from './BasicNode';
 import { NodeRegistry, NodeFactory, NodeDefinition } from '../definitions';
 import { DEFAULT_NODE_THEME } from '../theme';
 import { GraphSerializer } from '../utils/GraphSerializer';
@@ -86,7 +86,7 @@ const StatusPanel = styled.div`
  * Node types for React Flow
  */
 const nodeTypes = {
-  'smart-node': SmartReactFlowNode
+  'smart-node': BasicNode
 };
 
 /**

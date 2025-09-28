@@ -1,8 +1,8 @@
 // React Flow Components Module Exports
 // This module exports all React components for the node editor
 
-export { SmartReactFlowNode } from './SmartReactFlowNode';
-export type { SmartReactFlowNodeProps, ConnectionState } from './SmartReactFlowNode';
+export { BasicNode } from './BasicNode';
+export type { BasicNodeProps, ConnectionState } from './BasicNode';
 
 export { NodeInputs } from './NodeInputs';
 export type { NodeInputsProps } from './NodeInputs';

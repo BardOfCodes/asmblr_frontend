@@ -1,5 +1,6 @@
 import React, { useEffect, useImperativeHandle, useRef, forwardRef } from 'react';
 import { BaseViewer, ViewerCapabilities } from '../BaseViewer';
+import { CleanupManager } from '../../utils/eventListeners';
 import { Text } from '../../design/components';
 import { theme } from '../../design/theme';
 
@@ -13,6 +14,7 @@ class CanvasViewerCore extends BaseViewer {
   private canvas?: HTMLCanvasElement;
   private ctx?: CanvasRenderingContext2D;
   private animationFrame?: number;
+  private cleanupManager = new CleanupManager();
   private geometryData: any = null;
 
   get name(): string { return 'CanvasViewer'; }
@@ -46,9 +48,15 @@ class CanvasViewerCore extends BaseViewer {
   }
 
   async destroy(): Promise<void> {
+    // Clean up all event listeners and timers
+    this.cleanupManager.cleanup();
+    
     if (this.animationFrame) {
       cancelAnimationFrame(this.animationFrame);
+      this.animationFrame = undefined;
     }
+    this.canvas = undefined;
+    this.ctx = undefined;
   }
 
   resize(width: number, height: number): void {
@@ -125,7 +133,8 @@ class CanvasViewerCore extends BaseViewer {
       }
     };
 
-    window.addEventListener('resize', handleResize);
+    // Use cleanup manager to track the resize listener
+    this.cleanupManager.addEventlistener(window, 'resize', handleResize);
     handleResize();
   }
 

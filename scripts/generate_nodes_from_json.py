@@ -21,60 +21,21 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 OUT_BASE = ROOT.parent / 'src' / 'components' / 'editors' / 'reactflow_editor' / 'nodes' / 'auto_nodes'
 
+# No mapping needed - use categories directly
+
 
 def to_file_safe(name: str) -> str:
   return re.sub(r'[^A-Za-z0-9_]', '', name)
 
 
 def bucket_for_file(node: dict) -> str:
-  """Determine which file bucket this node belongs to"""
-  t = node.get('type', '')
-  desc = (node.get('description') or '').lower()
-  # Prefer description module hints
-  if 'transforms_3d' in desc:
-    return 'transforms3d'
-  if 'transforms_2d' in desc:
-    return 'transforms2d'
-  if 'primitives_3d' in desc:
-    return 'primitives3d'
-  if 'primitives_2d' in desc:
-    return 'primitives2d'
-  if 'combinators' in desc:
-    return 'combinators'
-  if 'color' in desc:
-    return 'color'
-  # Heuristics by suffix
-  if t.endswith('3D'):
-    return 'primitives3d'
-  if t.endswith('2D'):
-    return 'primitives2d'
-  # Common combinators
-  if t in ('Union', 'Difference', 'Intersection', 'SmoothUnion', 'SmoothDifference', 'SmoothIntersection'):
-    return 'combinators'
-  return 'auto'
+  """Use the category directly as the bucket name"""
+  return node.get('category', 'auto')
 
 def category_for_node(node: dict) -> str:
-  """Determine the NodeCategory for this node (matches TypeScript interface)"""
-  t = node.get('type', '')
-  desc = (node.get('description') or '').lower()
-  
-  # Map to valid NodeCategory values
-  if 'transforms_3d' in desc or 'transforms_2d' in desc:
-    return 'Transforms'
-  if 'primitives_3d' in desc or 'primitives_2d' in desc:
-    return 'Primitives'
-  if 'combinators' in desc:
-    return 'Combinators'
-  if 'color' in desc:
-    return 'Materials'  # Color operations go under Materials
-  # Heuristics by suffix
-  if t.endswith('3D') or t.endswith('2D'):
-    return 'Primitives'
-  # Common combinators
-  if t in ('Union', 'Difference', 'Intersection', 'SmoothUnion', 'SmoothDifference', 'SmoothIntersection'):
-    return 'Combinators'
-  
-  return 'auto'
+  """Return the original category from the node without mapping"""
+  # Just return the category as-is from the node
+  return node.get('category', 'auto')
 
 
 def render_node_definition(node: dict, bucket: str) -> str:
@@ -189,27 +150,24 @@ def main():
     data = json.load(f)
   nodes = data.get('nodes', [])
 
-  # Prepare buckets
-  buckets = ['primitives2d', 'primitives3d', 'transforms2d', 'transforms3d', 'combinators', 'color', 'auto']
-
   exports = []
-
-  # Group nodes by bucket
-  buckets_content = {b: [] for b in buckets}
+  buckets_content = {}
   
   for node in nodes:
     bucket = bucket_for_file(node)
     file_safe = to_file_safe(node['type'])
     
+    # Initialize bucket if it doesn't exist
+    if bucket not in buckets_content:
+      buckets_content[bucket] = []
+    
     # Build node definition
     const_name = f"{file_safe}Definition"
     buckets_content[bucket].append((const_name, render_node_definition(node, bucket)))
-    exports.append(f"export {{ {const_name} }} from './{bucket}';")  
-    
-    # No need for separate variadic policy - it's now in the node definitions
+    exports.append(f"export {{ {const_name} }} from './{bucket}';")
 
   # Write consolidated files per bucket
-  for bucket in buckets:
+  for bucket in buckets_content:
     if buckets_content[bucket]:
       bucket_path = OUT_BASE / f"{bucket}.ts"
       content = render_bucket_file(buckets_content[bucket])

@@ -6,6 +6,8 @@ export interface ViewerHandle {
   setShaderCode?: (code: string) => void;
   setUniform?: (name: string, value: any) => void;
   captureScreenshot?: () => void;
+  loadShaderCode?: (code: string, uniforms?: any, textures?: any) => void;
+  loadHTML?: (html: string) => void;
   [key: string]: any;
 }
 

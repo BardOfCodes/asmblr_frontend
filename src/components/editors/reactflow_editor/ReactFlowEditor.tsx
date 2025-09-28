@@ -18,8 +18,8 @@ import 'reactflow/dist/style.css';
 import './styles/theme.css';
 
 import { CustomNode } from './components/CustomNode';
-import SmartReactFlowNode from './components/SmartReactFlowNode';
-import EnhancedContextMenu from './components/EnhancedContextMenu';
+import BasicNode from './components/BasicNode';
+import ContextMenu from './components/ContextMenu';
 import NodeSearchModal from './components/NodeSearchModal';
 import { ReactFlowNode, ReactFlowEdge, ReactFlowNodeData } from './types';
 import { NodeRegistry, NodeFactory } from './definitions';
@@ -39,7 +39,6 @@ const initializeRegistry = () => {
   );
   
   globalNodeRegistry.registerMany(nodeDefinitions);
-  console.log('[ReactFlowEditor] Loaded', nodeDefinitions.length, 'node definitions');
 };
 
 // Initialize once
@@ -48,10 +47,20 @@ initializeRegistry();
 // Initialize project service
 projectService.initialize(globalNodeRegistry);
 
-// Define custom node types
+// Define custom node types (outside component to prevent recreation)
 const nodeTypes: NodeTypes = {
   custom: CustomNode,
-  'smart-node': SmartReactFlowNode,
+  'smart-node': BasicNode,
+};
+
+// Define default edge options (outside component to prevent recreation)
+const defaultEdgeOptions = {
+  style: { 
+    strokeWidth: DEFAULT_NODE_THEME.connections.strokeWidth,
+    stroke: DEFAULT_NODE_THEME.connections.color
+  },
+  type: DEFAULT_NODE_THEME.connections.type,
+  animated: DEFAULT_NODE_THEME.connections.animated
 };
 
 interface ReactFlowEditorProps {
@@ -83,7 +92,6 @@ const ReactFlowEditorInner: React.FC<ReactFlowEditorProps> = ({
   // Register React Flow functions for project operations
   
   useEffect(() => {
-    console.log('ReactFlowEditor: Setting up project actions ref');
     setReactFlowRef({
       getNodes: reactFlowInstance.getNodes,
       getEdges: reactFlowInstance.getEdges,
@@ -96,7 +104,6 @@ const ReactFlowEditorInner: React.FC<ReactFlowEditorProps> = ({
 
     // Cleanup on unmount
     return () => {
-      console.log('ReactFlowEditor: Cleaning up project actions ref');
       setReactFlowRef(null);
     };
   }, [reactFlowInstance, setNodes, setEdges]);
@@ -106,13 +113,11 @@ const ReactFlowEditorInner: React.FC<ReactFlowEditorProps> = ({
     (params: Connection) => {
       // Basic validation
       if (!params.source || !params.sourceHandle || !params.target || !params.targetHandle) {
-        console.log('[Connection] Missing required connection parameters');
         return;
       }
 
       // Validation 1: Prevent self-connections
       if (params.source === params.target) {
-        console.log('[Connection] ❌ Self-connection not allowed');
         return;
       }
 
@@ -121,7 +126,6 @@ const ReactFlowEditorInner: React.FC<ReactFlowEditorProps> = ({
       const targetNode = nodes.find(node => node.id === params.target);
       
       if (!sourceNode || !targetNode) {
-        console.log('[Connection] Source or target node not found');
         return;
       }
 
@@ -130,7 +134,6 @@ const ReactFlowEditorInner: React.FC<ReactFlowEditorProps> = ({
       const targetDefinition = globalNodeRegistry.get((targetNode.data as any).nodeType || targetNode.data.type);
       
       if (!sourceDefinition || !targetDefinition) {
-        console.log('[Connection] Node definitions not found');
         return;
       }
 
@@ -139,19 +142,16 @@ const ReactFlowEditorInner: React.FC<ReactFlowEditorProps> = ({
       const targetInput = targetDefinition.inputs.find(input => input.key === params.targetHandle);
 
       if (!sourceOutput) {
-        console.log('[Connection] ❌ Source handle is not a valid output:', params.sourceHandle);
         return;
       }
 
       if (!targetInput) {
-        console.log('[Connection] ❌ Target handle is not a valid input:', params.targetHandle);
         return;
       }
       
       // Find the input definition to check variadic property
       const inputDefinition = targetDefinition.inputs.find(input => input.key === params.targetHandle);
       if (!inputDefinition) {
-        console.log(`[Connection] Input definition not found for handle: ${params.targetHandle}`);
         return;
       }
       
@@ -260,10 +260,10 @@ const ReactFlowEditorInner: React.FC<ReactFlowEditorProps> = ({
       
       if (customPosition) {
         // Use provided position (from search modal)
-        position = reactFlowInstance.project(customPosition);
+        position = reactFlowInstance.screenToFlowPosition(customPosition);
       } else {
         // Use context menu position
-        position = reactFlowInstance.project({
+        position = reactFlowInstance.screenToFlowPosition({
           x: contextMenuPosition.x,
           y: contextMenuPosition.y,
         });
@@ -278,7 +278,6 @@ const ReactFlowEditorInner: React.FC<ReactFlowEditorProps> = ({
         // Get the node definition to create proper data structure
         const definition = globalNodeRegistry.get(result.node.type);
         if (!definition) {
-          console.error('Node definition not found for type:', result.node.type);
           return;
         }
 
@@ -302,45 +301,38 @@ const ReactFlowEditorInner: React.FC<ReactFlowEditorProps> = ({
         
         setNodes((nds) => [...nds, reactFlowNode]);
         onNodesChange?.([...nodes, reactFlowNode]);
-      } else {
-        console.error('Failed to create node:', result.errors);
       }
       
       closeContextMenu();
     } catch (error) {
-      console.error('Error adding node:', error);
+      // Silently handle error in production
     }
   }, [contextMenuPosition, reactFlowInstance, setNodes, nodes, onNodesChange, closeContextMenu]);
 
-  // Handle nodes change
+  // Handle nodes change - properly sync state without setTimeout
   const handleNodesChange = useCallback((changes: any) => {
     onNodesStateChange(changes);
-    // Get updated nodes after change
-    setTimeout(() => {
-      onNodesChange?.(nodes);
-    }, 0);
-  }, [onNodesStateChange, onNodesChange, nodes]);
+    // Use ReactFlow's internal state which is already updated
+    if (onNodesChange && reactFlowInstance) {
+      const currentNodes = reactFlowInstance.getNodes();
+      onNodesChange(currentNodes);
+    }
+  }, [onNodesStateChange, onNodesChange, reactFlowInstance]);
 
-  // Handle edges change
+  // Handle edges change - properly sync state without setTimeout
   const handleEdgesChange = useCallback((changes: any) => {
     onEdgesStateChange(changes);
-    // Get updated edges after change
-    setTimeout(() => {
-      onEdgesChange?.(edges);
-    }, 0);
-  }, [onEdgesStateChange, onEdgesChange, edges]);
+    // Use ReactFlow's internal state which is already updated
+    if (onEdgesChange && reactFlowInstance) {
+      const currentEdges = reactFlowInstance.getEdges();
+      onEdgesChange(currentEdges);
+    }
+  }, [onEdgesStateChange, onEdgesChange, reactFlowInstance]);
 
   // Get all node definitions for context menu and search
   const allNodeDefinitions = useMemo(() => {
     return globalNodeRegistry.getAll();
   }, []);
-
-  // Debug connection theme
-  console.log('[ReactFlowEditor] Connection theme values:', {
-    strokeWidth: DEFAULT_NODE_THEME.connections.strokeWidth,
-    color: DEFAULT_NODE_THEME.connections.color,
-    type: DEFAULT_NODE_THEME.connections.type
-  });
 
   return (
     <div 
@@ -360,22 +352,15 @@ const ReactFlowEditorInner: React.FC<ReactFlowEditorProps> = ({
         nodeTypes={nodeTypes}
         fitView
         attributionPosition="bottom-left"
-        defaultEdgeOptions={{
-          style: { 
-            strokeWidth: DEFAULT_NODE_THEME.connections.strokeWidth,
-            stroke: DEFAULT_NODE_THEME.connections.color
-          },
-          type: DEFAULT_NODE_THEME.connections.type,
-          animated: DEFAULT_NODE_THEME.connections.animated
-        }}
+        defaultEdgeOptions={defaultEdgeOptions}
       >
         <Background />
         <Controls />
         <MiniMap />
       </ReactFlow>
 
-      {/* Enhanced Context Menu */}
-      <EnhancedContextMenu
+      {/* Context Menu */}
+      <ContextMenu
         isOpen={isContextMenuOpen}
         position={contextMenuPosition}
         nodeDefinitions={allNodeDefinitions}
