@@ -22,6 +22,14 @@ ROOT = Path(__file__).resolve().parent
 OUT_BASE = ROOT.parent / 'src' / 'components' / 'editors' / 'reactflow_editor' / 'nodes' / 'auto_nodes'
 
 # No mapping needed - use categories directly
+EXCLUDE_SYMBOLS = {
+    'JoinUnion', 'EncodedRGBGrid3D', 'RGBGrid3D', "SDFGrid3D",
+    "TileUV2D", "SinRepeatX2D", "SinRepeatY2D",
+    "SinAlongAxisY2D", "SinDiagonal2D", "SinDiagonalFlip2D",
+    "SinRadial2D", "SquiggleX2D", "SquiggleY2D",
+    "SquiggleDiagonal2D", "SquiggleDiagonalFlip2D",
+    "SquiggleRadial2D", "SquiggleDistortion2D"
+}
 
 
 def to_file_safe(name: str) -> str:
@@ -45,7 +53,7 @@ def render_node_definition(node: dict, bucket: str) -> str:
     input_def = {
       'key': i.get('key'),
       'label': i.get('label'),
-      'socketType': i.get('socketType'),
+      'socketType': 'ExprSocket',  # All sockets are now expressions
       'required': bool(i.get('required'))
     }
     # Add optional fields only if they exist
@@ -63,7 +71,7 @@ def render_node_definition(node: dict, bucket: str) -> str:
     output_def = {
       'key': o.get('key'),
       'label': o.get('label'),
-      'socketType': o.get('socketType')
+      'socketType': 'ExprSocket'  # All sockets are now expressions
     }
     # Add optional fields only if they exist
     if o.get('description'):
@@ -75,7 +83,7 @@ def render_node_definition(node: dict, bucket: str) -> str:
   for c in node.get('controls', []):
     control_def = {
       'key': c.get('key'),
-      'type': c.get('type'),
+      'type': c.get('type'),  # Raw type string from backend
       'label': c.get('label'),
       'config': c.get('config', {})
     }
@@ -88,8 +96,7 @@ def render_node_definition(node: dict, bucket: str) -> str:
       control_def['showLabel'] = bool(c.get('showLabel'))
     if 'hasSocket' in c:
       control_def['hasSocket'] = bool(c.get('hasSocket'))
-    if c.get('socketType'):
-      control_def['socketType'] = c.get('socketType')
+    # Remove socketType from controls - not needed anymore
     controls.append(control_def)
 
   # Use a clean template with proper formatting

@@ -6,9 +6,9 @@ export const Sphere3DDefinition: NodeDefinition = {
   label: "Sphere3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "radius", "label": "Radius", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "radius", "label": "Radius", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "radius", "type": "float", "label": "Radius", "config": {"defaultValue": null}, "linkedToInput": "radius", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "radius", "type": "float", "label": "Radius", "config": {"defaultValue": null}, "linkedToInput": "radius", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -17,9 +17,9 @@ export const Box3DDefinition: NodeDefinition = {
   label: "Box3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "size", "label": "Size", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "size", "label": "Size", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "size", "type": "vector3", "label": "Size", "config": {"defaultValue": null}, "linkedToInput": "size", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "size", "type": "Vector[3]", "label": "Size", "config": {"defaultValue": null}, "linkedToInput": "size", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -28,9 +28,9 @@ export const Cuboid3DDefinition: NodeDefinition = {
   label: "Cuboid3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "size", "label": "Size", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "size", "label": "Size", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "size", "type": "vector3", "label": "Size", "config": {"defaultValue": null}, "linkedToInput": "size", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "size", "type": "Vector[3]", "label": "Size", "config": {"defaultValue": null}, "linkedToInput": "size", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -39,9 +39,9 @@ export const RoundedBox3DDefinition: NodeDefinition = {
   label: "RoundedBox3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "size", "label": "Size", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "radius", "label": "Radius", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "size", "label": "Size", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "radius", "label": "Radius", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "size", "type": "vector3", "label": "Size", "config": {"defaultValue": null}, "linkedToInput": "size", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "radius", "type": "float", "label": "Radius", "config": {"defaultValue": null}, "linkedToInput": "radius", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "size", "type": "Vector[3]", "label": "Size", "config": {"defaultValue": null}, "linkedToInput": "size", "showLabel": true, "hasSocket": true}, {"key": "radius", "type": "float", "label": "Radius", "config": {"defaultValue": null}, "linkedToInput": "radius", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -50,9 +50,9 @@ export const BoxFrame3DDefinition: NodeDefinition = {
   label: "BoxFrame3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "b", "label": "B", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "e", "label": "E", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "b", "label": "B", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "e", "label": "E", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "b", "type": "vector3", "label": "B", "config": {"defaultValue": null}, "linkedToInput": "b", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "e", "type": "float", "label": "E", "config": {"defaultValue": null}, "linkedToInput": "e", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "b", "type": "Vector[3]", "label": "B", "config": {"defaultValue": null}, "linkedToInput": "b", "showLabel": true, "hasSocket": true}, {"key": "e", "type": "float", "label": "E", "config": {"defaultValue": null}, "linkedToInput": "e", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -61,9 +61,9 @@ export const Torus3DDefinition: NodeDefinition = {
   label: "Torus3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "t", "label": "T", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "t", "label": "T", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "t", "type": "vector2", "label": "T", "config": {"defaultValue": null}, "linkedToInput": "t", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "t", "type": "Vector[2]", "label": "T", "config": {"defaultValue": null}, "linkedToInput": "t", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -72,9 +72,9 @@ export const CappedTorus3DDefinition: NodeDefinition = {
   label: "CappedTorus3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "angle", "label": "Angle", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "ra", "label": "Ra", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "rb", "label": "Rb", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "angle", "label": "Angle", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "ra", "label": "Ra", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "rb", "label": "Rb", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "angle", "type": "float", "label": "Angle", "config": {"defaultValue": null}, "linkedToInput": "angle", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "ra", "type": "float", "label": "Ra", "config": {"defaultValue": null}, "linkedToInput": "ra", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "rb", "type": "float", "label": "Rb", "config": {"defaultValue": null}, "linkedToInput": "rb", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "angle", "type": "float", "label": "Angle", "config": {"defaultValue": null}, "linkedToInput": "angle", "showLabel": true, "hasSocket": true}, {"key": "ra", "type": "float", "label": "Ra", "config": {"defaultValue": null}, "linkedToInput": "ra", "showLabel": true, "hasSocket": true}, {"key": "rb", "type": "float", "label": "Rb", "config": {"defaultValue": null}, "linkedToInput": "rb", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -83,9 +83,9 @@ export const Link3DDefinition: NodeDefinition = {
   label: "Link3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "le", "label": "Le", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "r1", "label": "R1", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "r2", "label": "R2", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "le", "label": "Le", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "r1", "label": "R1", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "r2", "label": "R2", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "le", "type": "float", "label": "Le", "config": {"defaultValue": null}, "linkedToInput": "le", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "r1", "type": "float", "label": "R1", "config": {"defaultValue": null}, "linkedToInput": "r1", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "r2", "type": "float", "label": "R2", "config": {"defaultValue": null}, "linkedToInput": "r2", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "le", "type": "float", "label": "Le", "config": {"defaultValue": null}, "linkedToInput": "le", "showLabel": true, "hasSocket": true}, {"key": "r1", "type": "float", "label": "R1", "config": {"defaultValue": null}, "linkedToInput": "r1", "showLabel": true, "hasSocket": true}, {"key": "r2", "type": "float", "label": "R2", "config": {"defaultValue": null}, "linkedToInput": "r2", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -94,9 +94,9 @@ export const InfiniteCylinder3DDefinition: NodeDefinition = {
   label: "InfiniteCylinder3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "c", "label": "C", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "c", "label": "C", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "c", "type": "vector3", "label": "C", "config": {"defaultValue": null}, "linkedToInput": "c", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "c", "type": "Vector[3]", "label": "C", "config": {"defaultValue": null}, "linkedToInput": "c", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -105,9 +105,9 @@ export const Cone3DDefinition: NodeDefinition = {
   label: "Cone3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "angle", "label": "Angle", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "h", "label": "H", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "angle", "label": "Angle", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "h", "label": "H", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "angle", "type": "float", "label": "Angle", "config": {"defaultValue": null}, "linkedToInput": "angle", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "angle", "type": "float", "label": "Angle", "config": {"defaultValue": null}, "linkedToInput": "angle", "showLabel": true, "hasSocket": true}, {"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -116,9 +116,9 @@ export const InexactCone3DDefinition: NodeDefinition = {
   label: "InexactCone3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "angle", "label": "Angle", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "h", "label": "H", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "angle", "label": "Angle", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "h", "label": "H", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "angle", "type": "float", "label": "Angle", "config": {"defaultValue": null}, "linkedToInput": "angle", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "angle", "type": "float", "label": "Angle", "config": {"defaultValue": null}, "linkedToInput": "angle", "showLabel": true, "hasSocket": true}, {"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -127,9 +127,9 @@ export const InfiniteCone3DDefinition: NodeDefinition = {
   label: "InfiniteCone3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "angle", "label": "Angle", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "angle", "label": "Angle", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "angle", "type": "float", "label": "Angle", "config": {"defaultValue": null}, "linkedToInput": "angle", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "angle", "type": "float", "label": "Angle", "config": {"defaultValue": null}, "linkedToInput": "angle", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -138,9 +138,9 @@ export const Plane3DDefinition: NodeDefinition = {
   label: "Plane3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "n", "label": "N", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "h", "label": "H", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "n", "label": "N", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "h", "label": "H", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "n", "type": "vector3", "label": "N", "config": {"defaultValue": null}, "linkedToInput": "n", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "n", "type": "Vector[3]", "label": "N", "config": {"defaultValue": null}, "linkedToInput": "n", "showLabel": true, "hasSocket": true}, {"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -149,9 +149,9 @@ export const HexPrism3DDefinition: NodeDefinition = {
   label: "HexPrism3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "h", "label": "H", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "h", "label": "H", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "h", "type": "vector2", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "h", "type": "Vector[2]", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -160,9 +160,9 @@ export const TriPrism3DDefinition: NodeDefinition = {
   label: "TriPrism3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "h", "label": "H", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "h", "label": "H", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "h", "type": "vector2", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "h", "type": "Vector[2]", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -171,9 +171,9 @@ export const Capsule3DDefinition: NodeDefinition = {
   label: "Capsule3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "a", "label": "A", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "b", "label": "B", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "r", "label": "R", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "a", "label": "A", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "b", "label": "B", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "r", "label": "R", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "a", "type": "vector3", "label": "A", "config": {"defaultValue": null}, "linkedToInput": "a", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "b", "type": "vector3", "label": "B", "config": {"defaultValue": null}, "linkedToInput": "b", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "a", "type": "Vector[3]", "label": "A", "config": {"defaultValue": null}, "linkedToInput": "a", "showLabel": true, "hasSocket": true}, {"key": "b", "type": "Vector[3]", "label": "B", "config": {"defaultValue": null}, "linkedToInput": "b", "showLabel": true, "hasSocket": true}, {"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -182,9 +182,9 @@ export const VerticalCapsule3DDefinition: NodeDefinition = {
   label: "VerticalCapsule3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "h", "label": "H", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "r", "label": "R", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "h", "label": "H", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "r", "label": "R", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true}, {"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -193,9 +193,9 @@ export const VerticalCappedCylinder3DDefinition: NodeDefinition = {
   label: "VerticalCappedCylinder3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "h", "label": "H", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "r", "label": "R", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "h", "label": "H", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "r", "label": "R", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true}, {"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -204,9 +204,9 @@ export const CappedCylinder3DDefinition: NodeDefinition = {
   label: "CappedCylinder3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "h", "label": "H", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "r", "label": "R", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "h", "label": "H", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "r", "label": "R", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true}, {"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -215,9 +215,9 @@ export const Cylinder3DDefinition: NodeDefinition = {
   label: "Cylinder3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "h", "label": "H", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "r", "label": "R", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "h", "label": "H", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "r", "label": "R", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true}, {"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -226,9 +226,9 @@ export const ArbitraryCappedCylinder3DDefinition: NodeDefinition = {
   label: "ArbitraryCappedCylinder3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "a", "label": "A", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "b", "label": "B", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "r", "label": "R", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "a", "label": "A", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "b", "label": "B", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "r", "label": "R", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "a", "type": "vector3", "label": "A", "config": {"defaultValue": null}, "linkedToInput": "a", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "b", "type": "vector3", "label": "B", "config": {"defaultValue": null}, "linkedToInput": "b", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "a", "type": "Vector[3]", "label": "A", "config": {"defaultValue": null}, "linkedToInput": "a", "showLabel": true, "hasSocket": true}, {"key": "b", "type": "Vector[3]", "label": "B", "config": {"defaultValue": null}, "linkedToInput": "b", "showLabel": true, "hasSocket": true}, {"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -237,9 +237,9 @@ export const RoundedCylinder3DDefinition: NodeDefinition = {
   label: "RoundedCylinder3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "ra", "label": "Ra", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "rb", "label": "Rb", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "h", "label": "H", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "ra", "label": "Ra", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "rb", "label": "Rb", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "h", "label": "H", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "ra", "type": "float", "label": "Ra", "config": {"defaultValue": null}, "linkedToInput": "ra", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "rb", "type": "float", "label": "Rb", "config": {"defaultValue": null}, "linkedToInput": "rb", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "ra", "type": "float", "label": "Ra", "config": {"defaultValue": null}, "linkedToInput": "ra", "showLabel": true, "hasSocket": true}, {"key": "rb", "type": "float", "label": "Rb", "config": {"defaultValue": null}, "linkedToInput": "rb", "showLabel": true, "hasSocket": true}, {"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -248,9 +248,9 @@ export const CappedCone3DDefinition: NodeDefinition = {
   label: "CappedCone3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "r1", "label": "R1", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "r2", "label": "R2", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "h", "label": "H", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "r1", "label": "R1", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "r2", "label": "R2", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "h", "label": "H", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "r1", "type": "float", "label": "R1", "config": {"defaultValue": null}, "linkedToInput": "r1", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "r2", "type": "float", "label": "R2", "config": {"defaultValue": null}, "linkedToInput": "r2", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "r1", "type": "float", "label": "R1", "config": {"defaultValue": null}, "linkedToInput": "r1", "showLabel": true, "hasSocket": true}, {"key": "r2", "type": "float", "label": "R2", "config": {"defaultValue": null}, "linkedToInput": "r2", "showLabel": true, "hasSocket": true}, {"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -259,9 +259,9 @@ export const ArbitraryCappedConeDefinition: NodeDefinition = {
   label: "ArbitraryCappedCone",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "a", "label": "A", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "b", "label": "B", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "ra", "label": "Ra", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "rb", "label": "Rb", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "a", "label": "A", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "b", "label": "B", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "ra", "label": "Ra", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "rb", "label": "Rb", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "a", "type": "vector3", "label": "A", "config": {"defaultValue": null}, "linkedToInput": "a", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "b", "type": "vector3", "label": "B", "config": {"defaultValue": null}, "linkedToInput": "b", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "ra", "type": "float", "label": "Ra", "config": {"defaultValue": null}, "linkedToInput": "ra", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "rb", "type": "float", "label": "Rb", "config": {"defaultValue": null}, "linkedToInput": "rb", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "a", "type": "Vector[3]", "label": "A", "config": {"defaultValue": null}, "linkedToInput": "a", "showLabel": true, "hasSocket": true}, {"key": "b", "type": "Vector[3]", "label": "B", "config": {"defaultValue": null}, "linkedToInput": "b", "showLabel": true, "hasSocket": true}, {"key": "ra", "type": "float", "label": "Ra", "config": {"defaultValue": null}, "linkedToInput": "ra", "showLabel": true, "hasSocket": true}, {"key": "rb", "type": "float", "label": "Rb", "config": {"defaultValue": null}, "linkedToInput": "rb", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -270,9 +270,9 @@ export const SolidAngle3DDefinition: NodeDefinition = {
   label: "SolidAngle3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "angle", "label": "Angle", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "ra", "label": "Ra", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "angle", "label": "Angle", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "ra", "label": "Ra", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "angle", "type": "float", "label": "Angle", "config": {"defaultValue": null}, "linkedToInput": "angle", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "ra", "type": "float", "label": "Ra", "config": {"defaultValue": null}, "linkedToInput": "ra", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "angle", "type": "float", "label": "Angle", "config": {"defaultValue": null}, "linkedToInput": "angle", "showLabel": true, "hasSocket": true}, {"key": "ra", "type": "float", "label": "Ra", "config": {"defaultValue": null}, "linkedToInput": "ra", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -281,9 +281,9 @@ export const CutSphere3DDefinition: NodeDefinition = {
   label: "CutSphere3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "r", "label": "R", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "h", "label": "H", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "r", "label": "R", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "h", "label": "H", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true}, {"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -292,9 +292,9 @@ export const CutHollowSphereDefinition: NodeDefinition = {
   label: "CutHollowSphere",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "r", "label": "R", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "h", "label": "H", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "t", "label": "T", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "r", "label": "R", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "h", "label": "H", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "t", "label": "T", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "t", "type": "float", "label": "T", "config": {"defaultValue": null}, "linkedToInput": "t", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true}, {"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true}, {"key": "t", "type": "float", "label": "T", "config": {"defaultValue": null}, "linkedToInput": "t", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -303,9 +303,9 @@ export const DeathStar3DDefinition: NodeDefinition = {
   label: "DeathStar3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "ra", "label": "Ra", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "rb", "label": "Rb", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "d", "label": "D", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "ra", "label": "Ra", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "rb", "label": "Rb", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "d", "label": "D", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "ra", "type": "float", "label": "Ra", "config": {"defaultValue": null}, "linkedToInput": "ra", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "rb", "type": "float", "label": "Rb", "config": {"defaultValue": null}, "linkedToInput": "rb", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "d", "type": "float", "label": "D", "config": {"defaultValue": null}, "linkedToInput": "d", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "ra", "type": "float", "label": "Ra", "config": {"defaultValue": null}, "linkedToInput": "ra", "showLabel": true, "hasSocket": true}, {"key": "rb", "type": "float", "label": "Rb", "config": {"defaultValue": null}, "linkedToInput": "rb", "showLabel": true, "hasSocket": true}, {"key": "d", "type": "float", "label": "D", "config": {"defaultValue": null}, "linkedToInput": "d", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -314,9 +314,9 @@ export const RoundCone3DDefinition: NodeDefinition = {
   label: "RoundCone3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "r1", "label": "R1", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "r2", "label": "R2", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "h", "label": "H", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "r1", "label": "R1", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "r2", "label": "R2", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "h", "label": "H", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "r1", "type": "float", "label": "R1", "config": {"defaultValue": null}, "linkedToInput": "r1", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "r2", "type": "float", "label": "R2", "config": {"defaultValue": null}, "linkedToInput": "r2", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "r1", "type": "float", "label": "R1", "config": {"defaultValue": null}, "linkedToInput": "r1", "showLabel": true, "hasSocket": true}, {"key": "r2", "type": "float", "label": "R2", "config": {"defaultValue": null}, "linkedToInput": "r2", "showLabel": true, "hasSocket": true}, {"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -325,9 +325,9 @@ export const ArbitraryRoundCone3DDefinition: NodeDefinition = {
   label: "ArbitraryRoundCone3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "a", "label": "A", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "b", "label": "B", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "r1", "label": "R1", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "r2", "label": "R2", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "a", "label": "A", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "b", "label": "B", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "r1", "label": "R1", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "r2", "label": "R2", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "a", "type": "vector3", "label": "A", "config": {"defaultValue": null}, "linkedToInput": "a", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "b", "type": "vector3", "label": "B", "config": {"defaultValue": null}, "linkedToInput": "b", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "r1", "type": "float", "label": "R1", "config": {"defaultValue": null}, "linkedToInput": "r1", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "r2", "type": "float", "label": "R2", "config": {"defaultValue": null}, "linkedToInput": "r2", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "a", "type": "Vector[3]", "label": "A", "config": {"defaultValue": null}, "linkedToInput": "a", "showLabel": true, "hasSocket": true}, {"key": "b", "type": "Vector[3]", "label": "B", "config": {"defaultValue": null}, "linkedToInput": "b", "showLabel": true, "hasSocket": true}, {"key": "r1", "type": "float", "label": "R1", "config": {"defaultValue": null}, "linkedToInput": "r1", "showLabel": true, "hasSocket": true}, {"key": "r2", "type": "float", "label": "R2", "config": {"defaultValue": null}, "linkedToInput": "r2", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -336,9 +336,9 @@ export const InexactEllipsoid3DDefinition: NodeDefinition = {
   label: "InexactEllipsoid3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "r", "label": "R", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "r", "label": "R", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "r", "type": "vector3", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "r", "type": "Vector[3]", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -347,9 +347,9 @@ export const RevolvedVesica3DDefinition: NodeDefinition = {
   label: "RevolvedVesica3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "a", "label": "A", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "b", "label": "B", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "w", "label": "W", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "a", "label": "A", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "b", "label": "B", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "w", "label": "W", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "a", "type": "vector3", "label": "A", "config": {"defaultValue": null}, "linkedToInput": "a", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "b", "type": "vector3", "label": "B", "config": {"defaultValue": null}, "linkedToInput": "b", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "w", "type": "float", "label": "W", "config": {"defaultValue": null}, "linkedToInput": "w", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "a", "type": "Vector[3]", "label": "A", "config": {"defaultValue": null}, "linkedToInput": "a", "showLabel": true, "hasSocket": true}, {"key": "b", "type": "Vector[3]", "label": "B", "config": {"defaultValue": null}, "linkedToInput": "b", "showLabel": true, "hasSocket": true}, {"key": "w", "type": "float", "label": "W", "config": {"defaultValue": null}, "linkedToInput": "w", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -358,9 +358,9 @@ export const Rhombus3DDefinition: NodeDefinition = {
   label: "Rhombus3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "la", "label": "La", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "lb", "label": "Lb", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "h", "label": "H", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "ra", "label": "Ra", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "la", "label": "La", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "lb", "label": "Lb", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "h", "label": "H", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "ra", "label": "Ra", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "la", "type": "float", "label": "La", "config": {"defaultValue": null}, "linkedToInput": "la", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "lb", "type": "float", "label": "Lb", "config": {"defaultValue": null}, "linkedToInput": "lb", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "ra", "type": "float", "label": "Ra", "config": {"defaultValue": null}, "linkedToInput": "ra", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "la", "type": "float", "label": "La", "config": {"defaultValue": null}, "linkedToInput": "la", "showLabel": true, "hasSocket": true}, {"key": "lb", "type": "float", "label": "Lb", "config": {"defaultValue": null}, "linkedToInput": "lb", "showLabel": true, "hasSocket": true}, {"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true}, {"key": "ra", "type": "float", "label": "Ra", "config": {"defaultValue": null}, "linkedToInput": "ra", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -369,9 +369,9 @@ export const Octahedron3DDefinition: NodeDefinition = {
   label: "Octahedron3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "s", "label": "S", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "s", "label": "S", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "s", "type": "float", "label": "S", "config": {"defaultValue": null}, "linkedToInput": "s", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "s", "type": "float", "label": "S", "config": {"defaultValue": null}, "linkedToInput": "s", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -380,9 +380,9 @@ export const InexactOctahedron3DDefinition: NodeDefinition = {
   label: "InexactOctahedron3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "s", "label": "S", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "s", "label": "S", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "s", "type": "float", "label": "S", "config": {"defaultValue": null}, "linkedToInput": "s", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "s", "type": "float", "label": "S", "config": {"defaultValue": null}, "linkedToInput": "s", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -391,9 +391,9 @@ export const Pyramid3DDefinition: NodeDefinition = {
   label: "Pyramid3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "h", "label": "H", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "h", "label": "H", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -402,9 +402,9 @@ export const Triangle3DDefinition: NodeDefinition = {
   label: "Triangle3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "a", "label": "A", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "b", "label": "B", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "c", "label": "C", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "a", "label": "A", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "b", "label": "B", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "c", "label": "C", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "a", "type": "vector3", "label": "A", "config": {"defaultValue": null}, "linkedToInput": "a", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "b", "type": "vector3", "label": "B", "config": {"defaultValue": null}, "linkedToInput": "b", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "c", "type": "vector3", "label": "C", "config": {"defaultValue": null}, "linkedToInput": "c", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "a", "type": "Vector[3]", "label": "A", "config": {"defaultValue": null}, "linkedToInput": "a", "showLabel": true, "hasSocket": true}, {"key": "b", "type": "Vector[3]", "label": "B", "config": {"defaultValue": null}, "linkedToInput": "b", "showLabel": true, "hasSocket": true}, {"key": "c", "type": "Vector[3]", "label": "C", "config": {"defaultValue": null}, "linkedToInput": "c", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -413,9 +413,9 @@ export const Quadrilateral3DDefinition: NodeDefinition = {
   label: "Quadrilateral3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "a", "label": "A", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "b", "label": "B", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "c", "label": "C", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "d", "label": "D", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "a", "label": "A", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "b", "label": "B", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "c", "label": "C", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "d", "label": "D", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "a", "type": "vector3", "label": "A", "config": {"defaultValue": null}, "linkedToInput": "a", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "b", "type": "vector3", "label": "B", "config": {"defaultValue": null}, "linkedToInput": "b", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "c", "type": "vector3", "label": "C", "config": {"defaultValue": null}, "linkedToInput": "c", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "d", "type": "vector3", "label": "D", "config": {"defaultValue": null}, "linkedToInput": "d", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "a", "type": "Vector[3]", "label": "A", "config": {"defaultValue": null}, "linkedToInput": "a", "showLabel": true, "hasSocket": true}, {"key": "b", "type": "Vector[3]", "label": "B", "config": {"defaultValue": null}, "linkedToInput": "b", "showLabel": true, "hasSocket": true}, {"key": "c", "type": "Vector[3]", "label": "C", "config": {"defaultValue": null}, "linkedToInput": "c", "showLabel": true, "hasSocket": true}, {"key": "d", "type": "Vector[3]", "label": "D", "config": {"defaultValue": null}, "linkedToInput": "d", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -457,9 +457,9 @@ export const InexactSuperQuadrics3DDefinition: NodeDefinition = {
   label: "InexactSuperQuadrics3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "skew_vec", "label": "Skew Vec", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "epsilon_1", "label": "Epsilon 1", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "epsilon_2", "label": "Epsilon 2", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "skew_vec", "label": "Skew Vec", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "epsilon_1", "label": "Epsilon 1", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "epsilon_2", "label": "Epsilon 2", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "skew_vec", "type": "vector3", "label": "Skew Vec", "config": {"defaultValue": null}, "linkedToInput": "skew_vec", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "epsilon_1", "type": "float", "label": "Epsilon 1", "config": {"defaultValue": null}, "linkedToInput": "epsilon_1", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "epsilon_2", "type": "float", "label": "Epsilon 2", "config": {"defaultValue": null}, "linkedToInput": "epsilon_2", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "skew_vec", "type": "Vector[3]", "label": "Skew Vec", "config": {"defaultValue": null}, "linkedToInput": "skew_vec", "showLabel": true, "hasSocket": true}, {"key": "epsilon_1", "type": "float", "label": "Epsilon 1", "config": {"defaultValue": null}, "linkedToInput": "epsilon_1", "showLabel": true, "hasSocket": true}, {"key": "epsilon_2", "type": "float", "label": "Epsilon 2", "config": {"defaultValue": null}, "linkedToInput": "epsilon_2", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -468,9 +468,9 @@ export const InexactAnisotropicGaussian3DDefinition: NodeDefinition = {
   label: "InexactAnisotropicGaussian3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "center", "label": "Center", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "axial_radii", "label": "Axial Radii", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "scale_constant", "label": "Scale Constant", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "center", "label": "Center", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "axial_radii", "label": "Axial Radii", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "scale_constant", "label": "Scale Constant", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "center", "type": "vector3", "label": "Center", "config": {"defaultValue": null}, "linkedToInput": "center", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "axial_radii", "type": "vector3", "label": "Axial Radii", "config": {"defaultValue": null}, "linkedToInput": "axial_radii", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "scale_constant", "type": "float", "label": "Scale Constant", "config": {"defaultValue": null}, "linkedToInput": "scale_constant", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "center", "type": "Vector[3]", "label": "Center", "config": {"defaultValue": null}, "linkedToInput": "center", "showLabel": true, "hasSocket": true}, {"key": "axial_radii", "type": "Vector[3]", "label": "Axial Radii", "config": {"defaultValue": null}, "linkedToInput": "axial_radii", "showLabel": true, "hasSocket": true}, {"key": "scale_constant", "type": "float", "label": "Scale Constant", "config": {"defaultValue": null}, "linkedToInput": "scale_constant", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -479,9 +479,9 @@ export const SDFGrid3DDefinition: NodeDefinition = {
   label: "SDFGrid3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "sdf_grid", "label": "Sdf Grid", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "sdf_grid", "label": "Sdf Grid", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "sdf_grid", "type": "string", "label": "Sdf Grid", "config": {"defaultValue": null}, "linkedToInput": "sdf_grid", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "sdf_grid", "type": "Tensor[float, (D,H,W)]", "label": "Sdf Grid", "config": {"defaultValue": null}, "linkedToInput": "sdf_grid", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 

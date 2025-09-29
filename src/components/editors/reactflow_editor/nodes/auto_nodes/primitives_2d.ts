@@ -6,9 +6,9 @@ export const Circle2DDefinition: NodeDefinition = {
   label: "Circle2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "radius", "label": "Radius", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "radius", "label": "Radius", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "radius", "type": "float", "label": "Radius", "config": {"defaultValue": null}, "linkedToInput": "radius", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "radius", "type": "float", "label": "Radius", "config": {"defaultValue": null}, "linkedToInput": "radius", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -17,9 +17,9 @@ export const RoundedBox2DDefinition: NodeDefinition = {
   label: "RoundedBox2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "bounds", "label": "Bounds", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "radius", "label": "Radius", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "bounds", "label": "Bounds", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "radius", "label": "Radius", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "bounds", "type": "vector2", "label": "Bounds", "config": {"defaultValue": null}, "linkedToInput": "bounds", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "radius", "type": "vector4", "label": "Radius", "config": {"defaultValue": null}, "linkedToInput": "radius", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "bounds", "type": "Vector[2]", "label": "Bounds", "config": {"defaultValue": null}, "linkedToInput": "bounds", "showLabel": true, "hasSocket": true}, {"key": "radius", "type": "Vector[4]", "label": "Radius", "config": {"defaultValue": null}, "linkedToInput": "radius", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -28,9 +28,9 @@ export const Box2DDefinition: NodeDefinition = {
   label: "Box2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "size", "label": "Size", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "size", "label": "Size", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "size", "type": "vector2", "label": "Size", "config": {"defaultValue": null}, "linkedToInput": "size", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "size", "type": "Vector[2]", "label": "Size", "config": {"defaultValue": null}, "linkedToInput": "size", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -39,9 +39,9 @@ export const Rectangle2DDefinition: NodeDefinition = {
   label: "Rectangle2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "size", "label": "Size", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "size", "label": "Size", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "size", "type": "vector2", "label": "Size", "config": {"defaultValue": null}, "linkedToInput": "size", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "size", "type": "Vector[2]", "label": "Size", "config": {"defaultValue": null}, "linkedToInput": "size", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -50,9 +50,9 @@ export const OrientedBox2DDefinition: NodeDefinition = {
   label: "OrientedBox2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "start_point", "label": "Start Point", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "end_point", "label": "End Point", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "thickness", "label": "Thickness", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "start_point", "label": "Start Point", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "end_point", "label": "End Point", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "thickness", "label": "Thickness", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "start_point", "type": "vector2", "label": "Start Point", "config": {"defaultValue": null}, "linkedToInput": "start_point", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "end_point", "type": "vector2", "label": "End Point", "config": {"defaultValue": null}, "linkedToInput": "end_point", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "thickness", "type": "float", "label": "Thickness", "config": {"defaultValue": null}, "linkedToInput": "thickness", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "start_point", "type": "Vector[2]", "label": "Start Point", "config": {"defaultValue": null}, "linkedToInput": "start_point", "showLabel": true, "hasSocket": true}, {"key": "end_point", "type": "Vector[2]", "label": "End Point", "config": {"defaultValue": null}, "linkedToInput": "end_point", "showLabel": true, "hasSocket": true}, {"key": "thickness", "type": "float", "label": "Thickness", "config": {"defaultValue": null}, "linkedToInput": "thickness", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -61,9 +61,9 @@ export const Rhombus2DDefinition: NodeDefinition = {
   label: "Rhombus2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "size", "label": "Size", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "size", "label": "Size", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "size", "type": "vector2", "label": "Size", "config": {"defaultValue": null}, "linkedToInput": "size", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "size", "type": "Vector[2]", "label": "Size", "config": {"defaultValue": null}, "linkedToInput": "size", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -72,9 +72,9 @@ export const Trapezoid2DDefinition: NodeDefinition = {
   label: "Trapezoid2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "r1", "label": "R1", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "r2", "label": "R2", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "height", "label": "Height", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "r1", "label": "R1", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "r2", "label": "R2", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "height", "label": "Height", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "r1", "type": "float", "label": "R1", "config": {"defaultValue": null}, "linkedToInput": "r1", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "r2", "type": "float", "label": "R2", "config": {"defaultValue": null}, "linkedToInput": "r2", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "height", "type": "float", "label": "Height", "config": {"defaultValue": null}, "linkedToInput": "height", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "r1", "type": "float", "label": "R1", "config": {"defaultValue": null}, "linkedToInput": "r1", "showLabel": true, "hasSocket": true}, {"key": "r2", "type": "float", "label": "R2", "config": {"defaultValue": null}, "linkedToInput": "r2", "showLabel": true, "hasSocket": true}, {"key": "height", "type": "float", "label": "Height", "config": {"defaultValue": null}, "linkedToInput": "height", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -83,9 +83,9 @@ export const Parallelogram2DDefinition: NodeDefinition = {
   label: "Parallelogram2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "width", "label": "Width", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "height", "label": "Height", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "skew", "label": "Skew", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "width", "label": "Width", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "height", "label": "Height", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "skew", "label": "Skew", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "width", "type": "float", "label": "Width", "config": {"defaultValue": null}, "linkedToInput": "width", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "height", "type": "float", "label": "Height", "config": {"defaultValue": null}, "linkedToInput": "height", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "skew", "type": "float", "label": "Skew", "config": {"defaultValue": null}, "linkedToInput": "skew", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "width", "type": "float", "label": "Width", "config": {"defaultValue": null}, "linkedToInput": "width", "showLabel": true, "hasSocket": true}, {"key": "height", "type": "float", "label": "Height", "config": {"defaultValue": null}, "linkedToInput": "height", "showLabel": true, "hasSocket": true}, {"key": "skew", "type": "float", "label": "Skew", "config": {"defaultValue": null}, "linkedToInput": "skew", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -94,9 +94,9 @@ export const EquilateralTriangle2DDefinition: NodeDefinition = {
   label: "EquilateralTriangle2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "side_length", "label": "Side Length", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "side_length", "label": "Side Length", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "side_length", "type": "float", "label": "Side Length", "config": {"defaultValue": null}, "linkedToInput": "side_length", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "side_length", "type": "float", "label": "Side Length", "config": {"defaultValue": null}, "linkedToInput": "side_length", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -105,9 +105,9 @@ export const IsoscelesTriangle2DDefinition: NodeDefinition = {
   label: "IsoscelesTriangle2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "wi_hi", "label": "Wi Hi", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "wi_hi", "label": "Wi Hi", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "wi_hi", "type": "vector2", "label": "Wi Hi", "config": {"defaultValue": null}, "linkedToInput": "wi_hi", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "wi_hi", "type": "Vector[2]", "label": "Wi Hi", "config": {"defaultValue": null}, "linkedToInput": "wi_hi", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -116,9 +116,9 @@ export const Triangle2DDefinition: NodeDefinition = {
   label: "Triangle2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "p0", "label": "P0", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "p1", "label": "P1", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "p2", "label": "P2", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "p0", "label": "P0", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "p1", "label": "P1", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "p2", "label": "P2", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "p0", "type": "vector2", "label": "P0", "config": {"defaultValue": null}, "linkedToInput": "p0", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "p1", "type": "vector2", "label": "P1", "config": {"defaultValue": null}, "linkedToInput": "p1", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "p2", "type": "vector2", "label": "P2", "config": {"defaultValue": null}, "linkedToInput": "p2", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "p0", "type": "Vector[2]", "label": "P0", "config": {"defaultValue": null}, "linkedToInput": "p0", "showLabel": true, "hasSocket": true}, {"key": "p1", "type": "Vector[2]", "label": "P1", "config": {"defaultValue": null}, "linkedToInput": "p1", "showLabel": true, "hasSocket": true}, {"key": "p2", "type": "Vector[2]", "label": "P2", "config": {"defaultValue": null}, "linkedToInput": "p2", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -127,9 +127,9 @@ export const UnevenCapsule2DDefinition: NodeDefinition = {
   label: "UnevenCapsule2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "r1", "label": "R1", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "r2", "label": "R2", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "h", "label": "H", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "r1", "label": "R1", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "r2", "label": "R2", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "h", "label": "H", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "r1", "type": "float", "label": "R1", "config": {"defaultValue": null}, "linkedToInput": "r1", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "r2", "type": "float", "label": "R2", "config": {"defaultValue": null}, "linkedToInput": "r2", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "r1", "type": "float", "label": "R1", "config": {"defaultValue": null}, "linkedToInput": "r1", "showLabel": true, "hasSocket": true}, {"key": "r2", "type": "float", "label": "R2", "config": {"defaultValue": null}, "linkedToInput": "r2", "showLabel": true, "hasSocket": true}, {"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -138,9 +138,9 @@ export const RegularPentagon2DDefinition: NodeDefinition = {
   label: "RegularPentagon2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "r", "label": "R", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "r", "label": "R", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -149,9 +149,9 @@ export const RegularHexagon2DDefinition: NodeDefinition = {
   label: "RegularHexagon2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "r", "label": "R", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "r", "label": "R", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -160,9 +160,9 @@ export const RegularOctagon2DDefinition: NodeDefinition = {
   label: "RegularOctagon2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "r", "label": "R", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "r", "label": "R", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -171,9 +171,9 @@ export const Hexagram2DDefinition: NodeDefinition = {
   label: "Hexagram2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "r", "label": "R", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "r", "label": "R", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -182,9 +182,9 @@ export const Star2DDefinition: NodeDefinition = {
   label: "Star2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "r", "label": "R", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "rf", "label": "Rf", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "r", "label": "R", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "rf", "label": "Rf", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "rf", "type": "float", "label": "Rf", "config": {"defaultValue": null}, "linkedToInput": "rf", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true}, {"key": "rf", "type": "float", "label": "Rf", "config": {"defaultValue": null}, "linkedToInput": "rf", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -193,9 +193,9 @@ export const RegularStar2DDefinition: NodeDefinition = {
   label: "RegularStar2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "r", "label": "R", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "n", "label": "N", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "m", "label": "M", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "r", "label": "R", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "n", "label": "N", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "m", "label": "M", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "n", "type": "float", "label": "N", "config": {"defaultValue": null}, "linkedToInput": "n", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "m", "type": "float", "label": "M", "config": {"defaultValue": null}, "linkedToInput": "m", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true}, {"key": "n", "type": "int", "label": "N", "config": {"defaultValue": null}, "linkedToInput": "n", "showLabel": true, "hasSocket": true}, {"key": "m", "type": "int", "label": "M", "config": {"defaultValue": null}, "linkedToInput": "m", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -204,9 +204,9 @@ export const Pie2DDefinition: NodeDefinition = {
   label: "Pie2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "c", "label": "C", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "r", "label": "R", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "c", "label": "C", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "r", "label": "R", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "c", "type": "vector2", "label": "C", "config": {"defaultValue": null}, "linkedToInput": "c", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "c", "type": "Vector[2]", "label": "C", "config": {"defaultValue": null}, "linkedToInput": "c", "showLabel": true, "hasSocket": true}, {"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -215,9 +215,9 @@ export const CutDisk2DDefinition: NodeDefinition = {
   label: "CutDisk2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "r", "label": "R", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "h", "label": "H", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "r", "label": "R", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "h", "label": "H", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true}, {"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -226,9 +226,9 @@ export const Arc2DDefinition: NodeDefinition = {
   label: "Arc2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "angle", "label": "Angle", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "ra", "label": "Ra", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "rb", "label": "Rb", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "angle", "label": "Angle", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "ra", "label": "Ra", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "rb", "label": "Rb", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "angle", "type": "float", "label": "Angle", "config": {"defaultValue": null}, "linkedToInput": "angle", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "ra", "type": "float", "label": "Ra", "config": {"defaultValue": null}, "linkedToInput": "ra", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "rb", "type": "float", "label": "Rb", "config": {"defaultValue": null}, "linkedToInput": "rb", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "angle", "type": "float", "label": "Angle", "config": {"defaultValue": null}, "linkedToInput": "angle", "showLabel": true, "hasSocket": true}, {"key": "ra", "type": "float", "label": "Ra", "config": {"defaultValue": null}, "linkedToInput": "ra", "showLabel": true, "hasSocket": true}, {"key": "rb", "type": "float", "label": "Rb", "config": {"defaultValue": null}, "linkedToInput": "rb", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -237,9 +237,9 @@ export const HorseShoe2DDefinition: NodeDefinition = {
   label: "HorseShoe2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "angle", "label": "Angle", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "r", "label": "R", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "w", "label": "W", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "angle", "label": "Angle", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "r", "label": "R", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "w", "label": "W", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "angle", "type": "float", "label": "Angle", "config": {"defaultValue": null}, "linkedToInput": "angle", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "w", "type": "vector2", "label": "W", "config": {"defaultValue": null}, "linkedToInput": "w", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "angle", "type": "float", "label": "Angle", "config": {"defaultValue": null}, "linkedToInput": "angle", "showLabel": true, "hasSocket": true}, {"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true}, {"key": "w", "type": "Vector[2]", "label": "W", "config": {"defaultValue": null}, "linkedToInput": "w", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -248,9 +248,9 @@ export const Vesica2DDefinition: NodeDefinition = {
   label: "Vesica2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "r", "label": "R", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "d", "label": "D", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "r", "label": "R", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "d", "label": "D", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "d", "type": "float", "label": "D", "config": {"defaultValue": null}, "linkedToInput": "d", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true}, {"key": "d", "type": "float", "label": "D", "config": {"defaultValue": null}, "linkedToInput": "d", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -259,9 +259,9 @@ export const OrientedVesica2DDefinition: NodeDefinition = {
   label: "OrientedVesica2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "a", "label": "A", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "b", "label": "B", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "w", "label": "W", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "a", "label": "A", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "b", "label": "B", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "w", "label": "W", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "a", "type": "vector2", "label": "A", "config": {"defaultValue": null}, "linkedToInput": "a", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "b", "type": "vector2", "label": "B", "config": {"defaultValue": null}, "linkedToInput": "b", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "w", "type": "float", "label": "W", "config": {"defaultValue": null}, "linkedToInput": "w", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "a", "type": "Vector[2]", "label": "A", "config": {"defaultValue": null}, "linkedToInput": "a", "showLabel": true, "hasSocket": true}, {"key": "b", "type": "Vector[2]", "label": "B", "config": {"defaultValue": null}, "linkedToInput": "b", "showLabel": true, "hasSocket": true}, {"key": "w", "type": "float", "label": "W", "config": {"defaultValue": null}, "linkedToInput": "w", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -270,9 +270,9 @@ export const Moon2DDefinition: NodeDefinition = {
   label: "Moon2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "d", "label": "D", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "ra", "label": "Ra", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "rb", "label": "Rb", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "d", "label": "D", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "ra", "label": "Ra", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "rb", "label": "Rb", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "d", "type": "float", "label": "D", "config": {"defaultValue": null}, "linkedToInput": "d", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "ra", "type": "float", "label": "Ra", "config": {"defaultValue": null}, "linkedToInput": "ra", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "rb", "type": "float", "label": "Rb", "config": {"defaultValue": null}, "linkedToInput": "rb", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "d", "type": "float", "label": "D", "config": {"defaultValue": null}, "linkedToInput": "d", "showLabel": true, "hasSocket": true}, {"key": "ra", "type": "float", "label": "Ra", "config": {"defaultValue": null}, "linkedToInput": "ra", "showLabel": true, "hasSocket": true}, {"key": "rb", "type": "float", "label": "Rb", "config": {"defaultValue": null}, "linkedToInput": "rb", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -281,9 +281,9 @@ export const RoundedCross2DDefinition: NodeDefinition = {
   label: "RoundedCross2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "h", "label": "H", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "h", "label": "H", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "h", "type": "float", "label": "H", "config": {"defaultValue": null}, "linkedToInput": "h", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -292,9 +292,9 @@ export const Egg2DDefinition: NodeDefinition = {
   label: "Egg2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "ra", "label": "Ra", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "rb", "label": "Rb", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "ra", "label": "Ra", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "rb", "label": "Rb", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "ra", "type": "float", "label": "Ra", "config": {"defaultValue": null}, "linkedToInput": "ra", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "rb", "type": "float", "label": "Rb", "config": {"defaultValue": null}, "linkedToInput": "rb", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "ra", "type": "float", "label": "Ra", "config": {"defaultValue": null}, "linkedToInput": "ra", "showLabel": true, "hasSocket": true}, {"key": "rb", "type": "float", "label": "Rb", "config": {"defaultValue": null}, "linkedToInput": "rb", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -314,9 +314,9 @@ export const Cross2DDefinition: NodeDefinition = {
   label: "Cross2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "b", "label": "B", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "r", "label": "R", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "b", "label": "B", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "r", "label": "R", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "b", "type": "vector2", "label": "B", "config": {"defaultValue": null}, "linkedToInput": "b", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "b", "type": "Vector[2]", "label": "B", "config": {"defaultValue": null}, "linkedToInput": "b", "showLabel": true, "hasSocket": true}, {"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -325,9 +325,9 @@ export const RoundedX2DDefinition: NodeDefinition = {
   label: "RoundedX2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "w", "label": "W", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "r", "label": "R", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "w", "label": "W", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "r", "label": "R", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "w", "type": "float", "label": "W", "config": {"defaultValue": null}, "linkedToInput": "w", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "w", "type": "float", "label": "W", "config": {"defaultValue": null}, "linkedToInput": "w", "showLabel": true, "hasSocket": true}, {"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -338,7 +338,7 @@ export const Polygon2DDefinition: NodeDefinition = {
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
   inputs: [{"key": "verts", "label": "Verts", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "verts", "type": "string", "label": "Verts", "config": {"defaultValue": null}, "linkedToInput": "verts", "showLabel": true, "hasSocket": true, "socketType": "ExprSocket"}],
+  controls: [{"key": "verts", "type": "List[Vector[2]]", "label": "Verts", "config": {"defaultValue": null}, "linkedToInput": "verts", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -347,9 +347,9 @@ export const Ellipse2DDefinition: NodeDefinition = {
   label: "Ellipse2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "ab", "label": "Ab", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "ab", "label": "Ab", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "ab", "type": "vector2", "label": "Ab", "config": {"defaultValue": null}, "linkedToInput": "ab", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "ab", "type": "Vector[2]", "label": "Ab", "config": {"defaultValue": null}, "linkedToInput": "ab", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -358,9 +358,9 @@ export const Parabola2DDefinition: NodeDefinition = {
   label: "Parabola2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "k", "label": "K", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "k", "label": "K", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "k", "type": "float", "label": "K", "config": {"defaultValue": null}, "linkedToInput": "k", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "k", "type": "float", "label": "K", "config": {"defaultValue": null}, "linkedToInput": "k", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -369,9 +369,9 @@ export const ParabolaSegment2DDefinition: NodeDefinition = {
   label: "ParabolaSegment2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "wi", "label": "Wi", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "he", "label": "He", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "wi", "label": "Wi", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "he", "label": "He", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "wi", "type": "float", "label": "Wi", "config": {"defaultValue": null}, "linkedToInput": "wi", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "he", "type": "float", "label": "He", "config": {"defaultValue": null}, "linkedToInput": "he", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "wi", "type": "float", "label": "Wi", "config": {"defaultValue": null}, "linkedToInput": "wi", "showLabel": true, "hasSocket": true}, {"key": "he", "type": "float", "label": "He", "config": {"defaultValue": null}, "linkedToInput": "he", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -380,9 +380,9 @@ export const BlobbyCross2DDefinition: NodeDefinition = {
   label: "BlobbyCross2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "he", "label": "He", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "he", "label": "He", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "he", "type": "float", "label": "He", "config": {"defaultValue": null}, "linkedToInput": "he", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "he", "type": "float", "label": "He", "config": {"defaultValue": null}, "linkedToInput": "he", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -391,9 +391,9 @@ export const Tunnel2DDefinition: NodeDefinition = {
   label: "Tunnel2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "wh", "label": "Wh", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "wh", "label": "Wh", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "wh", "type": "vector2", "label": "Wh", "config": {"defaultValue": null}, "linkedToInput": "wh", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "wh", "type": "Vector[2]", "label": "Wh", "config": {"defaultValue": null}, "linkedToInput": "wh", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -402,9 +402,9 @@ export const Stairs2DDefinition: NodeDefinition = {
   label: "Stairs2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "wh", "label": "Wh", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "n", "label": "N", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "wh", "label": "Wh", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "n", "label": "N", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "wh", "type": "vector2", "label": "Wh", "config": {"defaultValue": null}, "linkedToInput": "wh", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "n", "type": "float", "label": "N", "config": {"defaultValue": null}, "linkedToInput": "n", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "wh", "type": "Vector[2]", "label": "Wh", "config": {"defaultValue": null}, "linkedToInput": "wh", "showLabel": true, "hasSocket": true}, {"key": "n", "type": "int", "label": "N", "config": {"defaultValue": null}, "linkedToInput": "n", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -435,9 +435,9 @@ export const CircleWave2DDefinition: NodeDefinition = {
   label: "CircleWave2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "tb", "label": "Tb", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "ra", "label": "Ra", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "tb", "label": "Tb", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "ra", "label": "Ra", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "tb", "type": "float", "label": "Tb", "config": {"defaultValue": null}, "linkedToInput": "tb", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "ra", "type": "float", "label": "Ra", "config": {"defaultValue": null}, "linkedToInput": "ra", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "tb", "type": "float", "label": "Tb", "config": {"defaultValue": null}, "linkedToInput": "tb", "showLabel": true, "hasSocket": true}, {"key": "ra", "type": "float", "label": "Ra", "config": {"defaultValue": null}, "linkedToInput": "ra", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -446,9 +446,9 @@ export const Hyperbola2DDefinition: NodeDefinition = {
   label: "Hyperbola2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "k", "label": "K", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "he", "label": "He", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "k", "label": "K", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "he", "label": "He", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "k", "type": "float", "label": "K", "config": {"defaultValue": null}, "linkedToInput": "k", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "he", "type": "float", "label": "He", "config": {"defaultValue": null}, "linkedToInput": "he", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "k", "type": "float", "label": "K", "config": {"defaultValue": null}, "linkedToInput": "k", "showLabel": true, "hasSocket": true}, {"key": "he", "type": "float", "label": "He", "config": {"defaultValue": null}, "linkedToInput": "he", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -457,9 +457,9 @@ export const QuadraticBezierCurve2DDefinition: NodeDefinition = {
   label: "QuadraticBezierCurve2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "A", "label": "A", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "B", "label": "B", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "C", "label": "C", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "A", "label": "A", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "B", "label": "B", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "C", "label": "C", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "A", "type": "vector2", "label": "A", "config": {"defaultValue": null}, "linkedToInput": "A", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "B", "type": "vector2", "label": "B", "config": {"defaultValue": null}, "linkedToInput": "B", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "C", "type": "vector2", "label": "C", "config": {"defaultValue": null}, "linkedToInput": "C", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "A", "type": "Vector[2]", "label": "A", "config": {"defaultValue": null}, "linkedToInput": "A", "showLabel": true, "hasSocket": true}, {"key": "B", "type": "Vector[2]", "label": "B", "config": {"defaultValue": null}, "linkedToInput": "B", "showLabel": true, "hasSocket": true}, {"key": "C", "type": "Vector[2]", "label": "C", "config": {"defaultValue": null}, "linkedToInput": "C", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -468,9 +468,9 @@ export const Segment2DDefinition: NodeDefinition = {
   label: "Segment2D",
   category: "primitives_2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "start_point", "label": "Start Point", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "end_point", "label": "End Point", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "start_point", "label": "Start Point", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "end_point", "label": "End Point", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "start_point", "type": "vector2", "label": "Start Point", "config": {"defaultValue": null}, "linkedToInput": "start_point", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "end_point", "type": "vector2", "label": "End Point", "config": {"defaultValue": null}, "linkedToInput": "end_point", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "start_point", "type": "Vector[2]", "label": "Start Point", "config": {"defaultValue": null}, "linkedToInput": "start_point", "showLabel": true, "hasSocket": true}, {"key": "end_point", "type": "Vector[2]", "label": "End Point", "config": {"defaultValue": null}, "linkedToInput": "end_point", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 

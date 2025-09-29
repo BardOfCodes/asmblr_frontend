@@ -14,8 +14,10 @@ import ReactFlow, {
   useReactFlow,
   NodeTypes,
 } from 'reactflow';
+import dagre from 'dagre';
 import 'reactflow/dist/style.css';
 import './styles/theme.css';
+import './styles/editor.css';
 
 import { CustomNode } from './components/CustomNode';
 import BasicNode from './components/BasicNode';
@@ -27,18 +29,28 @@ import * as AutoNodes from './nodes/auto_nodes';
 import { DEFAULT_NODE_THEME } from './theme';
 import { projectService } from './services/ProjectService';
 import { setReactFlowRef } from './hooks/useProjectActions';
+import { AllModeDefinitions } from './config/ModeNodeSets';
+import { debug } from '../../../utils/debug';
 
 // Create global registry and factory instances
 const globalNodeRegistry = new NodeRegistry();
 const globalNodeFactory = new NodeFactory(globalNodeRegistry);
 
-// Load all auto-generated nodes on initialization
+// Load all auto-generated nodes and configure modes on initialization
 const initializeRegistry = () => {
   const nodeDefinitions = Object.values(AutoNodes).filter(
     (item): item is any => item && typeof item === 'object' && 'type' in item
   );
   
+  // Register all nodes first
   globalNodeRegistry.registerMany(nodeDefinitions);
+  
+  // Register mode-specific node sets
+  AllModeDefinitions.forEach(modeDefinition => {
+    globalNodeRegistry.registerMode(modeDefinition);
+  });
+  
+  debug.log('✅ Initialized node registry with modes:', AllModeDefinitions.map(m => m.name));
 };
 
 // Initialize once
@@ -75,6 +87,7 @@ interface ReactFlowEditorProps {
  * Inner React Flow Editor Component (inside ReactFlowProvider)
  */
 const ReactFlowEditorInner: React.FC<ReactFlowEditorProps> = ({
+  modeName,
   onNodesChange,
   onEdgesChange,
   onNodeControlChange,
@@ -226,6 +239,60 @@ const ReactFlowEditorInner: React.FC<ReactFlowEditorProps> = ({
     setIsContextMenuOpen(false);
   }, []);
 
+  // Auto-arrange nodes using dagre layout algorithm
+  const autoArrangeNodes = useCallback(() => {
+    if (nodes.length === 0) return;
+
+    const getLayoutedElements = (nodes: any[], edges: any[], direction = 'TB') => {
+      const g = new dagre.graphlib.Graph();
+      g.setGraph({ 
+        rankdir: direction,
+        nodesep: 50,
+        ranksep: 100,
+        marginx: 20,
+        marginy: 20
+      });
+      g.setDefaultEdgeLabel(() => ({}));
+
+      nodes.forEach((node) => {
+        g.setNode(node.id, { 
+          width: node.width || 220, 
+          height: node.height || 120 
+        });
+      });
+
+      edges.forEach((edge) => {
+        g.setEdge(edge.source, edge.target);
+      });
+
+      dagre.layout(g);
+
+      return {
+        nodes: nodes.map((node) => {
+          const nodeWithPosition = g.node(node.id);
+          return {
+            ...node,
+            position: {
+              x: nodeWithPosition.x - (node.width || 220) / 2,
+              y: nodeWithPosition.y - (node.height || 120) / 2,
+            },
+          };
+        }),
+        edges,
+      };
+    };
+
+    const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(nodes, edges, 'LR');
+    
+    setNodes(layoutedNodes);
+    setEdges(layoutedEdges);
+    
+    // Fit view to show all nodes after a short delay
+    setTimeout(() => {
+      reactFlowInstance.fitView({ padding: 0.1, duration: 800 });
+    }, 100);
+  }, [nodes, edges, setNodes, setEdges, reactFlowInstance]);
+
   // Handle keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -242,6 +309,12 @@ const ReactFlowEditorInner: React.FC<ReactFlowEditorProps> = ({
         setIsContextMenuOpen(false); // Close context menu if open
       }
       
+      // Cmd+L (Mac) or Ctrl+L (Windows/Linux) to auto-arrange nodes
+      if ((e.metaKey || e.ctrlKey) && e.key === 'l') {
+        e.preventDefault();
+        autoArrangeNodes();
+      }
+      
       // Escape to close modals
       if (e.key === 'Escape') {
         setIsContextMenuOpen(false);
@@ -251,7 +324,7 @@ const ReactFlowEditorInner: React.FC<ReactFlowEditorProps> = ({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [autoArrangeNodes]);
 
   // Add node from context menu
   const addNode = useCallback((nodeType: string, customPosition?: { x: number; y: number }) => {
@@ -329,16 +402,38 @@ const ReactFlowEditorInner: React.FC<ReactFlowEditorProps> = ({
     }
   }, [onEdgesStateChange, onEdgesChange, reactFlowInstance]);
 
-  // Get all node definitions for context menu and search
+  // Get mode-specific node definitions for context menu and search
   const allNodeDefinitions = useMemo(() => {
+    // Try to get mode-specific nodes first
+    const modeNodes = globalNodeRegistry.getModeNodes(modeName);
+    if (modeNodes.length > 0) {
+      debug.log(`Using ${modeNodes.length} mode-specific nodes for ${modeName}`);
+      return modeNodes;
+    }
+    
+    // Fallback to all nodes if mode not configured
+    debug.log(`No mode-specific nodes found for ${modeName}, using all nodes`);
     return globalNodeRegistry.getAll();
-  }, []);
+  }, [modeName]);
+
+  // Create CSS variables for global edge styling
+  const editorStyle = useMemo(() => ({
+    width: '100%', 
+    height: '100%',
+    // Connection CSS variables for global edge styling
+    '--connection-color': DEFAULT_NODE_THEME.connections.color,
+    '--connection-color-selected': DEFAULT_NODE_THEME.connections.colorSelected,
+    '--connection-color-hover': DEFAULT_NODE_THEME.connections.colorHover,
+    '--connection-stroke-width': `${DEFAULT_NODE_THEME.connections.strokeWidth}px`,
+    '--connection-stroke-selected': `${DEFAULT_NODE_THEME.connections.strokeWidthSelected}px`,
+    '--connection-shadow': DEFAULT_NODE_THEME.connections.shadow,
+  } as React.CSSProperties), []);
 
   return (
     <div 
       ref={editorRef}
       className={`reactflow-editor ${className}`} 
-      style={{ width: '100%', height: '100%' }}
+      style={editorStyle}
       tabIndex={0} // Make div focusable for keyboard shortcuts
     >
       <ReactFlow
@@ -355,7 +450,34 @@ const ReactFlowEditorInner: React.FC<ReactFlowEditorProps> = ({
         defaultEdgeOptions={defaultEdgeOptions}
       >
         <Background />
-        <Controls />
+        <Controls>
+          <button
+            onClick={autoArrangeNodes}
+            title="Auto-arrange nodes (Ctrl+L / Cmd+L)"
+            style={{
+              background: '#ffffff',
+              border: '1px solid #e2e8f0',
+              borderRadius: '4px',
+              padding: '8px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '8px',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = '#f8fafc';
+              e.currentTarget.style.borderColor = '#3b82f6';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = '#ffffff';
+              e.currentTarget.style.borderColor = '#e2e8f0';
+            }}
+          >
+            ⚡
+          </button>
+        </Controls>
         <MiniMap />
       </ReactFlow>
 

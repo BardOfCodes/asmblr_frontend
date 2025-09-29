@@ -14,24 +14,8 @@ export type SocketType =
   | 'MaterialSocket' // Material definitions
   | 'StateSocket';   // State data
 
-/**
- * Control types for node parameters
- * These define the UI controls that appear on nodes
- */
-export type ControlType = 
-  | 'float'           // Single float slider
-  | 'vector2'         // 2D vector input
-  | 'vector3'         // 3D vector input  
-  | 'vector4'         // 4D vector input
-  | 'string'          // Text input
-  | 'select'          // Dropdown selection
-  | 'color'           // Color picker
-  | 'checkbox'        // Boolean toggle
-  | 'range'           // Min/max range slider
-  | 'uniform_float'   // Uniform-generating float
-  | 'uniform_vector2' // Uniform-generating vec2
-  | 'uniform_vector3' // Uniform-generating vec3
-  | 'uniform_vector4'; // Uniform-generating vec4
+// Import ControlType from centralized types
+import { ControlType } from '../../../../types/control';
 
 /**
  * Node input definition
@@ -109,14 +93,14 @@ export interface ControlDefinition {
  * Node category for organization
  */
 export type NodeCategory = 
-  | 'Primitives'     // Basic 3D shapes
-  | 'Transforms'     // Position, rotation, scale operations
-  | 'Combinators'    // Union, difference, intersection
-  | 'Math'           // Mathematical operations
-  | 'Variables'      // Constants and uniforms
-  | 'Materials'      // Material definitions
-  | 'Utilities'      // Helper nodes
-  | 'Advanced'       // Complex operations
+  | 'primitives_2d'     // Basic 3D shapes
+  | 'primitives_3d'     // Position, rotation, scale operations
+  | 'combinators'    // Union, difference, intersection
+  | 'math'           // Mathematical operations
+  | 'variables'      // Constants and uniforms
+  | 'materials'      // Material definitions
+  | 'utilities'      // Helper nodes
+  | 'advanced'       // Complex operations
   | 'auto';          // Auto-generated nodes
 
 /**

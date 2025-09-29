@@ -9,6 +9,7 @@ import {
   DEFAULT_REGISTRY_CONFIG,
   validateNodeDefinition 
 } from './NodeDefinitions';
+import { ModeDefinition } from '../types';
 
 /**
  * Search result for node registry queries
@@ -37,6 +38,7 @@ export class NodeRegistry {
   private config: NodeRegistryConfig;
   private categoryIndex = new Map<NodeCategory, Set<string>>();
   private tagIndex = new Map<string, Set<string>>();
+  private modes = new Map<string, ModeDefinition>();
 
   constructor(config: NodeRegistryConfig = DEFAULT_REGISTRY_CONFIG) {
     this.config = { ...config };
@@ -455,6 +457,39 @@ export class NodeRegistry {
     }
 
     return this.registerMany(data.definitions);
+  }
+
+  /**
+   * Register a mode with its specific node set
+   */
+  registerMode(mode: ModeDefinition): void {
+    this.modes.set(mode.name, mode);
+  }
+
+  /**
+   * Get mode definition
+   */
+  getMode(modeName: string): ModeDefinition | undefined {
+    return this.modes.get(modeName);
+  }
+
+  /**
+   * Get nodes for a specific mode
+   */
+  getModeNodes(modeName: string): NodeDefinition[] {
+    const mode = this.modes.get(modeName);
+    if (!mode) return [];
+
+    // Return all nodes for the mode
+    return Object.values(mode.nodeSet).flat();
+  }
+
+  /**
+   * Get available categories for a mode
+   */
+  getModeCategories(modeName: string): string[] {
+    const mode = this.modes.get(modeName);
+    return mode ? Object.keys(mode.nodeSet) : [];
   }
 }
 

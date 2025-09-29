@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { theme } from '../../design/theme';
-import { generateShaderHtml, generateTWGLShaderCode, APIError } from '../../API';
+import { generateSySLShaderHtml, generateSySLTWGLShaderCode, APIError } from '../../API';
 import { useSettings } from '../../store/SettingsContext';
 import { debug } from '../../utils/debug';
 import { EditorHandle } from '../../types/editor';
@@ -108,7 +108,7 @@ export const HybridControlPanel: React.FC<HybridControlPanelProps> = ({
       
       if (selectedViewer === 'shader_viewer') {
         // Generate shader code for TWGL viewer using the new TWGL endpoint
-        const result = await generateTWGLShaderCode({
+        const result = await generateSySLTWGLShaderCode({
           moduleData: moduleData,
           uniforms: {}, // Pass uniforms (empty for now)
           shaderSettings: settings.shaderGeneration.shaderSettings, // Pass shader settings
@@ -122,7 +122,7 @@ export const HybridControlPanel: React.FC<HybridControlPanelProps> = ({
         }
       } else {
         // Generate HTML for iframe viewer
-        const result = await generateShaderHtml({
+        const result = await generateSySLShaderHtml({
           moduleData: moduleData,
           uniforms: {}, // Pass uniforms (empty for now)
         });

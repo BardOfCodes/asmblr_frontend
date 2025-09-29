@@ -1,0 +1,97 @@
+import { ModeDefinition } from '../types';
+import * as AutoNodes from '../nodes/auto_nodes';
+
+/**
+ * Mode-specific node configurations
+ * Each mode defines which node categories and types are available
+ */
+
+// Get all available nodes from auto_nodes
+const allNodes = Object.values(AutoNodes).filter(
+  (item): item is any => item && typeof item === 'object' && 'type' in item
+);
+
+// Helper function to filter nodes by category patterns
+const getNodesByCategories = (categories: string[]) => {
+  return allNodes.filter(node => 
+    categories.some(category => 
+      node.category === category || 
+      node.category.toLowerCase().includes(category.toLowerCase())
+    )
+  );
+};
+
+// Helper function to exclude nodes by category patterns (currently unused but kept for future use)
+// const excludeNodesByCategories = (excludeCategories: string[]) => {
+//   return allNodes.filter(node => 
+//     !excludeCategories.some(category => 
+//       node.category === category || 
+//       node.category.toLowerCase().includes(category.toLowerCase())
+//     )
+//   );
+// };
+
+/**
+ * SySL Graph Mode - Symbolic Shader Language
+ * Includes: Mathematical operations, symbolic expressions, materials
+ * Excludes: Basic geometric primitives (those are for GeoLIPI)
+ */
+export const SySLModeDefinition: ModeDefinition = {
+  name: 'sysl',
+  label: 'SySL Graph',
+  nodeSet: {
+    'Math': getNodesByCategories(['Math', 'Variables']),
+    'Materials': getNodesByCategories(['Materials']),
+    'Advanced': getNodesByCategories(['Advanced', 'Utilities']),
+    'Transforms': getNodesByCategories(['Transforms']),
+    'Combinators': getNodesByCategories(['Combinators']),
+  }
+};
+
+/**
+ * GeoLIPI Graph Mode - Geometric Language for Implicit Programming  
+ * Includes: Geometric primitives, transformations, combinators
+ * Excludes: Materials, SySL-specific nodes
+ */
+export const GeoLIPIModeDefinition: ModeDefinition = {
+  name: 'geolipi',
+  label: 'GeoLIPI Graph',
+  nodeSet: {
+    'Primitives': getNodesByCategories(['Primitives']),
+    'Transforms': getNodesByCategories(['Transforms']),
+    'Combinators': getNodesByCategories(['Combinators']),
+    'Math': getNodesByCategories(['Math', 'Variables']).filter(node => 
+      // Only basic math operations, not advanced symbolic stuff
+      !node.type.toLowerCase().includes('symbolic') &&
+      !node.type.toLowerCase().includes('material')
+    ),
+    'Utilities': getNodesByCategories(['Utilities']),
+  }
+};
+
+/**
+ * Neo Graph Mode - Full feature set (original mode)
+ * Includes: All available nodes
+ */
+export const NeoModeDefinition: ModeDefinition = {
+  name: 'neo',
+  label: 'Neo Graph', 
+  nodeSet: {
+    'Primitives': getNodesByCategories(['Primitives']),
+    'Transforms': getNodesByCategories(['Transforms']),
+    'Combinators': getNodesByCategories(['Combinators']),
+    'Math': getNodesByCategories(['Math', 'Variables']),
+    'Materials': getNodesByCategories(['Materials']),
+    'Advanced': getNodesByCategories(['Advanced', 'Utilities']),
+    'Auto': getNodesByCategories(['auto']),
+  }
+};
+
+/**
+ * All mode definitions for registration
+ */
+export const AllModeDefinitions = [
+  NeoModeDefinition,
+  SySLModeDefinition,
+  GeoLIPIModeDefinition,
+];

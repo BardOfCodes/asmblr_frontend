@@ -61,6 +61,7 @@ export interface NodeTheme {
   // Labels
   labels: {
     color: string;
+    colorSecondary: string;  // For dimension labels, placeholders, etc.
     fontSize: number;
     fontWeight: number;
     margin: string;
@@ -69,6 +70,7 @@ export interface NodeTheme {
   // Controls
   controls: {
     background: string;
+    backgroundSecondary: string;  // For containers, matrix backgrounds
     border: string;
     borderFocus: string;
     borderRadius: number;
@@ -77,6 +79,26 @@ export interface NodeTheme {
     gap: number;
     height: number;
     step: number;
+    // Colors
+    textColor: string;
+    textColorSecondary: string;  // For placeholders, secondary text
+    // Action buttons
+    buttonAdd: string;
+    buttonAddHover: string;
+    buttonDelete: string;
+    buttonDeleteHover: string;
+    // Standardized input styling (matches vector controls)
+    inputPadding: string;        // Standard padding for all inputs
+    inputFontSize: number;       // Standard font size for all inputs
+    inputBorderRadius: number;   // Standard border radius for all inputs
+    // Vector control sizing
+    vectorInputWidth: number;
+    vectorInputWidthList: number;
+    floatInputWidth: number;
+    floatInputWidthList: number;
+    // Matrix control sizing
+    matrixInputWidth: number;
+    matrixContainerPadding: number;
   };
   
   // Layout
@@ -86,6 +108,7 @@ export interface NodeTheme {
     socketPadding: number;
     columnGap: number;
     rowGap: number;
+    rowPadding: number;  // Padding between rows for sockets/labels/controls
   };
   
   // Connections/Edges
@@ -103,134 +126,186 @@ export interface NodeTheme {
 }
 
 /**
- * Default light theme
+ * Default light theme - Modern, cohesive color palette
+ * Based on a sophisticated blue-gray foundation with vibrant accent colors
  */
 export const DEFAULT_NODE_THEME: NodeTheme = {
   container: {
     background: '#ffffff',
-    border: '#d9d9d9',
-    borderSelected: '#1890ff',
+    border: '#e2e8f0',           // Slate-200 - soft, modern border
+    borderSelected: '#3b82f6',   // Blue-500 - clean selection color
     borderRadius: 8,
-    shadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-    shadowHover: '0 4px 12px rgba(0, 0, 0, 0.15)',
+    shadow: '0 2px 8px rgba(15, 23, 42, 0.08)',      // Slate-900 with low opacity
+    shadowHover: '0 4px 16px rgba(15, 23, 42, 0.12)', // Enhanced shadow on hover
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-    fontSize: 12,
+    fontSize: 14,
   },
   
   header: {
-    background: '#f5f5f5',
-    color: '#333333',
-    fontSize: 13,
+    background: '#f8fafc',       // Slate-50 - very light background
+    color: '#1e293b',            // Slate-800 - strong readable text
+    fontSize: 14,
     fontWeight: 600,
-    padding: '8px 12px',
-    borderBottom: '1px solid #e8e8e8',
+    padding: '10px 20px',
+    borderBottom: '1px solid #e2e8f0', // Slate-200
     height: 32,
   },
   
   body: {
-    padding: '10px',
-    gap: 10,
+    padding: '15px 20px',
+    gap: 50,
   },
   
   sockets: {
     size: {
       normal: 20,
-      small: 16,
+      small: 0,
     },
     offsetFactors: {
-      left: 1.0,
-      right: 0.75,
+      left: -0.35,
+      right: -0.35,
     },
-    border: '2px solid white',
-    shadow: '0 1px 3px rgba(0, 0, 0, 0.2)',
-    shadowHover: '0 2px 6px rgba(0, 0, 0, 0.3)',
+    border: '2px solid #ffffff',
+    shadow: '0 2px 4px rgba(15, 23, 42, 0.15)',
+    shadowHover: '0 4px 8px rgba(15, 23, 42, 0.25)',
     colors: {
-      ExprSocket: '#4CAF50',
-      VectorSocket: '#2196F3',
-      FloatSocket: '#FF9800',
-      BoolSocket: '#9C27B0',
-      StringSocket: '#607D8B',
-      MaterialSocket: '#E91E63',
-      StateSocket: '#795548',
-      default: '#9E9E9E',
+      // Modern, accessible color palette with good contrast
+      ExprSocket: '#10b981',     // Emerald-500 - geometry/expressions
+      VectorSocket: '#3b82f6',   // Blue-500 - vectors/math
+      FloatSocket: '#f59e0b',    // Amber-500 - numbers
+      BoolSocket: '#8b5cf6',     // Violet-500 - boolean logic
+      StringSocket: '#64748b',   // Slate-500 - text/strings
+      MaterialSocket: '#ec4899', // Pink-500 - materials/appearance
+      StateSocket: '#6366f1',    // Indigo-500 - state/data
+      default: '#94a3b8',        // Slate-400 - neutral default
     },
   },
   
   labels: {
-    color: '#666666',
-    fontSize: 11,
+    color: '#475569',            // Slate-600 - readable secondary text
+    colorSecondary: '#94a3b8',   // Slate-400 - muted text for dimensions, etc.
+    fontSize: 13,
     fontWeight: 500,
-    margin: '0 4px',
+    margin: '2px 4px 2px 20px',
   },
   
   controls: {
     background: '#ffffff',
-    border: '#d9d9d9',
-    borderFocus: '#1890ff',
-    borderRadius: 4,
-    padding: '8px 10px',
-    fontSize: 12,
+    backgroundSecondary: '#f8fafc', // Slate-50 - for containers
+    border: '#e2e8f0',           // Slate-200
+    borderFocus: '#3b82f6',      // Blue-500 - focus state
+    borderRadius: 6,
+    padding: '8px 12px',
+    fontSize: 13,
     gap: 10,
     height: 36,
     step: 0.1,
+    // Colors
+    textColor: '#1e293b',        // Slate-800 - primary text
+    textColorSecondary: '#94a3b8', // Slate-400 - secondary text
+    // Action buttons - semantic colors
+    buttonAdd: '#10b981',        // Emerald-500 - positive action
+    buttonAddHover: '#059669',   // Emerald-600 - hover state
+    buttonDelete: '#ef4444',     // Red-500 - destructive action
+    buttonDeleteHover: '#dc2626', // Red-600 - hover state
+    // Standardized input styling (matches vector controls)
+    inputPadding: '4px 8px',     // Standard padding for all inputs
+    inputFontSize: 11,           // Standard font size for all inputs
+    inputBorderRadius: 3,        // Standard border radius for all inputs
+    // Vector control sizing
+    vectorInputWidth: 60,
+    vectorInputWidthList: 55,
+    floatInputWidth: 90,
+    floatInputWidthList: 120,
+    // Matrix control sizing
+    matrixInputWidth: 90,
+    matrixContainerPadding: 8,
   },
   
   layout: {
-    minWidth: 200,
+    minWidth: 220,
     maxWidth: 450,
     socketPadding: 26,
-    columnGap: 18,
-    rowGap: 10,
+    columnGap: 38,
+    rowGap: 30,
+    rowPadding: 5,
   },
   
   connections: {
-    strokeWidth: 4,
-    strokeWidthSelected: 5,
-    color: '#6366F1',
-    colorSelected: '#1890ff',
-    colorHover: '#4096ff',
+    strokeWidth: 2,
+    strokeWidthSelected: 4,
+    color: '#64748b',            // Slate-500 - neutral connection color
+    colorSelected: '#3b82f6',    // Blue-500 - selected connection
+    colorHover: '#10b981',       // Emerald-500 - hover connection
     type: 'default',
     animated: false,
     animationDuration: 2000,
-    shadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+    shadow: '0 1px 3px rgba(15, 23, 42, 0.1)',
   },
 };
 
 /**
- * Dark theme variant
+ * Dark theme variant - Modern dark theme with excellent contrast
+ * Based on slate-900 foundation with bright accent colors
  */
 export const DARK_NODE_THEME: NodeTheme = {
   ...DEFAULT_NODE_THEME,
   container: {
     ...DEFAULT_NODE_THEME.container,
-    background: '#2d2d2d',
-    border: '#4a4a4a',
-    borderSelected: '#1890ff',
+    background: '#0f172a',       // Slate-900 - deep dark background
+    border: '#334155',           // Slate-700 - visible but subtle border
+    borderSelected: '#3b82f6',   // Blue-500 - bright selection
+    shadow: '0 2px 8px rgba(0, 0, 0, 0.25)',
+    shadowHover: '0 4px 16px rgba(0, 0, 0, 0.35)',
   },
   
   header: {
     ...DEFAULT_NODE_THEME.header,
-    background: '#3a3a3a',
-    color: '#ffffff',
-    borderBottom: '1px solid #4a4a4a',
+    background: '#1e293b',       // Slate-800 - slightly lighter header
+    color: '#f1f5f9',            // Slate-100 - bright readable text
+    borderBottom: '1px solid #334155', // Slate-700
   },
   
   labels: {
     ...DEFAULT_NODE_THEME.labels,
-    color: '#cccccc',
+    color: '#cbd5e1',            // Slate-300 - readable light text
+    colorSecondary: '#64748b',   // Slate-500 - muted text
   },
   
   controls: {
     ...DEFAULT_NODE_THEME.controls,
-    background: '#3a3a3a',
-    border: '#4a4a4a',
+    background: '#1e293b',       // Slate-800 - dark input background
+    backgroundSecondary: '#0f172a', // Slate-900 - darker containers
+    border: '#475569',           // Slate-600 - visible borders
+    borderFocus: '#3b82f6',      // Blue-500 - bright focus
+    textColor: '#f1f5f9',        // Slate-100 - bright text
+    textColorSecondary: '#94a3b8', // Slate-400 - muted text
+    // Keep the same semantic button colors - they work well in dark mode
+  },
+  
+  sockets: {
+    ...DEFAULT_NODE_THEME.sockets,
+    border: '2px solid #0f172a',  // Dark border for contrast
+    shadow: '0 2px 4px rgba(0, 0, 0, 0.4)',
+    shadowHover: '0 4px 8px rgba(0, 0, 0, 0.5)',
+    colors: {
+      // Slightly brighter versions for dark theme visibility
+      ExprSocket: '#34d399',     // Emerald-400 - brighter green
+      VectorSocket: '#60a5fa',   // Blue-400 - brighter blue
+      FloatSocket: '#fbbf24',    // Amber-400 - brighter amber
+      BoolSocket: '#a78bfa',     // Violet-400 - brighter violet
+      StringSocket: '#94a3b8',   // Slate-400 - neutral
+      MaterialSocket: '#f472b6', // Pink-400 - brighter pink
+      StateSocket: '#818cf8',    // Indigo-400 - brighter indigo
+      default: '#cbd5e1',        // Slate-300 - brighter default
+    },
   },
   
   connections: {
     ...DEFAULT_NODE_THEME.connections,
-    color: '#6B7280',
-    colorSelected: '#3B82F6',
-    colorHover: '#60A5FA',
-    shadow: '0 1px 3px rgba(0, 0, 0, 0.3)',
+    color: '#94a3b8',            // Slate-400 - visible in dark
+    colorSelected: '#60a5fa',    // Blue-400 - bright selection
+    colorHover: '#34d399',       // Emerald-400 - bright hover
+    shadow: '0 1px 3px rgba(0, 0, 0, 0.4)',
   },
 };

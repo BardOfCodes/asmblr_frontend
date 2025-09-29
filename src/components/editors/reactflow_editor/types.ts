@@ -2,37 +2,19 @@
 // This file defines all the core types for the React Flow-based visual programming editor
 
 import { Node, Edge } from 'reactflow';
+import { 
+  ControlType, 
+  ControlConfig, 
+  ControlDefinition, 
+  BaseControlProps,
+  UniformMapping 
+} from '../../../types/control';
 
-// Base control props interface
-export interface BaseControlProps {
-  id: string;
-  type: ControlType;
-  label: string;
-  value: any;
-  config: ControlConfig;
-  onChange: (value: any) => void;
-  className?: string;
-  disabled?: boolean;
-}
+// Re-export for backward compatibility
+export { ControlType, ControlConfig, BaseControlProps, UniformMapping };
 
 // Socket types for connections between nodes
 export type SocketType = 'ExprSocket' | 'FloatSocket' | 'VectorSocket' | 'BoolSocket' | 'StringSocket';
-
-// Control types for node parameters
-export type ControlType = 
-  | 'float'           // Single float slider
-  | 'vector2'         // 2D vector input
-  | 'vector3'         // 3D vector input  
-  | 'vector4'         // 4D vector input
-  | 'string'          // Text input
-  | 'select'          // Dropdown selection
-  | 'color'           // Color picker
-  | 'checkbox'        // Boolean toggle
-  | 'range'           // Min/max range slider
-  | 'uniform_float'   // Uniform-generating float
-  | 'uniform_vector2' // Uniform-generating vec2
-  | 'uniform_vector3' // Uniform-generating vec3
-  | 'uniform_vector4'; // Uniform-generating vec4
 
 // Node input definition
 export interface NodeInput {
@@ -50,30 +32,9 @@ export interface NodeOutput {
   type: SocketType;
 }
 
-// Control configuration
-export interface ControlConfig {
-  defaultValue: any;
-  min?: number | number[];
-  max?: number | number[];
-  step?: number;
-  options?: string[]; // For select controls
-  precision?: number;
-  units?: string;
-}
-
-// Uniform mapping for controls that generate shader uniforms
-export interface UniformMapping {
-  name: string;           // Uniform name in shader
-  type: 'float' | 'vec2' | 'vec3' | 'vec4';
-  transform?: (value: any) => any; // Optional value transformation
-}
-
-// Node control definition
-export interface NodeControl {
-  id: string;
-  type: ControlType;
-  label: string;
-  config: ControlConfig;
+// Node control definition (extends ControlDefinition with uniforms)
+export interface NodeControl extends ControlDefinition {
+  id: string; // Alias for key for backward compatibility
   uniforms?: UniformMapping[];
 }
 

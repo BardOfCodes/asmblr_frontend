@@ -39,9 +39,9 @@ export const BoundedSolidDefinition: NodeDefinition = {
   label: "BoundedSolid",
   category: "sysl_base",
   description: "Auto-generated from sysl.symbolic.base.",
-  inputs: [{"key": "expr", "label": "Expr", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "bounding", "label": "Bounding", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "bound_threshold", "label": "Bound Threshold", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "expr", "label": "Expr", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "bounding", "label": "Bounding", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "bound_threshold", "label": "Bound Threshold", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "bound_threshold", "type": "float", "label": "Bound Threshold", "config": {"defaultValue": null}, "linkedToInput": "bound_threshold", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "bound_threshold", "type": "float", "label": "Bound Threshold", "config": {"defaultValue": null}, "linkedToInput": "bound_threshold", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -50,9 +50,9 @@ export const GeomOnlySmoothUnionDefinition: NodeDefinition = {
   label: "GeomOnlySmoothUnion",
   category: "sysl_base",
   description: "Auto-generated from sysl.symbolic.base.",
-  inputs: [{"key": "expr_0", "label": "Expr 0", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "expr_1", "label": "Expr 1", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "k", "label": "K", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "expr_0", "label": "Expr 0", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "expr_1", "label": "Expr 1", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "k", "label": "K", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "k", "type": "float", "label": "K", "config": {"defaultValue": null}, "linkedToInput": "k", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "k", "type": "float", "label": "K", "config": {"defaultValue": null}, "linkedToInput": "k", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -61,9 +61,9 @@ export const EncodedSDFGrid3DDefinition: NodeDefinition = {
   label: "EncodedSDFGrid3D",
   category: "sysl_base",
   description: "Auto-generated from sysl.symbolic.base.",
-  inputs: [{"key": "data", "label": "Data", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "data", "label": "Data", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "data", "type": "string", "label": "Data", "config": {"defaultValue": null}, "linkedToInput": "data", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "data", "type": "Tensor[float,(D,H,W)]", "label": "Data", "config": {"defaultValue": null}, "linkedToInput": "data", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -72,9 +72,9 @@ export const LowPrecisionSDFGrid3DDefinition: NodeDefinition = {
   label: "LowPrecisionSDFGrid3D",
   category: "sysl_base",
   description: "Auto-generated from sysl.symbolic.base.",
-  inputs: [{"key": "data", "label": "Data", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "data", "label": "Data", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "data", "type": "string", "label": "Data", "config": {"defaultValue": null}, "linkedToInput": "data", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "data", "type": "Tensor[float,(D,H,W)]", "label": "Data", "config": {"defaultValue": null}, "linkedToInput": "data", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -83,8 +83,8 @@ export const EncodedLowPrecisionSDFGrid3DDefinition: NodeDefinition = {
   label: "EncodedLowPrecisionSDFGrid3D",
   category: "sysl_base",
   description: "Auto-generated from sysl.symbolic.base.",
-  inputs: [{"key": "data", "label": "Data", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "data", "label": "Data", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "data", "type": "string", "label": "Data", "config": {"defaultValue": null}, "linkedToInput": "data", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "data", "type": "Tensor[float,(D,H,W)]", "label": "Data", "config": {"defaultValue": null}, "linkedToInput": "data", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };

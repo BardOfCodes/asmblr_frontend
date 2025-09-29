@@ -1,13 +1,12 @@
 // String Control Component
-// Handles text input controls
+// Handles text input controls with theme integration
 
 import React, { useCallback } from 'react';
-import { Input } from 'antd';
-import { BaseControl } from './BaseControl';
-import { BaseControlProps } from '../types';
+import { BaseControl, ControlInputWrapper } from './BaseControl';
+import { BaseControlProps } from '../../../../types/control';
 
 /**
- * String Control Component
+ * String Control Component - Clean, theme-integrated text input
  */
 export const StringControl: React.FC<BaseControlProps> = ({
   id,
@@ -22,7 +21,7 @@ export const StringControl: React.FC<BaseControlProps> = ({
     onChange(e.target.value);
   }, [onChange]);
 
-  const stringValue = typeof value === 'string' ? value : (config.defaultValue || '');
+  const stringValue = value !== undefined ? value : (config.defaultValue || '');
 
   return (
     <BaseControl 
@@ -31,15 +30,16 @@ export const StringControl: React.FC<BaseControlProps> = ({
       className={`string-control ${className || ''}`}
       disabled={disabled}
     >
-      <input
-        id={id}
-        type="text"
-        value={stringValue}
-        onChange={handleChange}
-        disabled={disabled}
-        className="reactflow-string-input"
-        placeholder={config.defaultValue || ''}
-      />
+      <ControlInputWrapper>
+        <input
+          id={id}
+          type="text"
+          value={stringValue}
+          onChange={handleChange}
+          disabled={disabled}
+          placeholder={config.placeholder || ''}
+        />
+      </ControlInputWrapper>
     </BaseControl>
   );
 };

@@ -107,7 +107,7 @@ export const ApplyColor2DDefinition: NodeDefinition = {
   description: "Auto-generated from geolipi.symbolic.color.",
   inputs: [{"key": "expr", "label": "Expr", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "color", "label": "Color", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "color", "type": "string", "label": "Color", "config": {"defaultValue": null}, "linkedToInput": "color", "showLabel": true, "hasSocket": true, "socketType": "ExprSocket"}],
+  controls: [{"key": "color", "type": "Union[Vector[4]|str]", "label": "Color", "config": {"defaultValue": null}, "linkedToInput": "color", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -116,9 +116,9 @@ export const ModifyOpacity2DDefinition: NodeDefinition = {
   label: "ModifyOpacity2D",
   category: "color",
   description: "Auto-generated from geolipi.symbolic.color.",
-  inputs: [{"key": "canvas", "label": "Canvas", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "alpha", "label": "Alpha", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "canvas", "label": "Canvas", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "alpha", "label": "Alpha", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "alpha", "type": "float", "label": "Alpha", "config": {"defaultValue": null}, "linkedToInput": "alpha", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "alpha", "type": "float", "label": "Alpha", "config": {"defaultValue": null}, "linkedToInput": "alpha", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -129,7 +129,7 @@ export const ModifyColor2DDefinition: NodeDefinition = {
   description: "Auto-generated from geolipi.symbolic.color.",
   inputs: [{"key": "canvas", "label": "Canvas", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "color", "label": "Color", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "color", "type": "string", "label": "Color", "config": {"defaultValue": null}, "linkedToInput": "color", "showLabel": true, "hasSocket": true, "socketType": "ExprSocket"}],
+  controls: [{"key": "color", "type": "Union[Vector[4]|str]", "label": "Color", "config": {"defaultValue": null}, "linkedToInput": "color", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -140,7 +140,7 @@ export const ModifyColorTritone2DDefinition: NodeDefinition = {
   description: "Auto-generated from geolipi.symbolic.color.",
   inputs: [{"key": "canvas", "label": "Canvas", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "color_a", "label": "Color A", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "color_b", "label": "Color B", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "color_c", "label": "Color C", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "color_a", "type": "string", "label": "Color A", "config": {"defaultValue": null}, "linkedToInput": "color_a", "showLabel": true, "hasSocket": true, "socketType": "ExprSocket"}, {"key": "color_b", "type": "string", "label": "Color B", "config": {"defaultValue": null}, "linkedToInput": "color_b", "showLabel": true, "hasSocket": true, "socketType": "ExprSocket"}, {"key": "color_c", "type": "string", "label": "Color C", "config": {"defaultValue": null}, "linkedToInput": "color_c", "showLabel": true, "hasSocket": true, "socketType": "ExprSocket"}],
+  controls: [{"key": "color_a", "type": "Union[Vector[4]|str]", "label": "Color A", "config": {"defaultValue": null}, "linkedToInput": "color_a", "showLabel": true, "hasSocket": true}, {"key": "color_b", "type": "Union[Vector[4]|str]", "label": "Color B", "config": {"defaultValue": null}, "linkedToInput": "color_b", "showLabel": true, "hasSocket": true}, {"key": "color_c", "type": "Union[Vector[4]|str]", "label": "Color C", "config": {"defaultValue": null}, "linkedToInput": "color_c", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -171,9 +171,9 @@ export const AlphaToSDF2DDefinition: NodeDefinition = {
   label: "AlphaToSDF2D",
   category: "color",
   description: "Auto-generated from geolipi.symbolic.color.",
-  inputs: [{"key": "expr", "label": "Expr", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "dx", "label": "Dx", "socketType": "FloatSocket", "required": false, "variadic": false}, {"key": "canvas_shape", "label": "Canvas Shape", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "expr", "label": "Expr", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "dx", "label": "Dx", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "canvas_shape", "label": "Canvas Shape", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "dx", "type": "float", "label": "Dx", "config": {"defaultValue": null}, "linkedToInput": "dx", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}, {"key": "canvas_shape", "type": "vector2", "label": "Canvas Shape", "config": {"defaultValue": null}, "linkedToInput": "canvas_shape", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "dx", "type": "float", "label": "Dx", "config": {"defaultValue": null}, "linkedToInput": "dx", "showLabel": true, "hasSocket": true}, {"key": "canvas_shape", "type": "Vector[2]", "label": "Canvas Shape", "config": {"defaultValue": null}, "linkedToInput": "canvas_shape", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -182,9 +182,9 @@ export const RGB2HSLDefinition: NodeDefinition = {
   label: "RGB2HSL",
   category: "color",
   description: "Auto-generated from geolipi.symbolic.color.",
-  inputs: [{"key": "rgb", "label": "Rgb", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "rgb", "label": "Rgb", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "rgb", "type": "vector3", "label": "Rgb", "config": {"defaultValue": null}, "linkedToInput": "rgb", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "rgb", "type": "Vector[3]", "label": "Rgb", "config": {"defaultValue": null}, "linkedToInput": "rgb", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -193,9 +193,9 @@ export const RGB2HSVDefinition: NodeDefinition = {
   label: "RGB2HSV",
   category: "color",
   description: "Auto-generated from geolipi.symbolic.color.",
-  inputs: [{"key": "rgb", "label": "Rgb", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "rgb", "label": "Rgb", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "rgb", "type": "vector3", "label": "Rgb", "config": {"defaultValue": null}, "linkedToInput": "rgb", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "rgb", "type": "Vector[3]", "label": "Rgb", "config": {"defaultValue": null}, "linkedToInput": "rgb", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -204,9 +204,9 @@ export const HSV2RGBDefinition: NodeDefinition = {
   label: "HSV2RGB",
   category: "color",
   description: "Auto-generated from geolipi.symbolic.color.",
-  inputs: [{"key": "hsv", "label": "Hsv", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "hsv", "label": "Hsv", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "hsv", "type": "vector3", "label": "Hsv", "config": {"defaultValue": null}, "linkedToInput": "hsv", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "hsv", "type": "Vector[3]", "label": "Hsv", "config": {"defaultValue": null}, "linkedToInput": "hsv", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -215,9 +215,9 @@ export const HSL2RGBDefinition: NodeDefinition = {
   label: "HSL2RGB",
   category: "color",
   description: "Auto-generated from geolipi.symbolic.color.",
-  inputs: [{"key": "hsl", "label": "Hsl", "socketType": "VectorSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "hsl", "label": "Hsl", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "hsl", "type": "vector3", "label": "Hsl", "config": {"defaultValue": null}, "linkedToInput": "hsl", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}],
+  controls: [{"key": "hsl", "type": "Vector[3]", "label": "Hsl", "config": {"defaultValue": null}, "linkedToInput": "hsl", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -226,8 +226,8 @@ export const HueShiftDefinition: NodeDefinition = {
   label: "HueShift",
   category: "color",
   description: "Auto-generated from geolipi.symbolic.color.",
-  inputs: [{"key": "rgb", "label": "Rgb", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "amount", "label": "Amount", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "rgb", "label": "Rgb", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "amount", "label": "Amount", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "rgb", "type": "vector3", "label": "Rgb", "config": {"defaultValue": null}, "linkedToInput": "rgb", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "amount", "type": "float", "label": "Amount", "config": {"defaultValue": null}, "linkedToInput": "amount", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "rgb", "type": "Vector[3]", "label": "Rgb", "config": {"defaultValue": null}, "linkedToInput": "rgb", "showLabel": true, "hasSocket": true}, {"key": "amount", "type": "float", "label": "Amount", "config": {"defaultValue": null}, "linkedToInput": "amount", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };

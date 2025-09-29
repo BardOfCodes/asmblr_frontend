@@ -7,6 +7,76 @@
   background: #fafafa;
 }
 
+/* Edge selection styling controlled by NodeTheme.ts */
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: var(--connection-color-selected) !important;
+  stroke-width: var(--connection-stroke-selected) !important;
+}
+
+/* Vector Control Styling */
+.vector-inputs {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.vector-input-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.vector-dimension-label {
+  font-size: 10px;
+  font-weight: bold;
+  color: #666;
+  margin: 0;
+}
+
+.reactflow-vector-input {
+  width: 100px !important;
+  min-width: 100px !important;
+}
+
+.reactflow-vector-input .ant-input-number-input {
+  padding: 2px 4px !important;
+  font-size: 11px !important;
+  text-align: center !important;
+}
+
+/* Float Control Styling */
+.reactflow-float-input {
+  width: 100px !important;
+  min-width: 100px !important;
+}
+
+.reactflow-float-input .ant-input-number-input {
+  padding: 2px 4px !important;
+  font-size: 11px !important;
+  text-align: center !important;
+}
+
+/* General small input styling */
+.ant-input-number-sm {
+  height: 24px !important;
+}
+
+.ant-input-number-sm .ant-input-number-input {
+  height: 22px !important;
+}
+
+/* Universal text box width - make ALL input boxes in nodes wider */
+.react-flow__node .ant-input-number,
+.react-flow__node .ant-input,
+.react-flow__node input[type="number"],
+.react-flow__node input[type="text"],
+.reactflow-vector-input,
+.reactflow-float-input {
+  min-width: 120px !important;
+  width: 120px !important;
+}
+
 /* Custom Node Styles - Using React Flow base classes */
 .react-flow__node-custom {
   background: #D2E8E3;
@@ -188,7 +258,7 @@
   align-items: center;
   gap: 2px;
   flex-wrap: nowrap;
-  max-width: 140px; /* Prevent overflow */
+  width: fit-content; /* Allow natural sizing */
   box-sizing: border-box;
 }
 
@@ -222,8 +292,7 @@
   display: flex;
   gap: 3px;
   align-items: center;
-  width: 100%;
-  max-width: 130px;
+  width: fit-content;
   box-sizing: border-box;
 }
 
@@ -245,11 +314,10 @@
 }
 
 .vector-dimension-input {
-  width: 100% !important;
-  max-width: 30px !important;
-  min-width: 25px !important;
-  font-size: 8px !important;
-  padding: 1px 1px !important;
+  width: 120px !important;
+  min-width: 120px !important;
+  font-size: 11px !important;
+  padding: 2px 4px !important;
   box-sizing: border-box !important;
 }
 
@@ -260,20 +328,15 @@
 
 .reactflow-control.vector-control .reactflow-control-input {
   justify-content: flex-start;
-  max-width: 130px;
+  width: fit-content;
 }
 
-/* Specific vector type styling */
-.reactflow-control.vector2-control .vector-inputs {
-  max-width: 80px;
-}
-
-.reactflow-control.vector3-control .vector-inputs {
-  max-width: 110px;
-}
-
+/* Specific vector type styling - removed max-width constraints */
+.reactflow-control.vector2-control .vector-inputs,
+.reactflow-control.vector3-control .vector-inputs,
 .reactflow-control.vector4-control .vector-inputs {
-  max-width: 130px;
+  width: fit-content;
+  max-width: none;
 }
 
 /* Uniform Controls */
@@ -385,10 +448,11 @@
 }
 
 .react-flow__handle {
-  border: 2px solid #ffffff !important;
-  background: #1890ff !important;
-  width: 10px !important;
-  height: 10px !important;
+  border: var(--socket-border) !important;
+  background: var(--socket-background, #1890ff) !important;
+  width: var(--socket-size) !important;
+  height: var(--socket-size) !important;
+  border-radius: 50% !important;  /* Ensure perfect circles */
 }
 
 .react-flow__handle-connecting {

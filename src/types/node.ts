@@ -15,10 +15,19 @@ export type NodeCategory =
   | 'Math'
   | 'Variables'
   | 'Color'
+  | 'color'
   | 'Materials'
   | 'Utilities'
   | 'Advanced'
-  | 'auto';
+  | 'auto'
+  | 'primitives_2d'
+  | 'primitives_3d'
+  | 'combinators'
+  | 'math'
+  | 'variables'
+  | 'materials'
+  | 'utilities'
+  | 'advanced';
 
 export interface InputDefinition {
   key: string;

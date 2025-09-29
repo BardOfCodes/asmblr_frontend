@@ -8,33 +8,9 @@ import { NodeDefinition } from '../../../../types/node';
 import { NodeRegistry } from '../definitions';
 import { NodeTheme, DEFAULT_NODE_THEME } from '../theme/NodeTheme';
 import { ControlDefinition } from '../../../../types/control';
+import { getControlComponent } from '../controls';
+import { parseTypeString } from '../controls/TypeParser';
 
-/**
- * Parse CSS padding shorthand to numeric left/right values (px)
- */
-function parsePadding(padding: string | number | undefined): { left: number; right: number } {
-  if (!padding) return { left: 0, right: 0 };
-  if (typeof padding === 'number') return { left: padding, right: padding };
-  const parts = String(padding).trim().split(/\s+/);
-  const toNum = (v: string) => parseFloat(v.replace('px', '')) || 0;
-  if (parts.length === 1) {
-    const v = toNum(parts[0]);
-    return { left: v, right: v };
-  }
-  if (parts.length === 2) {
-    const horizontal = toNum(parts[1]);
-    return { left: horizontal, right: horizontal };
-  }
-  if (parts.length === 3) {
-    // top, horizontal, bottom
-    const horizontal = toNum(parts[1]);
-    return { left: horizontal, right: horizontal };
-  }
-  // top, right, bottom, left
-  const right = toNum(parts[1]);
-  const left = toNum(parts[3]);
-  return { left, right };
-}
 
 /**
  * Props for the BasicNode component
@@ -64,8 +40,10 @@ export interface ConnectionState {
  * Use CSS variables for dynamic values to prevent recreation
  */
 const NodeContainer = styled.div`
-  width: var(--node-width);
-  min-height: var(--node-height);
+  width: fit-content;
+  height: fit-content;
+  min-width: 120px;
+  min-height: 60px;
   background: var(--node-bg);
   border: 2px solid var(--node-border);
   border-radius: var(--node-radius);
@@ -104,41 +82,41 @@ const NodeBody = styled.div`
   display: flex;
   flex: 1;
   min-height: 0;
-  padding: var(--body-padding);
-  gap: var(--column-gap);
+  padding: 4px 8px 8px 8px; /* Added bottom padding */
+  gap: 0px; /* No gap between left and right columns */
 `;
 
 const LeftColumn = styled.div`
   display: flex;
   flex-direction: column;
-  width: var(--left-column-width);
-  gap: var(--row-gap);
+  flex: 1;
+  gap: 4px;
 `;
 
 const RightColumn = styled.div`
   display: flex;
   flex-direction: column;
-  width: var(--right-column-width);
-  gap: var(--row-gap);
+  flex: 0 0 auto;
+  gap: 4px;
   align-items: flex-end;
 `;
 
 const InputSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: var(--row-gap);
+  gap: 2px; /* Reduced gap between inputs */
 `;
 
 const OutputSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: var(--row-gap);
+  gap: 2px; /* Reduced gap between outputs */
 `;
 
 const ControlSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: var(--row-gap);
+  gap: 2px; /* Reduced gap between controls */
 `;
 
 // Two-row input: socket+label on top, control below
@@ -146,7 +124,7 @@ const InputContainer = styled.div<{ $hidden?: boolean }>`
   display: ${props => props.$hidden ? 'none' : 'flex'};
   flex-direction: column;
   position: relative;
-  margin-bottom: 2px;
+  margin-bottom: var(--row-padding); /* Theme-controlled row padding */
 `;
 
 const InputLabelRow = styled.div`
@@ -159,9 +137,9 @@ const InputLabelRow = styled.div`
 const InputControlRow = styled.div<{ $hidden?: boolean }>`
   display: ${props => props.$hidden ? 'none' : 'flex'};
   align-items: center;
-  margin-top: 4px;
-  gap: 6px;
-  min-height: 28px;
+  margin-top: 2px; /* Reduced top margin */
+  gap: 4px; /* Reduced gap */
+  min-height: 24px; /* Reduced min height */
 `;
 
 // Two-row output: label+socket on top
@@ -169,6 +147,7 @@ const OutputContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
+  margin-bottom: var(--row-padding); /* Theme-controlled row padding */
 `;
 
 const OutputLabelRow = styled.div`
@@ -198,65 +177,40 @@ const ControlContainer = styled.div`
   min-width: 0;
 `;
 
-const ControlInput = styled.input`
-  padding: var(--control-padding);
-  border: 1px solid var(--control-border);
-  border-radius: var(--control-radius);
-  font-size: var(--control-font-size);
-  background: var(--control-bg);
-  width: 100%;
-  min-width: 0;
-  height: var(--control-height);
-  
-  &:focus {
-    outline: none;
-    border-color: var(--control-border-focus);
-    box-shadow: 0 0 0 1px var(--control-border-focus-shadow);
-  }
-`;
-
-const VectorContainer = styled.div`
-  display: flex;
-  gap: var(--control-gap);
-  align-items: center;
-  width: 100%;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-`;
-
-const VectorInput = styled(ControlInput)`
-  width: 60px;
-  text-align: center;
-  min-width: 60px;
-  flex-shrink: 0;
-`;
-
-const VectorLabel = styled.span`
-  font-size: 9px;
-  color: var(--label-color);
-  min-width: 8px;
-  text-align: center;
-  flex-shrink: 0;
-`;
+// Removed old hardcoded control styles - now using TypeParser and control components
 
 const StyledHandle = styled(Handle)<{ $socketType?: string }>`
   width: var(--socket-size);
   height: var(--socket-size);
   border: var(--socket-border);
   background: ${props => getSocketColor(props.$socketType)};
-  box-shadow: var(--socket-shadow);
   border-radius: 50%;
+  z-index: 10; /* Ensure socket appears above node */
+  
+  /* Shadow only on the outside part using clip-path */
+  box-shadow: var(--socket-shadow);
   
   &.react-flow__handle-left {
     left: calc(-1 * var(--socket-offset-left));
+    /* Clip shadow to only show on left side (outside the node) */
+    clip-path: circle(50% at 50% 50%);
+    box-shadow: -2px 0 4px rgba(0, 0, 0, 0.2);
   }
   
   &.react-flow__handle-right {
     right: calc(-1 * var(--socket-offset-right));
+    /* Clip shadow to only show on right side (outside the node) */
+    clip-path: circle(50% at 50% 50%);
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.2);
   }
   
   &:hover {
-    box-shadow: var(--socket-shadow-hover);
+    &.react-flow__handle-left {
+      box-shadow: -3px 0 6px rgba(0, 0, 0, 0.3);
+    }
+    &.react-flow__handle-right {
+      box-shadow: 3px 0 6px rgba(0, 0, 0, 0.3);
+    }
   }
 `;
 
@@ -286,87 +240,13 @@ const useNodeEdges = (nodeId: string) => {
 /**
  * Cached sizing calculator - regular function, memoized in component
  */
-const calculateNodeSizing = (
-  definition: NodeDefinition | null,
-  connectedInputsSize: number,
-  inputCount: number,
-  outputCount: number,
-  controlCount: number
-) => {
-  if (!definition) return { width: 180, height: 80, leftColumnWidth: 120, rightColumnWidth: 60 };
+const calculateNodeSizing = (definition: NodeDefinition | null) => {
+  if (!definition) return { width: 150, height: 60 };
   
-  // Helper function to estimate text width
-  const estimateTextWidth = (text: string, fontSize: number = 12) => {
-    return text.length * fontSize * 0.6;
-  };
-  
-  // Calculate left column width based on inputs and controls
-  let maxLeftWidth = 0;
-  
-  // Check input labels
-  definition.inputs.forEach(input => {
-    const labelWidth = estimateTextWidth(input.label) + 30;
-    maxLeftWidth = Math.max(maxLeftWidth, labelWidth);
-  });
-  
-  // Check control widths
-  definition.controls.forEach(control => {
-    let controlWidth = 60; // Base width
-    
-    // Adjust based on control type
-    switch (control.type) {
-      case 'vector2':
-        controlWidth = 180;
-        break;
-      case 'vector3':
-        controlWidth = 270;
-        break;
-      case 'vector4':
-        controlWidth = 360;
-        break;
-      case 'string':
-        controlWidth = 120;
-        break;
-    }
-    
-    const totalControlWidth = controlWidth + 30;
-    maxLeftWidth = Math.max(maxLeftWidth, totalControlWidth);
-  });
-  
-  // Calculate right column width based on outputs
-  let maxRightWidth = 60;
-  definition.outputs.forEach(output => {
-    const labelWidth = estimateTextWidth(output.label) + 30;
-    maxRightWidth = Math.max(maxRightWidth, labelWidth);
-  });
-  
-  // Calculate header width
-  const headerWidth = estimateTextWidth(definition.label, 13) + 24;
-  
-  // Final calculations
-  const leftColumnWidth = Math.max(120, maxLeftWidth);
-  const rightColumnWidth = Math.max(60, maxRightWidth);
-  const contentWidth = leftColumnWidth + rightColumnWidth + 16;
-  const calculatedWidth = Math.max(180, Math.max(headerWidth, contentWidth));
-  
-  // Height calculation - simplified
-  const visibleControlsCount = controlCount - connectedInputsSize;
-  const totalRows = Math.max(inputCount + visibleControlsCount, outputCount);
-  const baseHeight = 32;
-  const rowHeight = 24;
-  const controlRowHeight = 32;
-  const padding = 12;
-  
-  const calculatedHeight = Math.max(
-    70,
-    baseHeight + (totalRows * rowHeight) + (visibleControlsCount * controlRowHeight) + padding
-  );
-  
+  // Simple: just use auto sizing - let CSS handle it
   return {
-    width: calculatedWidth,
-    height: calculatedHeight,
-    leftColumnWidth,
-    rightColumnWidth
+    width: 'auto' as any,
+    height: 'auto' as any
   };
 };
 
@@ -383,13 +263,13 @@ export const BasicNode: React.FC<BasicNodeProps> = memo(({
   const theme = data.theme || DEFAULT_NODE_THEME;
   
   // Get node definition
-  const definition = useMemo(() => {
+  const definition = useMemo((): NodeDefinition | null => {
     if (data.definition) {
       return data.definition;
     }
     
     if (data.registry && data.nodeType) {
-      return data.registry.get(data.nodeType);
+      return data.registry.get(data.nodeType) || null;
     }
     
     return null;
@@ -430,23 +310,24 @@ export const BasicNode: React.FC<BasicNodeProps> = memo(({
     };
   }, [nodeEdges, id]);
 
-  // Calculate sizing with better memoization
+  // Calculate sizing - simple bottom-up approach
   const sizing = useMemo(() => {
-    if (!definition) return { width: 180, height: 80, leftColumnWidth: 120, rightColumnWidth: 60 };
-    
-    return calculateNodeSizing(
-      definition,
-      connectionState.connectedInputs.size,
-      definition.inputs.length,
-      definition.outputs.length,
-      definition.controls.length
-    );
-  }, [definition, connectionState.connectedInputs.size]);
+    return calculateNodeSizing(definition);
+  }, [definition]);
+
+  // No need to manually set node size - using CSS fit-content
 
   // Calculate CSS variables for styled components
   const cssVariables = useMemo(() => {
-    const { left: paddingLeft, right: paddingRight } = parsePadding(theme.body.padding);
     const socketSize = theme.sockets.size.normal;
+    const nodeBorderWidth = 2; // From NodeContainer border: 2px solid
+    const bodyPadding = 8; // From NodeBody padding: 4px 8px 8px 8px
+    const labelMargin = 5; // From SocketLabel margin-left/right: 5px
+    
+    // Calculate precise offset: half socket + border + body padding + label margin + offset factor
+    const baseOffset = (socketSize / 2) + nodeBorderWidth + bodyPadding + labelMargin;
+    const leftOffset = baseOffset + (socketSize * (theme.sockets.offsetFactors?.left || 0));
+    const rightOffset = baseOffset + (socketSize * (theme.sockets.offsetFactors?.right || 0));
     
     return {
       // Node container
@@ -473,12 +354,11 @@ export const BasicNode: React.FC<BasicNodeProps> = memo(({
       '--body-padding': theme.body.padding,
       '--column-gap': `${theme.layout.columnGap}px`,
       '--row-gap': `${theme.layout.rowGap}px`,
-      '--left-column-width': `${sizing.leftColumnWidth}px`,
-      '--right-column-width': `${sizing.rightColumnWidth}px`,
       
       // Labels
       '--label-font-size': `${theme.labels.fontSize}px`,
       '--label-color': theme.labels.color,
+      '--label-color-secondary': theme.labels.colorSecondary,
       '--label-font-weight': theme.labels.fontWeight,
       '--label-margin': theme.labels.margin,
       
@@ -488,18 +368,49 @@ export const BasicNode: React.FC<BasicNodeProps> = memo(({
       '--control-radius': `${theme.controls.borderRadius}px`,
       '--control-font-size': `${theme.controls.fontSize}px`,
       '--control-bg': theme.controls.background,
+      '--control-bg-secondary': theme.controls.backgroundSecondary,
       '--control-height': `${theme.controls.height}px`,
       '--control-border-focus': theme.controls.borderFocus,
       '--control-border-focus-shadow': `${theme.controls.borderFocus}40`,
       '--control-gap': `${theme.controls.gap}px`,
+      '--control-text-color': theme.controls.textColor,
+      '--control-text-color-secondary': theme.controls.textColorSecondary,
+      '--control-button-add': theme.controls.buttonAdd,
+      '--control-button-add-hover': theme.controls.buttonAddHover,
+      '--control-button-delete': theme.controls.buttonDelete,
+      '--control-button-delete-hover': theme.controls.buttonDeleteHover,
+      // Standardized input styling
+      '--control-input-padding': theme.controls.inputPadding,
+      '--control-input-font-size': `${theme.controls.inputFontSize}px`,
+      '--control-input-border-radius': `${theme.controls.inputBorderRadius}px`,
+      
+      // Control sizing
+      '--control-vector-width': `${theme.controls.vectorInputWidth}px`,
+      '--control-vector-width-list': `${theme.controls.vectorInputWidthList}px`,
+      '--control-float-width': `${theme.controls.floatInputWidth}px`,
+      '--control-float-width-list': `${theme.controls.floatInputWidthList}px`,
+      '--control-matrix-width': `${theme.controls.matrixInputWidth}px`,
+      '--control-matrix-padding': `${theme.controls.matrixContainerPadding}px`,
       
       // Sockets
       '--socket-size': `${socketSize}px`,
       '--socket-border': theme.sockets.border,
+      '--socket-background': theme.sockets.colors.default,
       '--socket-shadow': theme.sockets.shadow,
       '--socket-shadow-hover': theme.sockets.shadowHover,
-      '--socket-offset-left': `${socketSize / 2 + paddingLeft}px`,
-      '--socket-offset-right': `${socketSize / 2 + paddingRight}px`,
+      '--socket-offset-left': `${leftOffset}px`, /* Precise offset calculation */
+      '--socket-offset-right': `${rightOffset}px`, /* Precise offset calculation */
+      
+      // Layout
+      '--row-padding': `${theme.layout.rowPadding}px`,
+      
+      // Connections (for global edge styling)
+      '--connection-color': theme.connections.color,
+      '--connection-color-selected': theme.connections.colorSelected,
+      '--connection-color-hover': theme.connections.colorHover,
+      '--connection-stroke-width': `${theme.connections.strokeWidth}px`,
+      '--connection-stroke-selected': `${theme.connections.strokeWidthSelected}px`,
+      '--connection-shadow': theme.connections.shadow,
     } as React.CSSProperties;
   }, [theme, sizing, selected]);
 
@@ -513,7 +424,10 @@ export const BasicNode: React.FC<BasicNodeProps> = memo(({
             ...node,
             data: {
               ...node.data,
-              [controlKey]: value,
+              controlValues: {
+                ...node.data.controlValues,
+                [controlKey]: value,
+              },
             },
           };
         }
@@ -522,75 +436,31 @@ export const BasicNode: React.FC<BasicNodeProps> = memo(({
     );
   }, [id, setNodes]);
 
-  // Render control based on its type - memoized
+  // Render control based on its type using TypeParser - memoized
   const renderControl = useCallback((control: ControlDefinition, value: any) => {
-    switch (control.type) {
-      case 'float':
-        return (
-          <ControlInput
-            type="number"
-            value={value !== undefined ? value : control.config.defaultValue || 0}
-            step={theme.controls.step}
-            onChange={(e) => handleControlChange(control.key, parseFloat(e.target.value) || 0)}
-          />
-        );
-        
-      case 'string':
-        return (
-          <ControlInput
-            type="text"
-            value={value !== undefined ? value : control.config.defaultValue || ''}
-            placeholder={control.config.placeholder}
-            onChange={(e) => handleControlChange(control.key, e.target.value)}
-          />
-        );
-        
-      case 'vector2':
-      case 'vector3':
-      case 'vector4':
-        const dimensions = control.type === 'vector2' ? 2 : control.type === 'vector3' ? 3 : 4;
-        const labels = ['X', 'Y', 'Z', 'W'];
-        const vecValue = value || control.config.defaultValue || new Array(dimensions).fill(0);
-        
-        return (
-          <VectorContainer>
-            {Array.from({ length: dimensions }, (_, i) => (
-              <React.Fragment key={i}>
-                <VectorLabel>{labels[i]}</VectorLabel>
-                  <VectorInput
-                  type="number"
-                  value={vecValue[i] || 0}
-                    step={theme.controls.step}
-                  onChange={(e) => {
-                    const newVec = [...vecValue];
-                    newVec[i] = parseFloat(e.target.value) || 0;
-                    handleControlChange(control.key, newVec);
-                  }}
-                />
-              </React.Fragment>
-            ))}
-          </VectorContainer>
-        );
-        
-      case 'checkbox':
-        return (
-          <input
-            type="checkbox"
-            checked={value !== undefined ? value : control.config.defaultValue || false}
-            onChange={(e) => handleControlChange(control.key, e.target.checked)}
-          />
-        );
-        
-      default:
-        return (
-          <ControlInput
-            type="text"
-            value={String(value !== undefined ? value : control.config.defaultValue || '')}
-            onChange={(e) => handleControlChange(control.key, e.target.value)}
-          />
-        );
-    }
-  }, [handleControlChange, theme]);
+    const ControlComponent = getControlComponent(control.type);
+    const typeMapping = parseTypeString(control.type);
+    
+    // Merge control config with TypeParser config (TypeParser config takes precedence for things like options)
+    const mergedConfig = {
+      ...control.config,
+      ...typeMapping.config,
+      // Use TypeParser default if control config doesn't have one
+      defaultValue: control.config.defaultValue ?? typeMapping.defaultValue
+    };
+    
+    return (
+      <ControlComponent
+        id={`${id}-${control.key}`}
+        type={control.type}
+        label={control.label}
+        value={value}
+        config={mergedConfig}
+        onChange={(newValue) => handleControlChange(control.key, newValue)}
+        disabled={false}
+      />
+    );
+  }, [handleControlChange, id]);
 
   // If no definition found, render error state
   if (!definition) {
@@ -649,7 +519,7 @@ export const BasicNode: React.FC<BasicNodeProps> = memo(({
                     {showControl && (
                       <InputControlRow>
                         <ControlContainer>
-                          {renderControl(linkedControl, data[linkedControl.key])}
+                          {renderControl(linkedControl, data.controlValues?.[linkedControl.key])}
                         </ControlContainer>
                       </InputControlRow>
                     )}
@@ -690,7 +560,7 @@ export const BasicNode: React.FC<BasicNodeProps> = memo(({
                       {/* Row 2: Control (if not connected) */}
                       <InputControlRow $hidden={isControlConnected}>
                         <ControlContainer>
-                          {renderControl(control, data[control.key])}
+                          {renderControl(control, data.controlValues?.[control.key])}
                         </ControlContainer>
                       </InputControlRow>
                     </InputContainer>

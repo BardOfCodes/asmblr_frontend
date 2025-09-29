@@ -1,23 +1,24 @@
 /**
- * Control type definitions
+ * Control type definitions - Unified control system types
  */
 
+// Control types for node parameters
 export type ControlType = 
-  | 'float' 
-  | 'string' 
-  | 'vector2' 
-  | 'vector3' 
-  | 'vector4' 
-  | 'checkbox' 
-  | 'select' 
-  | 'color'
-  | 'slider'
-  | 'range'
-  | 'uniform_float'
-  | 'uniform_vector2'
-  | 'uniform_vector3'
-  | 'uniform_vector4';
+  | 'float'           // Single float input
+  | 'vector2'         // 2D vector input
+  | 'vector3'         // 3D vector input  
+  | 'vector4'         // 4D vector input
+  | 'string'          // Text input
+  | 'select'          // Dropdown selection
+  | 'color'           // Color picker
+  | 'checkbox'        // Boolean toggle
+  | 'range'           // Min/max range slider
+  | 'uniform_float'   // Uniform-generating float
+  | 'uniform_vector2' // Uniform-generating vec2
+  | 'uniform_vector3' // Uniform-generating vec3
+  | 'uniform_vector4'; // Uniform-generating vec4
 
+// Control configuration options
 export interface ControlConfig {
   defaultValue?: any;
   min?: number | number[];
@@ -30,9 +31,10 @@ export interface ControlConfig {
   multiline?: boolean;
 }
 
+// Control definition for node controls
 export interface ControlDefinition {
   key: string;
-  type: ControlType;
+  type: string; // Support all backend type strings - TypeParser handles conversion
   label: string;
   config: ControlConfig;
   linkedToInput?: string;
@@ -41,7 +43,27 @@ export interface ControlDefinition {
   showLabel?: boolean;
 }
 
+// Base props interface for all control components
+export interface BaseControlProps {
+  id: string;
+  type: string; // Support all backend type strings - TypeParser handles conversion
+  label: string;
+  value: any;
+  config: ControlConfig;
+  onChange: (value: any) => void;
+  className?: string;
+  disabled?: boolean;
+}
+
+// Control value container
 export interface ControlValue {
   key: string;
   value: any;
+}
+
+// Uniform mapping for controls that generate shader uniforms
+export interface UniformMapping {
+  name: string;           // Uniform name in shader
+  type: 'float' | 'vec2' | 'vec3' | 'vec4';
+  transform?: (value: any) => any; // Optional value transformation
 }

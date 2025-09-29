@@ -147,8 +147,12 @@ describe('Node Sizing Calculation', () => {
       const { container } = render(
         <ReactFlowProvider>
           <BasicNode
-            {...mockNodeProps}
+            id="test"
             data={{ nodeType: 'test', definition: mockDefinition }}
+            selected={false}
+            type="smart-node"
+            dragging={false}
+            isConnectable={true}
           />
         </ReactFlowProvider>
       );

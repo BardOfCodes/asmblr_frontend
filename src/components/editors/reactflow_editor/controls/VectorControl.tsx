@@ -1,13 +1,26 @@
 // Vector Control Components
-// Handles vector inputs (Vec2, Vec3, Vec4) and single floats
+// Handles vector inputs (Vec2, Vec3, Vec4) and single floats with theme integration
 
 import React, { useCallback } from 'react';
-import { InputNumber } from 'antd';
-import { BaseControl, clampControlValue } from './BaseControl';
-import { BaseControlProps } from '../types';
+import styled from 'styled-components';
+import { BaseControl, ControlInputWrapper } from './BaseControl';
+import { BaseControlProps } from '../../../../types/control';
+
+const NumberInputWrapper = styled(ControlInputWrapper)`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: var(--control-float-width); /* Use theme-controlled float input width */
+`;
+
+const UnitsLabel = styled.span`
+  font-size: 10px;
+  color: var(--label-color-secondary);
+  white-space: nowrap;
+`;
 
 /**
- * Float Control Component
+ * Float Control Component - Clean, theme-integrated number input
  */
 export const FloatControl: React.FC<BaseControlProps> = ({
   id,
@@ -19,12 +32,11 @@ export const FloatControl: React.FC<BaseControlProps> = ({
   disabled
 }) => {
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = parseFloat(e.target.value) || 0;
-    const clampedValue = clampControlValue(newValue, config);
-    onChange(clampedValue);
-  }, [config, onChange]);
+    const inputValue = e.target.value;
+    onChange(inputValue); // Pass the raw string value with no constraints
+  }, [onChange]);
 
-  const numValue = typeof value === 'number' ? value : (config.defaultValue || 0);
+  const numValue = value !== undefined ? value : (config.defaultValue || '');
 
   return (
     <BaseControl 
@@ -33,182 +45,162 @@ export const FloatControl: React.FC<BaseControlProps> = ({
       className={`float-control ${className || ''}`}
       disabled={disabled}
     >
-      <InputNumber
-        id={id}
-        value={numValue}
-        min={typeof config.min === 'number' ? config.min : undefined}
-        max={typeof config.max === 'number' ? config.max : undefined}
-        step={config.step || 0.1}
-        onChange={(value) => onChange(value || 0)}
-        disabled={disabled}
-        size="small"
-        className="reactflow-float-input"
-      />
-      {config.units && (
-        <span className="reactflow-control-units">{config.units}</span>
-      )}
+      <NumberInputWrapper>
+        <input
+          id={id}
+          type="text"
+          value={numValue}
+          onChange={handleChange}
+          disabled={disabled}
+          placeholder=""
+        />
+        {config.units && <UnitsLabel>{config.units}</UnitsLabel>}
+      </NumberInputWrapper>
     </BaseControl>
   );
 };
 
+const VectorContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 100%;
+`;
+
+const VectorInputGroup = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const DimensionLabel = styled.label`
+  font-size: 11px;
+  color: var(--label-color-secondary);
+  font-weight: 600;
+  min-width: 12px;
+  text-align: left;
+`;
+
+const VectorInput = styled.input`
+  background: transparent;
+  border: 1px solid var(--control-border);
+  border-radius: var(--control-input-border-radius);
+  padding: var(--control-input-padding);
+  font-size: var(--control-input-font-size);
+  text-align: right;
+  width: var(--control-vector-width);
+  flex: 1;
+  
+  &:focus {
+    border-color: var(--control-border-focus);
+    outline: none;
+  }
+  
+  &:hover:not(:focus) {
+    border-color: var(--control-border-focus);
+  }
+`;
+
 /**
- * Vector2 Control Component
+ * Base Vector Control Component - Reusable for Vec2, Vec3, Vec4
  */
-export const Vector2Control: React.FC<BaseControlProps> = ({
+const BaseVectorControl: React.FC<BaseControlProps & { 
+  dimensions: number;
+  labels: string[];
+}> = ({
   id,
   label,
   value,
   config,
   onChange,
   className,
-  disabled
+  disabled,
+  dimensions,
+  labels
 }) => {
-  const vectorValue = Array.isArray(value) ? value : (config.defaultValue || [0, 0]);
+  const getDefaultVector = () => {
+    const defaultArray = [];
+    for (let i = 0; i < dimensions; i++) {
+      defaultArray.push(0);
+    }
+    return defaultArray;
+  };
   
-  const handleDimensionChange = useCallback((index: number, newValue: number) => {
-    const newVector = [...vectorValue];
-    newVector[index] = newValue;
-    const clampedVector = clampControlValue(newVector, config);
-    onChange(clampedVector);
-  }, [vectorValue, config, onChange]);
+  const vectorValue = Array.isArray(value) ? value : (config.defaultValue || getDefaultVector());
+  
+  const handleDimensionChange = useCallback((index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+    const newVector = vectorValue.slice();
+    newVector[index] = inputValue; // Store raw string value with no constraints
+    onChange(newVector);
+  }, [vectorValue, onChange]);
+
+  const renderInputs = () => {
+    const inputs = [];
+    for (let index = 0; index < dimensions; index++) {
+      inputs.push(
+        <VectorInputGroup key={index}>
+          <DimensionLabel>{labels[index]}:</DimensionLabel>
+          <VectorInput
+            type="text"
+            value={vectorValue[index] !== undefined ? vectorValue[index] : ''}
+            onChange={(e) => handleDimensionChange(index, e)}
+            disabled={disabled}
+            placeholder=""
+          />
+        </VectorInputGroup>
+      );
+    }
+    return inputs;
+  };
 
   return (
     <BaseControl 
       id={id} 
       label={label} 
-      className={`vector2-control ${className || ''}`}
+      className={className}
       disabled={disabled}
     >
-      <div className="vector-inputs">
-        {[0, 1].map(index => (
-          <div key={index} className="vector-input-group">
-            <label className="vector-dimension-label">
-              {['X', 'Y'][index]}
-            </label>
-            <InputNumber
-              value={vectorValue[index] || 0}
-              min={Array.isArray(config.min) ? config.min[index] : config.min}
-              max={Array.isArray(config.max) ? config.max[index] : config.max}
-              step={config.step || 0.1}
-              onChange={(value) => handleDimensionChange(index, value || 0)}
-              disabled={disabled}
-              size="small"
-              className="reactflow-vector-input"
-            />
-          </div>
-        ))}
-      </div>
-      {config.units && (
-        <span className="reactflow-control-units">{config.units}</span>
-      )}
+      <VectorContainer>
+        {renderInputs()}
+        {config.units && <UnitsLabel>{config.units}</UnitsLabel>}
+      </VectorContainer>
     </BaseControl>
   );
 };
 
 /**
- * Vector3 Control Component
+ * Vector2 Control Component - Clean, compact 2D vector input
  */
-export const Vector3Control: React.FC<BaseControlProps> = ({
-  id,
-  label,
-  value,
-  config,
-  onChange,
-  className,
-  disabled
-}) => {
-  const vectorValue = Array.isArray(value) ? value : (config.defaultValue || [0, 0, 0]);
-  
-  const handleDimensionChange = useCallback((index: number, newValue: number) => {
-    const newVector = [...vectorValue];
-    newVector[index] = newValue;
-    const clampedVector = clampControlValue(newVector, config);
-    onChange(clampedVector);
-  }, [vectorValue, config, onChange]);
-
-  return (
-    <BaseControl 
-      id={id} 
-      label={label} 
-      className={`vector3-control ${className || ''}`}
-      disabled={disabled}
-    >
-      <div className="vector-inputs">
-        {[0, 1, 2].map(index => (
-          <div key={index} className="vector-input-group">
-            <label className="vector-dimension-label">
-              {['X', 'Y', 'Z'][index]}
-            </label>
-            <InputNumber
-              value={vectorValue[index] || 0}
-              min={Array.isArray(config.min) ? config.min[index] : config.min}
-              max={Array.isArray(config.max) ? config.max[index] : config.max}
-              step={config.step || 0.1}
-              onChange={(value) => handleDimensionChange(index, value || 0)}
-              disabled={disabled}
-              size="small"
-              className="reactflow-vector-input"
-            />
-          </div>
-        ))}
-      </div>
-      {config.units && (
-        <span className="reactflow-control-units">{config.units}</span>
-      )}
-    </BaseControl>
-  );
-};
+export const Vector2Control: React.FC<BaseControlProps> = (props) => (
+  <BaseVectorControl 
+    {...props} 
+    dimensions={2} 
+    labels={['X', 'Y']}
+    className={`vector2-control ${props.className || ''}`}
+  />
+);
 
 /**
- * Vector4 Control Component
+ * Vector3 Control Component - Clean, compact 3D vector input
  */
-export const Vector4Control: React.FC<BaseControlProps> = ({
-  id,
-  label,
-  value,
-  config,
-  onChange,
-  className,
-  disabled
-}) => {
-  const vectorValue = Array.isArray(value) ? value : (config.defaultValue || [0, 0, 0, 0]);
-  
-  const handleDimensionChange = useCallback((index: number, newValue: number) => {
-    const newVector = [...vectorValue];
-    newVector[index] = newValue;
-    const clampedVector = clampControlValue(newVector, config);
-    onChange(clampedVector);
-  }, [vectorValue, config, onChange]);
+export const Vector3Control: React.FC<BaseControlProps> = (props) => (
+  <BaseVectorControl 
+    {...props} 
+    dimensions={3} 
+    labels={['X', 'Y', 'Z']}
+    className={`vector3-control ${props.className || ''}`}
+  />
+);
 
-  return (
-    <BaseControl 
-      id={id} 
-      label={label} 
-      className={`vector4-control ${className || ''}`}
-      disabled={disabled}
-    >
-      <div className="vector-inputs">
-        {[0, 1, 2, 3].map(index => (
-          <div key={index} className="vector-input-group">
-            <label className="vector-dimension-label">
-              {['X', 'Y', 'Z', 'W'][index]}
-            </label>
-            <InputNumber
-              value={vectorValue[index] || 0}
-              min={Array.isArray(config.min) ? config.min[index] : config.min}
-              max={Array.isArray(config.max) ? config.max[index] : config.max}
-              step={config.step || 0.1}
-              onChange={(value) => handleDimensionChange(index, value || 0)}
-              disabled={disabled}
-              size="small"
-              className="reactflow-vector-input"
-            />
-          </div>
-        ))}
-      </div>
-      {config.units && (
-        <span className="reactflow-control-units">{config.units}</span>
-      )}
-    </BaseControl>
-  );
-};
+/**
+ * Vector4 Control Component - Clean, compact 4D vector input
+ */
+export const Vector4Control: React.FC<BaseControlProps> = (props) => (
+  <BaseVectorControl 
+    {...props} 
+    dimensions={4} 
+    labels={['X', 'Y', 'Z', 'W']}
+    className={`vector4-control ${props.className || ''}`}
+  />
+);

@@ -6,9 +6,9 @@ export const Revolution3DDefinition: NodeDefinition = {
   label: "Revolution3D",
   category: "primitives_higher",
   description: "Auto-generated from geolipi.symbolic.primitives_higher.",
-  inputs: [{"key": "input", "label": "Input", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "radius", "label": "Radius", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "input", "label": "Input", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "radius", "label": "Radius", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "radius", "type": "float", "label": "Radius", "config": {"defaultValue": null}, "linkedToInput": "radius", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "radius", "type": "float", "label": "Radius", "config": {"defaultValue": null}, "linkedToInput": "radius", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -17,9 +17,9 @@ export const SimpleExtrusion3DDefinition: NodeDefinition = {
   label: "SimpleExtrusion3D",
   category: "primitives_higher",
   description: "Auto-generated from geolipi.symbolic.primitives_higher.",
-  inputs: [{"key": "input", "label": "Input", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "height", "label": "Height", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "input", "label": "Input", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "height", "label": "Height", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "height", "type": "float", "label": "Height", "config": {"defaultValue": null}, "linkedToInput": "height", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "height", "type": "float", "label": "Height", "config": {"defaultValue": null}, "linkedToInput": "height", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -28,9 +28,9 @@ export const LinearExtrude3DDefinition: NodeDefinition = {
   label: "LinearExtrude3D",
   category: "primitives_higher",
   description: "Auto-generated from geolipi.symbolic.primitives_higher.",
-  inputs: [{"key": "input", "label": "Input", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "height", "label": "Height", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "input", "label": "Input", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "height", "label": "Height", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "height", "type": "float", "label": "Height", "config": {"defaultValue": null}, "linkedToInput": "height", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "height", "type": "float", "label": "Height", "config": {"defaultValue": null}, "linkedToInput": "height", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -39,9 +39,9 @@ export const QuadraticBezierExtrude3DDefinition: NodeDefinition = {
   label: "QuadraticBezierExtrude3D",
   category: "primitives_higher",
   description: "Auto-generated from geolipi.symbolic.primitives_higher.",
-  inputs: [{"key": "input", "label": "Input", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "control", "label": "Control", "socketType": "VectorSocket", "required": false, "variadic": false}, {"key": "height", "label": "Height", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "input", "label": "Input", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "control", "label": "Control", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "height", "label": "Height", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "control", "type": "vector2", "label": "Control", "config": {"defaultValue": null}, "linkedToInput": "control", "showLabel": true, "hasSocket": true, "socketType": "VectorSocket"}, {"key": "height", "type": "float", "label": "Height", "config": {"defaultValue": null}, "linkedToInput": "height", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "control", "type": "Vector[2]", "label": "Control", "config": {"defaultValue": null}, "linkedToInput": "control", "showLabel": true, "hasSocket": true}, {"key": "height", "type": "float", "label": "Height", "config": {"defaultValue": null}, "linkedToInput": "height", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -50,9 +50,9 @@ export const PolyQuadBezierExtrude3DDefinition: NodeDefinition = {
   label: "PolyQuadBezierExtrude3D",
   category: "primitives_higher",
   description: "Auto-generated from geolipi.symbolic.primitives_higher.",
-  inputs: [{"key": "input", "label": "Input", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "controls", "label": "Controls", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "height", "label": "Height", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "input", "label": "Input", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "controls", "label": "Controls", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "height", "label": "Height", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "controls", "type": "string", "label": "Controls", "config": {"defaultValue": null}, "linkedToInput": "controls", "showLabel": true, "hasSocket": true, "socketType": "ExprSocket"}, {"key": "height", "type": "float", "label": "Height", "config": {"defaultValue": null}, "linkedToInput": "height", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "controls", "type": "List[Vector[2]]", "label": "Controls", "config": {"defaultValue": null}, "linkedToInput": "controls", "showLabel": true, "hasSocket": true}, {"key": "height", "type": "float", "label": "Height", "config": {"defaultValue": null}, "linkedToInput": "height", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -61,9 +61,9 @@ export const CubicBezierExtrude3DDefinition: NodeDefinition = {
   label: "CubicBezierExtrude3D",
   category: "primitives_higher",
   description: "Auto-generated from geolipi.symbolic.primitives_higher.",
-  inputs: [{"key": "input", "label": "Input", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "controls", "label": "Controls", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "height", "label": "Height", "socketType": "FloatSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "input", "label": "Input", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "controls", "label": "Controls", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "height", "label": "Height", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "controls", "type": "string", "label": "Controls", "config": {"defaultValue": null}, "linkedToInput": "controls", "showLabel": true, "hasSocket": true, "socketType": "ExprSocket"}, {"key": "height", "type": "float", "label": "Height", "config": {"defaultValue": null}, "linkedToInput": "height", "showLabel": true, "hasSocket": true, "socketType": "FloatSocket"}],
+  controls: [{"key": "controls", "type": "Tuple[Vector[2],Vector[2],Vector[2]]", "label": "Controls", "config": {"defaultValue": null}, "linkedToInput": "controls", "showLabel": true, "hasSocket": true}, {"key": "height", "type": "float", "label": "Height", "config": {"defaultValue": null}, "linkedToInput": "height", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -74,7 +74,7 @@ export const LinearCurve1DDefinition: NodeDefinition = {
   description: "Auto-generated from geolipi.symbolic.primitives_higher.",
   inputs: [{"key": "points", "label": "Points", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "points", "type": "string", "label": "Points", "config": {"defaultValue": null}, "linkedToInput": "points", "showLabel": true, "hasSocket": true, "socketType": "ExprSocket"}],
+  controls: [{"key": "points", "type": "List[Vector[2]]", "label": "Points", "config": {"defaultValue": null}, "linkedToInput": "points", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -85,7 +85,7 @@ export const QuadraticCurve1DDefinition: NodeDefinition = {
   description: "Auto-generated from geolipi.symbolic.primitives_higher.",
   inputs: [{"key": "points", "label": "Points", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "points", "type": "string", "label": "Points", "config": {"defaultValue": null}, "linkedToInput": "points", "showLabel": true, "hasSocket": true, "socketType": "ExprSocket"}],
+  controls: [{"key": "points", "type": "Tuple[Vector[2],Vector[2],Vector[2]]", "label": "Points", "config": {"defaultValue": null}, "linkedToInput": "points", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
@@ -96,6 +96,6 @@ export const PolyStraightLineCurve1DDefinition: NodeDefinition = {
   description: "Auto-generated from geolipi.symbolic.primitives_higher.",
   inputs: [{"key": "points", "label": "Points", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "points", "type": "string", "label": "Points", "config": {"defaultValue": null}, "linkedToInput": "points", "showLabel": true, "hasSocket": true, "socketType": "ExprSocket"}],
+  controls: [{"key": "points", "type": "List[Vector[2]]", "label": "Points", "config": {"defaultValue": null}, "linkedToInput": "points", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
