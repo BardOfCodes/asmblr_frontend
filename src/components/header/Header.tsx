@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { SettingOutlined, SaveOutlined, FolderOpenOutlined, FileOutlined, ExperimentOutlined } from '@ant-design/icons';
-import { message } from 'antd';
+import { notifications } from '../../utils/notifications';
 import { 
   HeaderContainer, 
   HeaderContent, 
@@ -18,6 +18,7 @@ import { Modes, saveModeToDisk } from '../../modes/modes';
 import { SettingsDialog } from '../control-panel/SettingsDialog';
 import TestComponent from '../editors/reactflow_editor/core/TestComponent';
 import { useProjectActions } from '../editors/reactflow_editor/hooks/useProjectActions';
+import { debug } from '../../utils/debug';
 
 import { EditorHandle } from '../../types/editor';
 
@@ -29,12 +30,12 @@ interface HeaderProps {
 
 
 export const Header: React.FC<HeaderProps> = ({ 
-  editor,
+  editor: _editor, // Keep for interface compatibility but not used in ReactFlow mode
   modeName, 
   setMode 
 }) => {
-  const [open, file] = useProjectPicker();
-  const [save] = useProjectSaver('project.json');
+  const [_open, file] = useProjectPicker(); // Keep for potential future use
+  const [_save] = useProjectSaver('project.json'); // Keep for potential future use
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [testOpen, setTestOpen] = useState(false);
 
@@ -42,32 +43,33 @@ export const Header: React.FC<HeaderProps> = ({
   const projectActions = useProjectActions();
 
   const handleSave = async () => {
-    console.log('Save clicked - current mode:', modeName);
+    debug.log('Save clicked - current mode:', modeName);
     
     if (!projectActions.isAvailable()) {
-      console.warn('React Flow editor not available - please switch to React Flow editor mode to save projects');
+      debug.warn('React Flow editor not available - please switch to React Flow editor mode to save projects');
       alert('Please switch to React Flow editor mode to save projects');
       return;
     }
 
-    // Use React Flow export system
+    // Use React Flow export system with automatic cleanup
     const filename = `asmblr-project-${new Date().toISOString().split('T')[0]}`;
-    console.log('Exporting React Flow project:', filename);
+    debug.log('Exporting React Flow project with cleanup:', filename);
     
     const result = await projectActions.exportProject(filename);
-    console.log('Export result:', result);
+    debug.log('Export result:', result);
     
     if (result.success) {
-      console.log('✅ Export successful:', result.message);
+      debug.log('✅ Export successful (with cleanup):', result.message);
+      notifications.success('Project exported successfully with cleaned connections');
     } else {
-      console.error('❌ Export failed:', result.message);
-      alert(`Export failed: ${result.message}`);
+      debug.error('❌ Export failed:', result.message);
+      notifications.error(`Export failed: ${result.message}`);
     }
   };
 
   const handleLoad = async () => {
     if (!projectActions.isAvailable()) {
-      console.warn('React Flow editor not available - please switch to React Flow editor mode to load projects');
+      debug.warn('React Flow editor not available - please switch to React Flow editor mode to load projects');
       alert('Please switch to React Flow editor mode to load projects');
       return;
     }
@@ -80,18 +82,19 @@ export const Header: React.FC<HeaderProps> = ({
       const file = (event.target as HTMLInputElement).files?.[0];
       if (file) {
         try {
-          console.log('Importing React Flow project:', file.name);
+          debug.log('Importing React Flow project:', file.name);
           const result = await projectActions.importProject(file);
-          console.log('Import result:', result);
+          debug.log('Import result:', result);
           
           if (result.success) {
-            console.log('✅ Import successful:', result.message);
+            debug.log('✅ Import successful:', result.message);
+            notifications.success('Project imported successfully');
           } else {
-            console.error('❌ Import failed:', result.message);
-            alert(`Import failed: ${result.message}`);
+            debug.error('❌ Import failed:', result.message);
+            notifications.error(`Import failed: ${result.message}`);
           }
         } catch (error) {
-          console.error('❌ Import error:', error);
+          debug.error('❌ Import error:', error);
           alert(`Import failed: ${error}`);
         }
       }
@@ -102,19 +105,20 @@ export const Header: React.FC<HeaderProps> = ({
   const handleNew = () => {
     if (confirm('Create a new project? This will clear the current work.')) {
       if (!projectActions.isAvailable()) {
-        console.warn('React Flow editor not available - please switch to React Flow editor mode');
+        debug.warn('React Flow editor not available - please switch to React Flow editor mode');
         alert('Please switch to React Flow editor mode to create new projects');
         return;
       }
 
       const result = projectActions.newProject();
-      console.log('New project result:', result);
+      debug.log('New project result:', result);
       
       if (result.success) {
-        console.log('✅ New project successful:', result.message);
+        debug.log('✅ New project successful:', result.message);
+        notifications.success('New project created successfully');
       } else {
-        console.error('❌ New project failed:', result.message);
-        alert(`New project failed: ${result.message}`);
+        debug.error('❌ New project failed:', result.message);
+        notifications.error(`New project failed: ${result.message}`);
       }
     }
   };
@@ -130,7 +134,7 @@ export const Header: React.FC<HeaderProps> = ({
   useEffect(() => {
     if (file) {
       // TODO: Implement project loading through mode context
-      console.log('Loading project file:', file);
+      debug.log('Loading project file:', file);
     }
   }, [file]);
 

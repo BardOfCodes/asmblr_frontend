@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { theme } from '../../design/theme';
-import { generateGeolipiShaderHtml, generateGeolipiTWGLShaderCode, APIError } from '../../API';
+import { generateShader, APIError } from '../../API';
 import { useSettings } from '../../store/SettingsContext';
 import { debug } from '../../utils/debug';
 import { EditorHandle } from '../../types/editor';
 import { ViewerHandle } from '../../types/viewer';
-import { GraphSerializer } from '../editors/reactflow_editor/utils/GraphSerializer';
+import { prepareGeolipiShaderPayload } from './shaderPayloadHelper';
+import { useMainFunctionRegistration } from '../../utils/ShortcutManager';
+import { notifications } from '../../utils/notifications';
 
 const Container = styled.div`
   padding: 20px;
@@ -61,13 +63,44 @@ const ActionButton = styled.button`
   }
 `;
 
-const StatusText = styled.div`
-  padding: 8px 12px;
+const SettingsSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
   background: ${theme.colors.backgroundSecondary};
+  border-radius: 6px;
+  border: 1px solid #10b981;
+`;
+
+const SettingsLabel = styled.label`
+  font-size: 13px;
+  font-weight: 500;
+  color: ${theme.colors.textPrimary};
+  margin-bottom: 4px;
+`;
+
+const ModeSelector = styled.select`
+  padding: 8px 12px;
+  border: 1px solid ${theme.colors.gray300};
   border-radius: 4px;
-  font-size: 12px;
+  background: ${theme.colors.background};
+  color: ${theme.colors.textPrimary};
+  font-size: 13px;
+  cursor: pointer;
+  
+  &:focus {
+    outline: none;
+    border-color: #10b981;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+  }
+`;
+
+const ModeDescription = styled.div`
+  font-size: 11px;
   color: ${theme.colors.textSecondary};
-  border-left: 3px solid #10b981;
+  margin-top: 4px;
+  line-height: 1.4;
 `;
 
 interface GeoLIPIControlPanelProps {
@@ -80,107 +113,97 @@ export const GeoLIPIControlPanel: React.FC<GeoLIPIControlPanelProps> = ({
   viewerRef
 }) => {
   const { settings } = useSettings();
+  const [geolipiMode, setGeolipiMode] = useState<'primitive' | 'singular'>('primitive');
 
-  const handleGenerateGeoLIPIShader = async () => {
-    debug.log('🌍 Generating GeoLIPI shader from node graph...');
+  const handleGenerateGeoLIPIShader = useCallback(async () => {
+    debug.log('Generating GeoLIPI shader from node graph...');
     
     try {
-      // Get ReactFlow editor data and serialize it
-      let serializedGraph = {};
-      if (editor && typeof editor === 'object') {
-        debug.log('Editor keys:', Object.keys(editor));
-        
-        // ReactFlow editor - get nodes and edges
-        if (editor.getNodes && editor.getEdges) {
-          debug.log('Using ReactFlow editor data');
-          const nodes = editor.getNodes() as any; // Cast to match GraphSerializer expectations
-          const edges = editor.getEdges() as any; // Cast to match GraphSerializer expectations
-          
-          // Serialize the graph data using GraphSerializer
-          serializedGraph = GraphSerializer.serialize(nodes, edges, 'geolipi');
-          debug.log('Serialized graph data:', serializedGraph);
-        } else {
-          debug.log('Editor structure not recognized, sending empty payload');
-          serializedGraph = { moduleList: {} };
-        }
-      } else {
-        serializedGraph = { moduleList: {} };
-      }
-
-      const payload = {
-        modules: serializedGraph,
-        shaderSettings: settings.shaderGeneration.shaderSettings,
-        mode: 'geolipi' // Specify GeoLIPI mode
-      };
-
-      debug.log('Sending GeoLIPI payload to backend:', payload);
-
-      const result = await generateGeolipiTWGLShaderCode(payload);
-      debug.log('✅ GeoLIPI shader generation successful:', {
-        hasShaderCode: !!result.shaderCode,
-        uniformCount: Object.keys(result.uniforms || {}).length,
-        textureCount: Object.keys(result.textures || {}).length
+      // Prepare payload using the GeoLIPI-specific helper
+      const { payload, metadata } = prepareGeolipiShaderPayload(editor, settings, geolipiMode);
+      
+      debug.log('Payload prepared:', {
+        nodeCount: metadata.nodeCount,
+        edgeCount: metadata.edgeCount,
+        serializationMethod: metadata.serializationMethod,
+        geolipiMode: geolipiMode
       });
       
-      if (result.shaderCode && viewerRef.current && viewerRef.current.loadShaderCode) {
-        viewerRef.current.loadShaderCode(result.shaderCode, result.uniforms, result.textures);
+      // Call API with prepared payload
+      const result = await generateShader('geolipi', 'twgl', payload);
+      
+      debug.log('GeoLIPI shader generation successful:', {
+        hasShaderCode: !!(result as any).shaderCode,
+        uniformCount: Object.keys((result as any).uniforms || {}).length,
+        textureCount: Object.keys((result as any).textures || {}).length
+      });
+      
+      const shaderResult = result as any; // Type assertion for shader code response
+      if (shaderResult.shaderCode && viewerRef.current && viewerRef.current.loadShaderCode) {
+        viewerRef.current.loadShaderCode(shaderResult.shaderCode, shaderResult.uniforms, shaderResult.textures);
         debug.log('Successfully loaded GeoLIPI shader code into viewer');
       } else {
         debug.error('Backend response missing shaderCode or loadShaderCode method not available:', result);
       }
     } catch (error) {
-      debug.error('❌ GeoLIPI shader generation failed:', error);
+      debug.error('GeoLIPI shader generation failed:', error);
       if (error instanceof APIError) {
-        debug.error('API Error details:', (error as any).details);
-      }
-    }
-  };
-
-  const handleTestGeoLIPIViewer = async () => {
-    debug.log('🧪 Testing GeoLIPI viewer with sample content...');
-    
-    try {
-      const payload = {
-        modules: {},
-        shaderSettings: settings.shaderGeneration.shaderSettings,
-        mode: 'geolipi'
-      };
-
-      const result = await generateGeolipiShaderHtml(payload);
-      debug.log('✅ GeoLIPI HTML generation successful');
-      
-      if (result.html && viewerRef.current && viewerRef.current.loadHTML) {
-        viewerRef.current.loadHTML(result.html);
-        debug.log('Successfully loaded GeoLIPI HTML into iframe');
+        debug.error('API Error details:', error.backendError);
+        // Show error dialog to user with backend error details if available
+        const backendError = error.backendError;
+        notifications.showErrorDialog({
+          title: 'Shader Generation Failed',
+          message: backendError?.message || error.message,
+          traceback: backendError?.traceback || `Endpoint: ${error.endpoint}\nStatus: ${error.status}`,
+          type: backendError?.type || 'APIError'
+        });
       } else {
-        debug.error('Backend response missing html field or loadHTML method not available:', result);
+        // Handle unexpected errors
+        notifications.showErrorDialog({
+          title: 'Shader Generation Failed',
+          message: error instanceof Error ? error.message : 'An unexpected error occurred during shader generation',
+          traceback: error instanceof Error ? error.stack : String(error),
+          type: 'UnexpectedError'
+        });
       }
-    } catch (error) {
-      debug.error('❌ GeoLIPI viewer test failed:', error);
     }
-  };
+  }, [editor, settings, geolipiMode, viewerRef]);
+
+  // Register this function as the main function for GeoLIPI mode
+  useMainFunctionRegistration(
+    'GeoLIPI', 
+    handleGenerateGeoLIPIShader, 
+    'Generate GeoLIPI shader from node graph (Cmd/Ctrl+Enter)'
+  );
 
   return (
     <Container>
-      <Title>🌍 GeoLIPI Graph Controls</Title>
-      
-      <StatusText>
-        GeoLIPI (Geometric Language for Implicit Programming) mode - Generate geometric shapes and transformations
-      </StatusText>
-
+      <Title>GeoLIPI Controls</Title>
       <ButtonGroup>
         <ActionButton onClick={handleGenerateGeoLIPIShader}>
-          🌍 Generate GeoLIPI Shader
+          Generate Shader
         </ActionButton>
         
-        <ActionButton onClick={handleTestGeoLIPIViewer}>
-          🧪 Test GeoLIPI Viewer
-        </ActionButton>
       </ButtonGroup>
 
-      <StatusText>
-        Available nodes: Geometric primitives, transformations, combinators (no materials or SySL nodes)
-      </StatusText>
+      <SettingsSection>
+        <SettingsLabel htmlFor="geolipi-mode">GeoLIPI Generation Mode</SettingsLabel>
+        <ModeSelector
+          id="geolipi-mode"
+          value={geolipiMode}
+          onChange={(e) => setGeolipiMode(e.target.value as 'primitive' | 'singular')}
+        >
+          <option value="primitive">Primitive Mode</option>
+          <option value="singular">Singular Mode</option>
+        </ModeSelector>
+        <ModeDescription>
+          {geolipiMode === 'primitive' 
+            ? 'Converts GeoLIPI expressions to SySL primitives for complex geometric operations'
+            : 'Wraps GeoLIPI expressions in a single material for simple solid rendering'
+          }
+        </ModeDescription>
+      </SettingsSection>
+
     </Container>
   );
 };

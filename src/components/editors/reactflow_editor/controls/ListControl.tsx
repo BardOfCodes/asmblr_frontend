@@ -3,7 +3,7 @@
 
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
-import { BaseControl, clampControlValue } from './BaseControl';
+import { BaseControl } from './BaseControl';
 import { BaseControlProps } from '../../../../types/control';
 
 const ListContainer = styled.div`
@@ -215,21 +215,18 @@ const BaseListControl: React.FC<BaseControlProps & {
     const newItem = createDefaultValue(itemType);
     const newList = listValue.slice();
     newList.push(newItem);
-    const clampedList = clampControlValue(newList, config);
-    onChange(clampedList);
+    onChange(newList);
   }, [listValue, onChange, itemType, config]);
 
   const handleRemoveItem = useCallback((index: number) => {
     const newList = listValue.filter((_: any, i: number) => i !== index);
-    const clampedList = clampControlValue(newList, config);
-    onChange(clampedList);
+    onChange(newList);
   }, [listValue, onChange, config]);
 
   const handleItemChange = useCallback((index: number, newValue: any) => {
     const newList = listValue.slice();
     newList[index] = newValue;
-    const clampedList = clampControlValue(newList, config);
-    onChange(clampedList);
+    onChange(newList);
   }, [listValue, onChange, config]);
 
   const typeLabel = itemType.toUpperCase();
@@ -245,7 +242,7 @@ const BaseListControl: React.FC<BaseControlProps & {
         <ListHeader>List of {typeLabel} ({listValue.length} items)</ListHeader>
         
         {listValue.length === 0 ? (
-          <EmptyState>No items added yet</EmptyState>
+          <EmptyState>No Entries</EmptyState>
         ) : (
           listValue.map((item: any, index: number) => (
             <ListItem key={index}>

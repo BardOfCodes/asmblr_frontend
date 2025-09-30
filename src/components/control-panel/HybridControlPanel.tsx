@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import { theme } from '../../design/theme';
-import { generateSySLShaderHtml, generateSySLTWGLShaderCode, APIError } from '../../API';
+import { generateShader, APIError } from '../../API';
 import { useSettings } from '../../store/SettingsContext';
 import { debug } from '../../utils/debug';
 import { EditorHandle } from '../../types/editor';
 import { ViewerHandle } from '../../types/viewer';
+import { prepareShaderPayloadFromEditor } from './shaderPayloadHelper';
+import { useMainFunctionRegistration } from '../../utils/ShortcutManager';
+import { notifications } from '../../utils/notifications';
 
 const Container = styled.div`
   display: flex;
@@ -70,83 +73,84 @@ export const HybridControlPanel: React.FC<HybridControlPanelProps> = ({
   
   const selectedViewer = settings.ui.components.selectedViewer;
 
-  const handleGenerateShader = async () => {
+  const handleGenerateShader = useCallback(async () => {
     setIsGeneratingShader(true);
     try {
       debug.log('Generating shader via backend...');
-      
-      // Extract serializable data from editor (avoid circular references)
-      let moduleData = {};
-      try {
-        if (editor && typeof editor === 'object') {
-          debug.log('Editor keys:', Object.keys(editor));
-          
-          // ReactFlow editor - get nodes and edges
-          if (editor.getNodes && editor.getEdges) {
-            debug.log('Using ReactFlow editor data');
-            moduleData = {
-              nodes: editor.getNodes(),
-              edges: editor.getEdges()
-            };
-          } else {
-            // For now, send empty object to test backend connection
-            debug.log('Editor structure not recognized, sending empty payload');
-            debug.log('Available editor properties:', Object.keys(editor));
-            moduleData = {};
-          }
-        } else {
-          debug.log('Editor is null or not an object:', typeof editor);
-          moduleData = {};
-        }
-      } catch (extractError) {
-        debug.warn('Could not extract editor data, using empty payload:', extractError);
-        moduleData = {};
-      }
-      
-      debug.log('Sending moduleData:', moduleData);
       debug.log('Selected viewer:', selectedViewer);
       
+      // Prepare payload using the helper (defaulting to 'neo' mode for hybrid)
+      const { payload, metadata } = prepareShaderPayloadFromEditor('neo', editor, settings);
+      
+      debug.log('Payload prepared:', {
+        nodeCount: metadata.nodeCount,
+        edgeCount: metadata.edgeCount,
+        serializationMethod: metadata.serializationMethod
+      });
+      
       if (selectedViewer === 'shader_viewer') {
-        // Generate shader code for TWGL viewer using the new TWGL endpoint
-        const result = await generateSySLTWGLShaderCode({
-          moduleData: moduleData,
-          uniforms: {}, // Pass uniforms (empty for now)
-          shaderSettings: settings.shaderGeneration.shaderSettings, // Pass shader settings
+        // Generate shader code for TWGL viewer
+        const result = await generateShader('neo', 'twgl', payload);
+        
+        debug.log('Neo shader generation successful:', {
+          hasShaderCode: !!(result as any).shaderCode,
+          uniformCount: Object.keys((result as any).uniforms || {}).length,
+          textureCount: Object.keys((result as any).textures || {}).length
         });
         
-        if (result.shaderCode && viewerRef.current && viewerRef.current.loadShaderCode) {
-          viewerRef.current.loadShaderCode(result.shaderCode, result.uniforms, result.textures);
-          debug.log('Successfully loaded TWGL shader code into viewer');
+        const shaderResult = result as any; // Type assertion for shader code response
+        if (shaderResult.shaderCode && viewerRef.current && viewerRef.current.loadShaderCode) {
+          viewerRef.current.loadShaderCode(shaderResult.shaderCode, shaderResult.uniforms, shaderResult.textures);
+          debug.log('Successfully loaded Neo shader code into viewer');
         } else {
           debug.error('Backend response missing shaderCode or loadShaderCode method not available:', result);
         }
       } else {
         // Generate HTML for iframe viewer
-        const result = await generateSySLShaderHtml({
-          moduleData: moduleData,
-          uniforms: {}, // Pass uniforms (empty for now)
-        });
+        const result = await generateShader('neo', 'html', payload);
         
-        if (result.html && viewerRef.current && viewerRef.current.loadHTML) {
-          viewerRef.current.loadHTML(result.html);
-          debug.log('Successfully loaded generated shader HTML into iframe');
+        debug.log('Neo HTML generation successful');
+        
+        const htmlResult = result as any; // Type assertion for HTML response
+        if (htmlResult.html && viewerRef.current && viewerRef.current.loadHTML) {
+          viewerRef.current.loadHTML(htmlResult.html);
+          debug.log('Successfully loaded Neo HTML into iframe');
         } else {
           debug.error('Backend response missing html field or loadHTML method not available:', result);
         }
       }
     } catch (error) {
+      debug.error('Neo shader generation failed:', error);
       if (error instanceof APIError) {
-        debug.error(`API Error [${error.endpoint}]:`, error.message);
-        if (error.status) {
-          debug.error('Status:', error.status);
-        }
+        debug.error('API Error details:', error.backendError);
+        // Show error dialog to user with backend error details if available
+        const backendError = error.backendError;
+        notifications.showErrorDialog({
+          title: 'Shader Generation Failed',
+          message: backendError?.message || error.message,
+          traceback: backendError?.traceback || `Endpoint: ${error.endpoint}\nStatus: ${error.status}`,
+          type: backendError?.type || 'APIError'
+        });
       } else {
-        debug.error('Unexpected error generating shader:', error);
+        // Handle unexpected errors
+        notifications.showErrorDialog({
+          title: 'Shader Generation Failed',
+          message: error instanceof Error ? error.message : 'An unexpected error occurred during shader generation',
+          traceback: error instanceof Error ? error.stack : String(error),
+          type: 'UnexpectedError'
+        });
       }
     } finally {
       setIsGeneratingShader(false);
     }
-  };
+  }, [selectedViewer, editor, settings, viewerRef]);
+
+  // Register this function as the main function for Neo mode
+  useMainFunctionRegistration(
+    'Neo Graph', 
+    handleGenerateShader, 
+    'Generate Neo shader from node graph (Cmd/Ctrl+Enter)'
+  );
 
   const handleTestIframe = async () => {
     setIsTestingIframe(true);

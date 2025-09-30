@@ -12,17 +12,6 @@ export const UnionDefinition: NodeDefinition = {
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
-export const JoinUnionDefinition: NodeDefinition = {
-  type: "JoinUnion",
-  label: "JoinUnion",
-  category: "combinators",
-  description: "Auto-generated from geolipi.symbolic.combinators.",
-  inputs: [{"key": "expr", "label": "Expr", "socketType": "ExprSocket", "required": true, "variadic": true}],
-  outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [],
-  factory: (data?: Record<string, any>) => ({ ...(data || {}) })
-};
-
 export const IntersectionDefinition: NodeDefinition = {
   type: "Intersection",
   label: "Intersection",

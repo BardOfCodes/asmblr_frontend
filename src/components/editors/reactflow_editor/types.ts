@@ -145,6 +145,7 @@ export interface ReactFlowEditorHandle {
   updateNodeControl: (nodeId: string, controlId: string, value: any) => void;
   zoomToFit: () => void;
   layout: () => void;
+  nodeRegistry?: any; // Node registry for type conversion during serialization
 }
 
 // Node category definitions

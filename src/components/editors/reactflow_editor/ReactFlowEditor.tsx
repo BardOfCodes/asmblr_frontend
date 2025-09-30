@@ -36,6 +36,9 @@ import { debug } from '../../../utils/debug';
 const globalNodeRegistry = new NodeRegistry();
 const globalNodeFactory = new NodeFactory(globalNodeRegistry);
 
+// Export the global registry so other parts of the app can access it
+export { globalNodeRegistry };
+
 // Load all auto-generated nodes and configure modes on initialization
 const initializeRegistry = () => {
   const nodeDefinitions = Object.values(AutoNodes).filter(
@@ -134,53 +137,96 @@ const ReactFlowEditorInner: React.FC<ReactFlowEditorProps> = ({
         return;
       }
 
-      // Find source and target nodes
-      const sourceNode = nodes.find(node => node.id === params.source);
-      const targetNode = nodes.find(node => node.id === params.target);
+      // Find both nodes
+      const nodeA = nodes.find(node => node.id === params.source);
+      const nodeB = nodes.find(node => node.id === params.target);
       
-      if (!sourceNode || !targetNode) {
+      if (!nodeA || !nodeB) {
         return;
       }
 
       // Get node definitions
-      const sourceDefinition = globalNodeRegistry.get((sourceNode.data as any).nodeType || sourceNode.data.type);
-      const targetDefinition = globalNodeRegistry.get((targetNode.data as any).nodeType || targetNode.data.type);
+      const definitionA = globalNodeRegistry.get((nodeA.data as any).nodeType || nodeA.data.type);
+      const definitionB = globalNodeRegistry.get((nodeB.data as any).nodeType || nodeB.data.type);
       
-      if (!sourceDefinition || !targetDefinition) {
+      if (!definitionA || !definitionB) {
         return;
       }
 
-      // Validation 2: Ensure source is an output and target is an input
-      const sourceOutput = sourceDefinition.outputs.find(output => output.key === params.sourceHandle);
-      const targetInput = targetDefinition.inputs.find(input => input.key === params.targetHandle);
-
-      if (!sourceOutput) {
-        return;
-      }
-
-      if (!targetInput) {
-        return;
-      }
+      // Determine which node has the output and which has the input
+      // Check if params.source (nodeA) has an output with params.sourceHandle
+      const nodeAOutput = definitionA.outputs.find(output => output.key === params.sourceHandle);
+      const nodeAInput = definitionA.inputs.find(input => input.key === params.sourceHandle) || 
+                        definitionA.controls.find(control => control.key === params.sourceHandle && control.hasSocket);
       
-      // Find the input definition to check variadic property
-      const inputDefinition = targetDefinition.inputs.find(input => input.key === params.targetHandle);
-      if (!inputDefinition) {
+      // Check if params.target (nodeB) has an input with params.targetHandle  
+      const nodeBInput = definitionB.inputs.find(input => input.key === params.targetHandle) ||
+                        definitionB.controls.find(control => control.key === params.targetHandle && control.hasSocket);
+      const nodeBOutput = definitionB.outputs.find(output => output.key === params.targetHandle);
+
+      let normalizedConnection: Connection;
+      let inputDefinition: any;
+
+      // Case 1: Normal direction - source is output, target is input
+      if (nodeAOutput && nodeBInput) {
+        normalizedConnection = params; // Use as-is
+        inputDefinition = definitionB;
+        debug.log('Connection: Normal direction (output → input)');
+      }
+      // Case 2: Reversed direction - source is input, target is output (need to flip)
+      else if (nodeAInput && nodeBOutput) {
+        normalizedConnection = {
+          source: params.target,      // Flip: target becomes source
+          sourceHandle: params.targetHandle,  // Flip: targetHandle becomes sourceHandle
+          target: params.source,      // Flip: source becomes target
+          targetHandle: params.sourceHandle   // Flip: sourceHandle becomes targetHandle
+        };
+        inputDefinition = definitionA;
+        debug.log('Connection: Reversed direction, flipping (input → output becomes output → input)');
+      }
+      // Case 3: Invalid connection (both are outputs, both are inputs, or socket not found)
+      else {
+        debug.warn('Invalid connection: Cannot connect', {
+          sourceNode: params.source,
+          sourceHandle: params.sourceHandle,
+          targetNode: params.target,
+          targetHandle: params.targetHandle,
+          nodeAOutput: !!nodeAOutput,
+          nodeAInput: !!nodeAInput,
+          nodeBInput: !!nodeBInput,
+          nodeBOutput: !!nodeBOutput
+        });
+        return;
+      }
+
+      // Find the actual input definition to check variadic property
+      const actualInputDefinition = inputDefinition.inputs.find((input: any) => input.key === normalizedConnection.targetHandle) ||
+                                   inputDefinition.controls.find((control: any) => control.key === normalizedConnection.targetHandle && control.hasSocket);
+      
+      if (!actualInputDefinition) {
+        debug.warn('Input definition not found for handle:', normalizedConnection.targetHandle);
         return;
       }
       
       let updatedEdges = [...edges];
       
       // If input is NOT variadic, remove existing connections to this input
-      if (!inputDefinition.variadic) {
+      if (!actualInputDefinition.variadic) {
         updatedEdges = updatedEdges.filter(edge => 
-          !(edge.target === params.target && edge.targetHandle === params.targetHandle)
+          !(edge.target === normalizedConnection.target && edge.targetHandle === normalizedConnection.targetHandle)
         );
+        debug.log('Removed existing connections (non-variadic input)');
       }
       
-      // Add the new connection
-      const newEdges = addEdge(params, updatedEdges);
+      // Add the new connection with normalized direction
+      const newEdges = addEdge(normalizedConnection, updatedEdges);
       setEdges(newEdges);
       onEdgesChange?.(newEdges);
+      
+      debug.log('Connection created:', {
+        from: `${normalizedConnection.source}[${normalizedConnection.sourceHandle}]`,
+        to: `${normalizedConnection.target}[${normalizedConnection.targetHandle}]`
+      });
     },
     [edges, setEdges, onEdgesChange, nodes]
   );

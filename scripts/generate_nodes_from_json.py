@@ -161,6 +161,8 @@ def main():
   buckets_content = {}
   
   for node in nodes:
+    if node['type'] in EXCLUDE_SYMBOLS:
+      continue
     bucket = bucket_for_file(node)
     file_safe = to_file_safe(node['type'])
     

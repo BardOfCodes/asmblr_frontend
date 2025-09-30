@@ -102,7 +102,7 @@ const VectorInput = styled.input`
 `;
 
 /**
- * Base Vector Control Component - Reusable for Vec2, Vec3, Vec4
+ * Base Vector Control Component - Simple and direct
  */
 const BaseVectorControl: React.FC<BaseControlProps & { 
   dimensions: number;
@@ -118,41 +118,31 @@ const BaseVectorControl: React.FC<BaseControlProps & {
   dimensions,
   labels
 }) => {
-  const getDefaultVector = () => {
-    const defaultArray = [];
-    for (let i = 0; i < dimensions; i++) {
-      defaultArray.push(0);
-    }
-    return defaultArray;
+  // Initialize vector with correct size - simple and direct
+  const initializeVector = (): any[] => {
+    const result = new Array(dimensions).fill(0);
+    return result;
   };
-  
-  const vectorValue = Array.isArray(value) ? value : (config.defaultValue || getDefaultVector());
-  
+
+  // Get current vector value - ensure it's always the right size
+  const getCurrentVector = (): any[] => {
+    if (Array.isArray(value) && value.length === dimensions) {
+      return [...value]; // Use existing value if it's the right size
+    }
+    if (Array.isArray(config.defaultValue) && config.defaultValue.length === dimensions) {
+      return [...config.defaultValue]; // Use default if it's the right size
+    }
+    return initializeVector(); // Otherwise create new vector
+  };
+
+  const vectorValue = getCurrentVector();
+
   const handleDimensionChange = useCallback((index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
-    const newVector = vectorValue.slice();
-    newVector[index] = inputValue; // Store raw string value with no constraints
-    onChange(newVector);
+    const newVector = [...vectorValue]; // Copy current vector
+    newVector[index] = inputValue; // Update the specific index - store as string for now
+    onChange(newVector); // Send the complete vector
   }, [vectorValue, onChange]);
-
-  const renderInputs = () => {
-    const inputs = [];
-    for (let index = 0; index < dimensions; index++) {
-      inputs.push(
-        <VectorInputGroup key={index}>
-          <DimensionLabel>{labels[index]}:</DimensionLabel>
-          <VectorInput
-            type="text"
-            value={vectorValue[index] !== undefined ? vectorValue[index] : ''}
-            onChange={(e) => handleDimensionChange(index, e)}
-            disabled={disabled}
-            placeholder=""
-          />
-        </VectorInputGroup>
-      );
-    }
-    return inputs;
-  };
 
   return (
     <BaseControl 
@@ -162,7 +152,18 @@ const BaseVectorControl: React.FC<BaseControlProps & {
       disabled={disabled}
     >
       <VectorContainer>
-        {renderInputs()}
+        {Array.from({ length: dimensions }, (_, index) => (
+          <VectorInputGroup key={index}>
+            <DimensionLabel>{labels[index]}:</DimensionLabel>
+            <VectorInput
+              type="text"
+              value={vectorValue[index] ?? '0'}
+              onChange={(e) => handleDimensionChange(index, e)}
+              disabled={disabled}
+              placeholder="0"
+            />
+          </VectorInputGroup>
+        ))}
         {config.units && <UnitsLabel>{config.units}</UnitsLabel>}
       </VectorContainer>
     </BaseControl>
@@ -170,7 +171,7 @@ const BaseVectorControl: React.FC<BaseControlProps & {
 };
 
 /**
- * Vector2 Control Component - Clean, compact 2D vector input
+ * Vector2 Control Component - 2D vector [x, y]
  */
 export const Vector2Control: React.FC<BaseControlProps> = (props) => (
   <BaseVectorControl 
@@ -182,7 +183,7 @@ export const Vector2Control: React.FC<BaseControlProps> = (props) => (
 );
 
 /**
- * Vector3 Control Component - Clean, compact 3D vector input
+ * Vector3 Control Component - 3D vector [x, y, z]
  */
 export const Vector3Control: React.FC<BaseControlProps> = (props) => (
   <BaseVectorControl 
@@ -194,7 +195,7 @@ export const Vector3Control: React.FC<BaseControlProps> = (props) => (
 );
 
 /**
- * Vector4 Control Component - Clean, compact 4D vector input
+ * Vector4 Control Component - 4D vector [x, y, z, w]
  */
 export const Vector4Control: React.FC<BaseControlProps> = (props) => (
   <BaseVectorControl 

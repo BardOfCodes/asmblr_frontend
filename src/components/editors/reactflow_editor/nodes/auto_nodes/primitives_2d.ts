@@ -517,14 +517,3 @@ export const NullExpression2DDefinition: NodeDefinition = {
   controls: [],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
-
-export const TileUV2DDefinition: NodeDefinition = {
-  type: "TileUV2D",
-  label: "TileUV2D",
-  category: "primitives_2d",
-  description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [],
-  outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [],
-  factory: (data?: Record<string, any>) => ({ ...(data || {}) })
-};

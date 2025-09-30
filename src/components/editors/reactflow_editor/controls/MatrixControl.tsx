@@ -1,5 +1,5 @@
 // Matrix Control Components
-// Handles matrix inputs (2x2, 3x3) with theme integration
+// Simple matrix inputs - 2x2 has 4 values, 3x3 has 9 values
 
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
@@ -52,105 +52,196 @@ const MatrixLabel = styled.div`
 `;
 
 /**
- * Base Matrix Control Component - Reusable for different matrix sizes
+ * Matrix2x2 Control - 4 values in 2x2 grid
  */
-const BaseMatrixControl: React.FC<BaseControlProps & {
-  dimensions: number;
-  matrixLabel: string;
-}> = ({
+export const Matrix2x2Control: React.FC<BaseControlProps> = ({
   id,
   label,
   value,
   config,
   onChange,
   className,
-  disabled,
-  dimensions,
-  matrixLabel
+  disabled
 }) => {
-  const getDefaultMatrix = () => {
-    const size = dimensions * dimensions;
-    const matrix = [];
-    for (let i = 0; i < size; i++) {
-      // Create identity matrix by default
-      matrix.push(i % (dimensions + 1) === 0 ? 1 : 0);
+  // Initialize with identity matrix [1, 0, 0, 1]
+  const getDefault2x2 = (): any[] => [1, 0, 0, 1];
+  
+  // Get current matrix - always 4 values
+  const matrixValue = (() => {
+    if (Array.isArray(value) && value.length === 4) {
+      return [...value];
     }
-    return matrix;
-  };
+    if (Array.isArray(config.defaultValue) && config.defaultValue.length === 4) {
+      return [...config.defaultValue];
+    }
+    return getDefault2x2();
+  })();
 
-  const matrixValue = Array.isArray(value) && value.length === dimensions * dimensions
-    ? value 
-    : config.defaultValue || getDefaultMatrix();
-
-  const handleChange = useCallback((row: number, col: number, e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback((index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
-    const currentMatrix = matrixValue.slice();
-    const index = row * dimensions + col;
-    currentMatrix[index] = inputValue; // Store raw string value with no constraints
-    onChange(currentMatrix);
-  }, [matrixValue, onChange, dimensions]);
-
-  const renderMatrix = () => {
-    const rows = [];
-    for (let row = 0; row < dimensions; row++) {
-      const cells = [];
-      for (let col = 0; col < dimensions; col++) {
-        const index = row * dimensions + col;
-        cells.push(
-          <MatrixInput
-            key={`${row}-${col}`}
-            type="text"
-            value={matrixValue[index] !== undefined ? matrixValue[index] : ''}
-            onChange={(e) => handleChange(row, col, e)}
-            disabled={disabled}
-            placeholder=""
-          />
-        );
-      }
-      rows.push(
-        <MatrixRow key={row}>
-          {cells}
-        </MatrixRow>
-      );
-    }
-    return rows;
-  };
+    const newMatrix = [...matrixValue];
+    newMatrix[index] = inputValue;
+    onChange(newMatrix);
+  }, [matrixValue, onChange]);
 
   return (
     <BaseControl 
       id={id} 
       label={label} 
-      className={className}
+      className={`matrix2x2-control ${className || ''}`}
       disabled={disabled}
     >
-      <MatrixLabel>{matrixLabel}</MatrixLabel>
+      <MatrixLabel>2×2 Matrix</MatrixLabel>
       <MatrixContainer>
-        {renderMatrix()}
+        <MatrixRow>
+          <MatrixInput
+            type="text"
+            value={matrixValue[0] ?? '1'}
+            onChange={(e) => handleChange(0, e)}
+            disabled={disabled}
+            placeholder="1"
+          />
+          <MatrixInput
+            type="text"
+            value={matrixValue[1] ?? '0'}
+            onChange={(e) => handleChange(1, e)}
+            disabled={disabled}
+            placeholder="0"
+          />
+        </MatrixRow>
+        <MatrixRow>
+          <MatrixInput
+            type="text"
+            value={matrixValue[2] ?? '0'}
+            onChange={(e) => handleChange(2, e)}
+            disabled={disabled}
+            placeholder="0"
+          />
+          <MatrixInput
+            type="text"
+            value={matrixValue[3] ?? '1'}
+            onChange={(e) => handleChange(3, e)}
+            disabled={disabled}
+            placeholder="1"
+          />
+        </MatrixRow>
       </MatrixContainer>
     </BaseControl>
   );
 };
 
 /**
- * Matrix2x2 Control Component - Clean, theme-integrated 2x2 matrix
+ * Matrix3x3 Control - 9 values in 3x3 grid
  */
-export const Matrix2x2Control: React.FC<BaseControlProps> = (props) => (
-  <BaseMatrixControl 
-    {...props} 
-    dimensions={2} 
-    matrixLabel="2×2 Matrix"
-    className={`matrix2x2-control ${props.className || ''}`}
-  />
-);
+export const Matrix3x3Control: React.FC<BaseControlProps> = ({
+  id,
+  label,
+  value,
+  config,
+  onChange,
+  className,
+  disabled
+}) => {
+  // Initialize with identity matrix [1, 0, 0, 0, 1, 0, 0, 0, 1]
+  const getDefault3x3 = (): any[] => [1, 0, 0, 0, 1, 0, 0, 0, 1];
+  
+  // Get current matrix - always 9 values
+  const matrixValue = (() => {
+    if (Array.isArray(value) && value.length === 9) {
+      return [...value];
+    }
+    if (Array.isArray(config.defaultValue) && config.defaultValue.length === 9) {
+      return [...config.defaultValue];
+    }
+    return getDefault3x3();
+  })();
 
-/**
- * Matrix3x3 Control Component - Clean, theme-integrated 3x3 matrix
- */
-export const Matrix3x3Control: React.FC<BaseControlProps> = (props) => (
-  <BaseMatrixControl 
-    {...props} 
-    dimensions={3} 
-    matrixLabel="3×3 Matrix"
-    className={`matrix3x3-control ${props.className || ''}`}
-  />
-);
+  const handleChange = useCallback((index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+    const newMatrix = [...matrixValue];
+    newMatrix[index] = inputValue;
+    onChange(newMatrix);
+  }, [matrixValue, onChange]);
+
+  return (
+    <BaseControl 
+      id={id} 
+      label={label} 
+      className={`matrix3x3-control ${className || ''}`}
+      disabled={disabled}
+    >
+      <MatrixLabel>3×3 Matrix</MatrixLabel>
+      <MatrixContainer>
+        <MatrixRow>
+          <MatrixInput
+            type="text"
+            value={matrixValue[0] ?? '1'}
+            onChange={(e) => handleChange(0, e)}
+            disabled={disabled}
+            placeholder="1"
+          />
+          <MatrixInput
+            type="text"
+            value={matrixValue[1] ?? '0'}
+            onChange={(e) => handleChange(1, e)}
+            disabled={disabled}
+            placeholder="0"
+          />
+          <MatrixInput
+            type="text"
+            value={matrixValue[2] ?? '0'}
+            onChange={(e) => handleChange(2, e)}
+            disabled={disabled}
+            placeholder="0"
+          />
+        </MatrixRow>
+        <MatrixRow>
+          <MatrixInput
+            type="text"
+            value={matrixValue[3] ?? '0'}
+            onChange={(e) => handleChange(3, e)}
+            disabled={disabled}
+            placeholder="0"
+          />
+          <MatrixInput
+            type="text"
+            value={matrixValue[4] ?? '1'}
+            onChange={(e) => handleChange(4, e)}
+            disabled={disabled}
+            placeholder="1"
+          />
+          <MatrixInput
+            type="text"
+            value={matrixValue[5] ?? '0'}
+            onChange={(e) => handleChange(5, e)}
+            disabled={disabled}
+            placeholder="0"
+          />
+        </MatrixRow>
+        <MatrixRow>
+          <MatrixInput
+            type="text"
+            value={matrixValue[6] ?? '0'}
+            onChange={(e) => handleChange(6, e)}
+            disabled={disabled}
+            placeholder="0"
+          />
+          <MatrixInput
+            type="text"
+            value={matrixValue[7] ?? '0'}
+            onChange={(e) => handleChange(7, e)}
+            disabled={disabled}
+            placeholder="0"
+          />
+          <MatrixInput
+            type="text"
+            value={matrixValue[8] ?? '1'}
+            onChange={(e) => handleChange(8, e)}
+            disabled={disabled}
+            placeholder="1"
+          />
+        </MatrixRow>
+      </MatrixContainer>
+    </BaseControl>
+  );
+};

@@ -4,7 +4,7 @@ import { NodeDefinition } from '../../definitions/NodeDefinitions';
 export const PolyLine2DDefinition: NodeDefinition = {
   type: "PolyLine2D",
   label: "PolyLine2D",
-  category: "auto",
+  category: "primitive2d",
   description: "Auto-generated from geolipi.symbolic.primitives_2d.",
   inputs: [{"key": "vertices", "label": "Vertices", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],

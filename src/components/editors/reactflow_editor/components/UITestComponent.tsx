@@ -20,8 +20,8 @@ import { NodeRegistry, NodeFactory, NodeDefinition } from '../definitions';
 import { DEFAULT_NODE_THEME } from '../theme';
 import { GraphSerializer } from '../utils/GraphSerializer';
 // Import auto-generated node definitions
-import { Box3DDefinition, Sphere3DDefinition, Cylinder3DDefinition } from '../nodes/auto_nodes/primitives3d';
-import { Translate3DDefinition, EulerRotate3DDefinition, Scale3DDefinition } from '../nodes/auto_nodes/transforms3d';
+import { Box3DDefinition, Sphere3DDefinition, Cylinder3DDefinition } from '../nodes/auto_nodes/primitives_3d';
+import { Translate3DDefinition, EulerRotate3DDefinition, Scale3DDefinition } from '../nodes/auto_nodes/transforms_3d';
 import { UnionDefinition, DifferenceDefinition } from '../nodes/auto_nodes/combinators';
 
 /**

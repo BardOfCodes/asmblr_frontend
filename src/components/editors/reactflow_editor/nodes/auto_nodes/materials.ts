@@ -66,25 +66,3 @@ export const RegisterMaterialDefinition: NodeDefinition = {
   controls: [{"key": "name", "type": "str", "label": "Name", "config": {"defaultValue": null}, "linkedToInput": "name", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
-
-export const RGBGrid3DDefinition: NodeDefinition = {
-  type: "RGBGrid3D",
-  label: "RGBGrid3D",
-  category: "materials",
-  description: "Auto-generated from sysl.symbolic.materials.",
-  inputs: [{"key": "data", "label": "Data", "socketType": "ExprSocket", "required": false, "variadic": false}],
-  outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "data", "type": "Tensor[float,(D,H,W,3)]", "label": "Data", "config": {"defaultValue": null}, "linkedToInput": "data", "showLabel": true, "hasSocket": true}],
-  factory: (data?: Record<string, any>) => ({ ...(data || {}) })
-};
-
-export const EncodedRGBGrid3DDefinition: NodeDefinition = {
-  type: "EncodedRGBGrid3D",
-  label: "EncodedRGBGrid3D",
-  category: "materials",
-  description: "Auto-generated from sysl.symbolic.materials.",
-  inputs: [{"key": "data", "label": "Data", "socketType": "ExprSocket", "required": false, "variadic": false}],
-  outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "data", "type": "Tensor[float,(D,H,W,3)]", "label": "Data", "config": {"defaultValue": null}, "linkedToInput": "data", "showLabel": true, "hasSocket": true}],
-  factory: (data?: Record<string, any>) => ({ ...(data || {}) })
-};

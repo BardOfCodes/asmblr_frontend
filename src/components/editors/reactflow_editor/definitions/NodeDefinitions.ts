@@ -93,15 +93,18 @@ export interface ControlDefinition {
  * Node category for organization
  */
 export type NodeCategory = 
-  | 'primitives_2d'     // Basic 3D shapes
-  | 'primitives_3d'     // Position, rotation, scale operations
+  | 'auto'     // Basic 3D shapes
+  | 'color'     // Position, rotation, scale operations
   | 'combinators'    // Union, difference, intersection
-  | 'math'           // Mathematical operations
-  | 'variables'      // Constants and uniforms
-  | 'materials'      // Material definitions
-  | 'utilities'      // Helper nodes
-  | 'advanced'       // Complex operations
-  | 'auto';          // Auto-generated nodes
+  | 'mat_solid_combinators'           // Mathematical operations
+  | 'primitives_2d'      // Constants and uniforms
+  | 'primitives_3d'      // Material definitions
+  | 'sysl_base'      // Helper nodes
+  | 'sysl_combinators'       // Complex operations
+  | 'materials'          // Auto-generated nodes
+  | 'transforms_2d'
+  | 'transforms_3d'
+  | 'variables';
 
 /**
  * Complete node definition
@@ -189,61 +192,13 @@ export interface NodeRegistryConfig {
 /**
  * Default registry configuration
  */
-export const DEFAULT_REGISTRY_CONFIG: NodeRegistryConfig = {
+export const DEFAULT_REGISTRY_CONFIG: Partial<NodeRegistryConfig> = {
   categories: {
-    'Primitives': {
+    'primitives_3d': {
       label: 'Primitives',
       description: 'Basic 3D shapes and geometry',
       icon: '🔷',
       order: 1
-    },
-    'Transforms': {
-      label: 'Transforms',
-      description: 'Position, rotation, and scale operations',
-      icon: '🔄',
-      order: 2
-    },
-    'Combinators': {
-      label: 'Combinators',
-      description: 'Union, difference, and intersection operations',
-      icon: '🔗',
-      order: 3
-    },
-    'Math': {
-      label: 'Math',
-      description: 'Mathematical operations and functions',
-      icon: '🧮',
-      order: 4
-    },
-    'Variables': {
-      label: 'Variables',
-      description: 'Constants, uniforms, and data sources',
-      icon: '📊',
-      order: 5
-    },
-    'Materials': {
-      label: 'Materials',
-      description: 'Material definitions and properties',
-      icon: '🎨',
-      order: 6
-    },
-    'Utilities': {
-      label: 'Utilities',
-      description: 'Helper nodes and tools',
-      icon: '🔧',
-      order: 7
-    },
-    'Advanced': {
-      label: 'Advanced',
-      description: 'Complex and specialized operations',
-      icon: '⚡',
-      order: 8
-    },
-    'auto': {
-      label: 'Auto-Generated',
-      description: 'Automatically generated nodes from backend',
-      icon: '🤖',
-      order: 9
     }
   },
   
@@ -256,7 +211,7 @@ export const DEFAULT_REGISTRY_CONFIG: NodeRegistryConfig = {
   uiConfig: {
     showExperimental: true,
     showDeprecated: false,
-    defaultCategory: 'Primitives'
+    defaultCategory: 'primitives_3d'
   }
 };
 

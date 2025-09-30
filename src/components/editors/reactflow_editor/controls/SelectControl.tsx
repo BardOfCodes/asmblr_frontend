@@ -27,6 +27,9 @@ const SelectWrapper = styled(ControlInputWrapper)`
     /* Prevent the select from being draggable */
     user-select: none;
     -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
   }
 `;
 
@@ -47,7 +50,7 @@ export const SelectControl: React.FC<BaseControlProps> = ({
     onChange(e.target.value);
   }, [onChange]);
 
-  // Only prevent propagation, don't prevent default behavior for select
+  // Comprehensive event handling to prevent node dragging
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent node dragging when clicking select
     // Don't preventDefault() - let the select work normally
@@ -55,6 +58,14 @@ export const SelectControl: React.FC<BaseControlProps> = ({
 
   const handleClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent node selection when clicking select
+  }, []);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent any mouse move events from reaching the node
+  }, []);
+
+  const handleMouseUp = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent mouse up events from reaching the node
   }, []);
 
   const selectValue = value !== undefined ? value : config.defaultValue;
@@ -70,6 +81,8 @@ export const SelectControl: React.FC<BaseControlProps> = ({
       <SelectWrapper
         onMouseDown={handleMouseDown}
         onClick={handleClick}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
       >
         <select
           id={id}

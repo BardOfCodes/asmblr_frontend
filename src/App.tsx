@@ -7,10 +7,14 @@ import { SimpleDebugLayout } from './components/layout/SimpleDebugLayout';
 import { Modes, loadModeFromDisk, saveModeToDisk } from './modes/modes';
 import { AsmblrMode } from './modes/types';
 import { debug } from './utils/debug';
+import { useShortcutManager } from './utils/ShortcutManager';
 
 const AppContent: React.FC = () => {
   const [modeName, setModeName] = useState<string | null>(null);
   const [mode, setMode] = useState<AsmblrMode | null>(null);
+
+  // Initialize keyboard shortcut manager
+  useShortcutManager(modeName);
 
   useEffect(() => {
     debug.log('Loading enhanced mode from disk...');

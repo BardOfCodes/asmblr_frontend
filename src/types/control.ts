@@ -5,10 +5,15 @@
 // Control types for node parameters
 export type ControlType = 
   | 'float'           // Single float input
-  | 'vector2'         // 2D vector input
-  | 'vector3'         // 3D vector input  
-  | 'vector4'         // 4D vector input
+  | 'int'             // Single integer input
+  | 'Vector[2]'         // 2D vector input
+  | 'Vector[3]'         // 3D vector input  
+  | 'Vector[4]'         // 4D vector input
+  | 'vector2'
+  | 'vector3'
+  | 'vector4'
   | 'string'          // Text input
+  | 'str'
   | 'select'          // Dropdown selection
   | 'color'           // Color picker
   | 'checkbox'        // Boolean toggle
@@ -16,7 +21,8 @@ export type ControlType =
   | 'uniform_float'   // Uniform-generating float
   | 'uniform_vector2' // Uniform-generating vec2
   | 'uniform_vector3' // Uniform-generating vec3
-  | 'uniform_vector4'; // Uniform-generating vec4
+  | 'uniform_vector4' // Uniform-generating vec4
+  | 'Union[Vector[4]|str]';
 
 // Control configuration options
 export interface ControlConfig {

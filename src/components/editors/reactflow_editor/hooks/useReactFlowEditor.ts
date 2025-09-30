@@ -2,7 +2,7 @@
 // Provides the editor interface compatible with the existing adaptive editor system
 
 import React, { useMemo, useCallback, useState, useEffect } from 'react';
-import { ReactFlowEditor } from '../ReactFlowEditor';
+import { ReactFlowEditor, globalNodeRegistry } from '../ReactFlowEditor';
 import { ReactFlowEditorHandle, ReactFlowNode, ReactFlowEdge, ReactFlowExportData } from '../types';
 import { NodeRegistry } from '../definitions';
 // Import all auto-generated node definitions
@@ -179,6 +179,7 @@ export const useReactFlowEditor = ({ modeName }: UseReactFlowEditorProps): React
     updateNodeControl,
     zoomToFit,
     layout,
+    nodeRegistry: globalNodeRegistry, // Add the global node registry for serialization
   }), [
     view,
     exportData,

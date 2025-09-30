@@ -3,7 +3,6 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { ControlConfig } from '../../../../types/control';
 
 interface BaseControlWrapperProps {
   id: string;
@@ -22,8 +21,25 @@ const ControlContainer = styled.div<{ $disabled?: boolean }>`
   pointer-events: ${props => props.$disabled ? 'none' : 'auto'};
   
   /* Prevent node dragging when interacting with controls */
+  user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  
   * {
     pointer-events: auto;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+  
+  /* Ensure all interactive elements stop event propagation and work properly */
+  input, select, textarea, button {
+    pointer-events: auto !important;
+    user-select: auto; /* Allow text selection in inputs */
+    -webkit-user-select: auto;
+    -moz-user-select: auto;
+    -ms-user-select: auto;
   }
 `;
 
@@ -90,9 +106,27 @@ export const BaseControl: React.FC<BaseControlWrapperProps> = ({
   // Prevent node dragging when interacting with controls
   const handleMouseDown = React.useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
+    // Only prevent default for non-interactive elements to avoid breaking select/input functionality
+    const target = e.target as HTMLElement;
+    if (!target.matches('select, input, textarea, button')) {
+      e.preventDefault();
+    }
   }, []);
 
   const handleClick = React.useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+  }, []);
+
+  const handleMouseMove = React.useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+  }, []);
+
+  const handleMouseUp = React.useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+  }, []);
+
+  const handleDragStart = React.useCallback((e: React.DragEvent) => {
+    e.preventDefault();
     e.stopPropagation();
   }, []);
 
@@ -102,6 +136,10 @@ export const BaseControl: React.FC<BaseControlWrapperProps> = ({
       $disabled={disabled}
       onMouseDown={handleMouseDown}
       onClick={handleClick}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onDragStart={handleDragStart}
+      draggable={false}
     >
       {children}
     </ControlContainer>
@@ -120,43 +158,3 @@ export const ControlInputWrapper: React.FC<{
   </ControlInput>
 );
 
-/**
- * Utility function to validate control values
- */
-export const validateControlValue = (value: any, config: ControlConfig): boolean => {
-  if (value === undefined || value === null) {
-    return config.defaultValue !== undefined;
-  }
-
-  // Type-specific validation
-  if (typeof config.min === 'number' && typeof value === 'number') {
-    if (value < config.min) return false;
-  }
-  
-  if (typeof config.max === 'number' && typeof value === 'number') {
-    if (value > config.max) return false;
-  }
-
-  if (Array.isArray(config.min) && Array.isArray(value)) {
-    for (let i = 0; i < config.min.length; i++) {
-      if (value[i] < config.min[i]) return false;
-    }
-  }
-
-  if (Array.isArray(config.max) && Array.isArray(value)) {
-    for (let i = 0; i < config.max.length; i++) {
-      if (value[i] > config.max[i]) return false;
-    }
-  }
-
-  return true;
-};
-
-/**
- * Utility function to pass through control values with no constraints
- * (Previously clamped values within min/max bounds, now removed all constraints)
- */
-export const clampControlValue = (value: any, _config?: any): any => {
-  // Return value as-is with no constraints or validation
-  return value;
-};

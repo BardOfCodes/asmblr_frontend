@@ -15,8 +15,7 @@ const allNodes = Object.values(AutoNodes).filter(
 const getNodesByCategories = (categories: string[]) => {
   return allNodes.filter(node => 
     categories.some(category => 
-      node.category === category || 
-      node.category.toLowerCase().includes(category.toLowerCase())
+      node.category === category
     )
   );
 };
@@ -38,13 +37,20 @@ const getNodesByCategories = (categories: string[]) => {
  */
 export const SySLModeDefinition: ModeDefinition = {
   name: 'sysl',
-  label: 'SySL Graph',
+  label: 'SySL',
   nodeSet: {
-    'Math': getNodesByCategories(['Math', 'Variables']),
-    'Materials': getNodesByCategories(['Materials']),
-    'Advanced': getNodesByCategories(['Advanced', 'Utilities']),
-    'Transforms': getNodesByCategories(['Transforms']),
-    'Combinators': getNodesByCategories(['Combinators']),
+    'Auto': getNodesByCategories(['auto']),
+    "Colors": getNodesByCategories(['color']),
+    "Combinators": getNodesByCategories(['combinators']),
+    "Material Solid Combinators": getNodesByCategories(['mat_solid_combinators']),
+    "Primitives 2D": getNodesByCategories(['primitives_2d']),
+    "Primitives 3D": getNodesByCategories(['primitives_3d']),
+    "SySL Base": getNodesByCategories(['sysl_base']),
+    "SySL Combinators": getNodesByCategories(['sysl_combinators']),
+    "SySL Materials": getNodesByCategories(['sysl_materials']),
+    "Transforms 2D": getNodesByCategories(['transforms_2d']),
+    "Transforms 3D": getNodesByCategories(['transforms_3d']),
+    "Variables": getNodesByCategories(['variables']),
   }
 };
 
@@ -55,17 +61,15 @@ export const SySLModeDefinition: ModeDefinition = {
  */
 export const GeoLIPIModeDefinition: ModeDefinition = {
   name: 'geolipi',
-  label: 'GeoLIPI Graph',
+  label: 'GeoLIPI',
   nodeSet: {
-    'Primitives': getNodesByCategories(['Primitives']),
-    'Transforms': getNodesByCategories(['Transforms']),
-    'Combinators': getNodesByCategories(['Combinators']),
-    'Math': getNodesByCategories(['Math', 'Variables']).filter(node => 
-      // Only basic math operations, not advanced symbolic stuff
-      !node.type.toLowerCase().includes('symbolic') &&
-      !node.type.toLowerCase().includes('material')
-    ),
-    'Utilities': getNodesByCategories(['Utilities']),
+    'Auto': getNodesByCategories(['auto']),
+    "Combinators": getNodesByCategories(['combinators']),
+    "Primitives 2D": getNodesByCategories(['primitives_2d']),
+    "Primitives 3D": getNodesByCategories(['primitives_3d']),
+    "Transforms 2D": getNodesByCategories(['transforms_2d']),
+    "Transforms 3D": getNodesByCategories(['transforms_3d']),
+    "Variables": getNodesByCategories(['variables']),
   }
 };
 
@@ -75,17 +79,24 @@ export const GeoLIPIModeDefinition: ModeDefinition = {
  */
 export const NeoModeDefinition: ModeDefinition = {
   name: 'neo',
-  label: 'Neo Graph', 
+  label: 'SySL-Extended', 
   nodeSet: {
-    'Primitives': getNodesByCategories(['Primitives']),
-    'Transforms': getNodesByCategories(['Transforms']),
-    'Combinators': getNodesByCategories(['Combinators']),
-    'Math': getNodesByCategories(['Math', 'Variables']),
-    'Materials': getNodesByCategories(['Materials']),
-    'Advanced': getNodesByCategories(['Advanced', 'Utilities']),
     'Auto': getNodesByCategories(['auto']),
+    "Colors": getNodesByCategories(['color']),
+    "Combinators": getNodesByCategories(['combinators']),
+    "Material Solid Combinators": getNodesByCategories(['mat_solid_combinators']),
+    "Primitives 2D": getNodesByCategories(['primitives_2d']),
+    "Primitives 3D": getNodesByCategories(['primitives_3d']),
+    "SySL Base": getNodesByCategories(['sysl_base']),
+    "SySL Combinators": getNodesByCategories(['sysl_combinators']),
+    "Materials": getNodesByCategories(['materials']),
+    "Transforms 2D": getNodesByCategories(['transforms_2d']),
+    "Transforms 3D": getNodesByCategories(['transforms_3d']),
+    "Variables": getNodesByCategories(['variables']),
   }
 };
+
+
 
 /**
  * All mode definitions for registration

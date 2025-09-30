@@ -474,17 +474,6 @@ export const InexactAnisotropicGaussian3DDefinition: NodeDefinition = {
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
-export const SDFGrid3DDefinition: NodeDefinition = {
-  type: "SDFGrid3D",
-  label: "SDFGrid3D",
-  category: "primitives_3d",
-  description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "sdf_grid", "label": "Sdf Grid", "socketType": "ExprSocket", "required": false, "variadic": false}],
-  outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "sdf_grid", "type": "Tensor[float, (D,H,W)]", "label": "Sdf Grid", "config": {"defaultValue": null}, "linkedToInput": "sdf_grid", "showLabel": true, "hasSocket": true}],
-  factory: (data?: Record<string, any>) => ({ ...(data || {}) })
-};
-
 export const NullExpression3DDefinition: NodeDefinition = {
   type: "NullExpression3D",
   label: "NullExpression3D",
