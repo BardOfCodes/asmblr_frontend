@@ -21,16 +21,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 OUT_BASE = ROOT.parent / 'src' / 'components' / 'editors' / 'reactflow_editor' / 'nodes' / 'auto_nodes'
 
-# No mapping needed - use categories directly
-EXCLUDE_SYMBOLS = {
-    'JoinUnion', 'EncodedRGBGrid3D', 'RGBGrid3D', "SDFGrid3D",
-    "TileUV2D", "SinRepeatX2D", "SinRepeatY2D",
-    "SinAlongAxisY2D", "SinDiagonal2D", "SinDiagonalFlip2D",
-    "SinRadial2D", "SquiggleX2D", "SquiggleY2D",
-    "SquiggleDiagonal2D", "SquiggleDiagonalFlip2D",
-    "SquiggleRadial2D", "SquiggleDistortion2D"
-}
-
 
 def to_file_safe(name: str) -> str:
   return re.sub(r'[^A-Za-z0-9_]', '', name)
@@ -161,8 +151,6 @@ def main():
   buckets_content = {}
   
   for node in nodes:
-    if node['type'] in EXCLUDE_SYMBOLS:
-      continue
     bucket = bucket_for_file(node)
     file_safe = to_file_safe(node['type'])
     

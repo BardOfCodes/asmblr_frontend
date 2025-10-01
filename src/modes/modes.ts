@@ -1,14 +1,8 @@
 // Application modes with clean architecture
-import { makeNeoMode } from './neo-mode';
-import { makeSySLMode } from './sysl-mode';
-import { makeGeoLIPIMode } from './geolipi-mode';
 import { AsmblrMode } from './types';
+import { getAllModes } from './mode-registry';
 
-export const Modes: Record<string, AsmblrMode> = {
-  'Neo Graph': makeNeoMode(),
-  'SySL Graph': makeSySLMode(),
-  'GeoLIPI Graph': makeGeoLIPIMode(),
-};
+export const Modes: Record<string, AsmblrMode> = getAllModes();
 
 const MODE_STORAGE_KEY = 'asmblr-enhanced-mode';
 

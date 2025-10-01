@@ -189,9 +189,9 @@ yarn gen:nodes    # Generate node definitions from JSON
 ## Key Features & Capabilities
 
 ### Multi-Mode Architecture
-- **Neo Graph**: Advanced node-based editing
-- **SySL Graph**: Specialized shader language support  
-- **GeoLIPI Graph**: Geometric processing pipeline
+- **Neo**: Advanced node-based editing
+- **SySL**: Specialized shader language support  
+- **GeoLIPI**: Geometric processing pipeline
 - Runtime mode switching with persistent preferences
 
 ### Visual Node Editor

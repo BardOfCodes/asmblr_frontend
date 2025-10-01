@@ -104,7 +104,8 @@ export type NodeCategory =
   | 'materials'          // Auto-generated nodes
   | 'transforms_2d'
   | 'transforms_3d'
-  | 'variables';
+  | 'variables'
+  | 'mxg';
 
 /**
  * Complete node definition
@@ -327,13 +328,6 @@ export function validateNodeDefinition(definition: NodeDefinition): ValidationRe
     }
   });
 
-  // Check for orphaned controls (controls not linked to inputs)
-  const linkedControls = new Set(definition.controls.map(c => c.linkedToInput).filter(Boolean));
-  const unlinkedInputs = definition.inputs.filter(input => !linkedControls.has(input.key));
-  
-  if (unlinkedInputs.length > 0) {
-    warnings.push(`Inputs without controls: ${unlinkedInputs.map(i => i.key).join(', ')}`);
-  }
 
   return {
     isValid: errors.length === 0,

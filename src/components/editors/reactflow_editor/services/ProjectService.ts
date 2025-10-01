@@ -7,7 +7,7 @@
 
 import { Node, Edge } from 'reactflow';
 import { ReactFlowNodeData } from '../types';
-import { ProjectFileManager, ProjectFile } from '../utils/ProjectFileManager';
+import { ProjectFileManager } from '../utils/ProjectFileManager';
 import { NodeRegistry } from '../definitions/NodeRegistry';
 
 class ProjectService {
@@ -25,8 +25,12 @@ class ProjectService {
 
   // Initialize with node registry (called once from ReactFlowEditor)
   initialize(nodeRegistry: NodeRegistry): void {
+    console.log('🔧 ProjectService: Initializing with node registry');
     if (!this.projectManager) {
       this.projectManager = new ProjectFileManager(nodeRegistry);
+      console.log('✅ ProjectService: ProjectFileManager created successfully');
+    } else {
+      console.log('ℹ️ ProjectService: Already initialized, skipping');
     }
   }
 
@@ -37,12 +41,21 @@ class ProjectService {
     viewport: { x: number; y: number; zoom: number },
     key?: string
   ): Promise<{ success: boolean; message: string; key?: string }> {
+    console.log('💾 ProjectService: Starting save operation', {
+      nodeCount: nodes.length,
+      edgeCount: edges.length,
+      viewport,
+      providedKey: key
+    });
+
     if (!this.projectManager) {
+      console.error('❌ ProjectService: Save failed - service not initialized');
       return { success: false, message: 'Project service not initialized' };
     }
 
     try {
       const projectKey = key || `project-${Date.now()}`;
+      console.log('📝 ProjectService: Using project key:', projectKey);
       
       this.projectManager.saveToLocalStorage(projectKey, nodes, edges, {
         name: projectKey,
@@ -50,12 +63,14 @@ class ProjectService {
         viewport
       });
 
+      console.log('✅ ProjectService: Project saved successfully with key:', projectKey);
       return { 
         success: true, 
         message: 'Project saved successfully', 
         key: projectKey 
       };
     } catch (error) {
+      console.error('❌ ProjectService: Save failed with error:', error);
       return { 
         success: false, 
         message: `Failed to save project: ${error}` 
@@ -74,24 +89,50 @@ class ProjectService {
       metadata?: any;
     };
   }> {
+    console.log('📂 ProjectService: Starting load operation', { providedKey: key });
+
     if (!this.projectManager) {
+      console.error('❌ ProjectService: Load failed - service not initialized');
       return { success: false, message: 'Project service not initialized' };
     }
 
     try {
       // If no key provided, get the most recent project
       if (!key) {
+        console.log('🔍 ProjectService: No key provided, searching for most recent project');
         const projects = this.projectManager.listLocalStorageProjects();
+        console.log('📋 ProjectService: Found projects:', projects.map(p => ({ key: p.key, name: p.name, created: p.created })));
+        
         if (projects.length === 0) {
+          console.warn('⚠️ ProjectService: No saved projects found');
           return { success: false, message: 'No saved projects found' };
         }
         key = projects[0].key; // Most recent
+        console.log('🎯 ProjectService: Using most recent project key:', key);
       }
 
+      console.log('🔄 ProjectService: Attempting to load project with key:', key);
       const result = this.projectManager.loadFromLocalStorage(key);
+      
       if (!result) {
+        console.error('❌ ProjectService: Project not found in localStorage:', key);
         return { success: false, message: `Project "${key}" not found` };
       }
+
+      console.log('📊 ProjectService: Project loaded successfully', {
+        key,
+        nodeCount: result.nodes?.length || 0,
+        edgeCount: result.edges?.length || 0,
+        hasViewport: !!result.viewport,
+        hasMetadata: !!result.metadata
+      });
+
+      console.log('🔍 ProjectService: Loaded data structure:', {
+        nodes: result.nodes?.map(n => ({ id: n.id, type: n.type, position: n.position })) || [],
+        edges: result.edges?.map(e => ({ id: e.id, source: e.source, target: e.target })) || [],
+        viewport: result.viewport,
+        metadata: result.metadata
+      });
 
       return {
         success: true,
@@ -104,6 +145,8 @@ class ProjectService {
         }
       };
     } catch (error) {
+      console.error('❌ ProjectService: Load failed with error:', error);
+      console.error('📍 ProjectService: Error stack:', error instanceof Error ? error.stack : 'No stack trace');
       return { 
         success: false, 
         message: `Failed to load project: ${error}` 
@@ -151,12 +194,35 @@ class ProjectService {
       metadata?: any;
     };
   }> {
+    console.log('📁 ProjectService: Starting import operation', {
+      fileName: file.name,
+      fileSize: file.size,
+      fileType: file.type,
+      lastModified: new Date(file.lastModified).toISOString()
+    });
+
     if (!this.projectManager) {
+      console.error('❌ ProjectService: Import failed - service not initialized');
       return { success: false, message: 'Project service not initialized' };
     }
 
     try {
+      console.log('🔄 ProjectService: Calling ProjectFileManager.importFromFile');
       const result = await this.projectManager.importFromFile(file);
+      
+      console.log('📊 ProjectService: File imported successfully', {
+        nodeCount: result.nodes?.length || 0,
+        edgeCount: result.edges?.length || 0,
+        hasViewport: !!result.viewport,
+        hasMetadata: !!result.metadata
+      });
+
+      console.log('🔍 ProjectService: Imported data structure:', {
+        nodes: result.nodes?.map(n => ({ id: n.id, type: n.type, position: n.position })) || [],
+        edges: result.edges?.map(e => ({ id: e.id, source: e.source, target: e.target })) || [],
+        viewport: result.viewport,
+        metadata: result.metadata
+      });
       
       return {
         success: true,
@@ -169,6 +235,8 @@ class ProjectService {
         }
       };
     } catch (error) {
+      console.error('❌ ProjectService: Import failed with error:', error);
+      console.error('📍 ProjectService: Error stack:', error instanceof Error ? error.stack : 'No stack trace');
       return { 
         success: false, 
         message: `Failed to import project: ${error}` 
@@ -185,19 +253,43 @@ class ProjectService {
     modified: string;
     version: string;
   }> {
+    console.log('📋 ProjectService: Listing saved projects');
+    
     if (!this.projectManager) {
+      console.warn('⚠️ ProjectService: Cannot list projects - service not initialized');
       return [];
     }
-    return this.projectManager.listLocalStorageProjects();
+    
+    const projects = this.projectManager.listLocalStorageProjects();
+    console.log('📊 ProjectService: Found projects:', projects.length);
+    console.log('🔍 ProjectService: Project details:', projects.map(p => ({
+      key: p.key,
+      name: p.name,
+      created: p.created,
+      modified: p.modified,
+      version: p.version
+    })));
+    
+    return projects;
   }
 
   // Delete project
   deleteProject(key: string): { success: boolean; message: string } {
+    console.log('🗑️ ProjectService: Deleting project with key:', key);
+    
     if (!this.projectManager) {
+      console.error('❌ ProjectService: Delete failed - service not initialized');
       return { success: false, message: 'Project service not initialized' };
     }
 
     const success = this.projectManager.deleteFromLocalStorage(key);
+    
+    if (success) {
+      console.log('✅ ProjectService: Project deleted successfully:', key);
+    } else {
+      console.error('❌ ProjectService: Failed to delete project:', key);
+    }
+    
     return {
       success,
       message: success 

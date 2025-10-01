@@ -12,8 +12,8 @@ import {
   createControl
 } from '../definitions';
 // Import auto-generated node definitions for testing
-import { Box3DDefinition, Sphere3DDefinition, Cylinder3DDefinition } from '../nodes/auto_nodes/primitives3d';
-import { Translate3DDefinition, EulerRotate3DDefinition, Scale3DDefinition } from '../nodes/auto_nodes/transforms3d';
+import { Box3DDefinition, Sphere3DDefinition, Cylinder3DDefinition } from '../nodes/auto_nodes/primitives_3d';
+import { Translate3DDefinition, EulerRotate3DDefinition, Scale3DDefinition } from '../nodes/auto_nodes/transforms_3d';
 import { UnionDefinition, DifferenceDefinition } from '../nodes/auto_nodes/combinators';
 
 // Test node definitions array using auto-generated nodes

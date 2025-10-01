@@ -147,7 +147,7 @@ export const HybridControlPanel: React.FC<HybridControlPanelProps> = ({
 
   // Register this function as the main function for Neo mode
   useMainFunctionRegistration(
-    'Neo Graph', 
+    'Neo', 
     handleGenerateShader, 
     'Generate Neo shader from node graph (Cmd/Ctrl+Enter)'
   );

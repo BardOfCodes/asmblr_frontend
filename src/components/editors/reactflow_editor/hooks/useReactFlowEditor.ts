@@ -27,9 +27,6 @@ export const useReactFlowEditor = ({ modeName }: UseReactFlowEditorProps): React
     console.log('Loading', nodeDefinitions.length, 'auto-generated nodes for mode:', modeName);
     console.log('✅ Found', nodeDefinitions.length, 'auto-generated nodes');
     
-    // Log some sample node types for debugging
-    const sampleTypes = nodeDefinitions.slice(0, 5).map(def => def.type);
-    console.log('📋 Sample node types:', sampleTypes);
   }, [modeName]);
 
   // Handle nodes change

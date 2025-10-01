@@ -32,6 +32,10 @@ export function setReactFlowRef(ref: any) {
   globalReactFlowRef = ref;
 }
 
+export function getReactFlowRef() {
+  return globalReactFlowRef;
+}
+
 /**
  * Clean up edges to ensure they only reference existing nodes
  * This prevents saving stale connection data after nodes are deleted

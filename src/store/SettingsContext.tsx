@@ -14,7 +14,7 @@ export interface LayoutSettings {
 }
 
 export type EditorType = 'code_editor' | 'reactflow_editor';
-export type ViewerType = 'iframe_viewer' | 'shader_viewer';
+export type ViewerType = 'iframe_viewer' | 'shader_viewer' | 'regl_viewer';
 
 export interface ShaderSettings {
   render_mode: string;

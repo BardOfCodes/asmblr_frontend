@@ -1,9 +1,10 @@
-import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { useSettings } from '../../store/SettingsContext';
 import { ViewerHandle } from '../../modes/types';
 import HybridViewer from './HybridViewer';
 import { HybridViewerHandle } from './HybridViewer';
 import ShaderVisViewer, { ShaderVisViewerHandle } from './ShaderVisViewer';
+import NewReglViewer, { ReglViewerHandle } from './NewReglViewer';
 
 export interface AdaptiveViewerHandle extends ViewerHandle {
   // Union of all possible viewer methods
@@ -11,12 +12,17 @@ export interface AdaptiveViewerHandle extends ViewerHandle {
   loadShaderData?: (data: any) => void;
   updateUniforms?: (uniforms: Record<string, any>) => void;
   loadShaderCode?: (shaderCode: string, uniformsDict: Record<string, any>, textures?: Record<string, any>) => void;
+  // REGL viewer methods
+  setShaderCode?: (fragShader: string, vertShader?: string) => void;
+  setUniform?: (name: string, value: any) => void;
+  captureScreenshot?: () => void;
 }
 
-const AdaptiveViewer = forwardRef<AdaptiveViewerHandle>((props, ref) => {
+const AdaptiveViewer = forwardRef<AdaptiveViewerHandle>((_, ref) => {
   const { settings } = useSettings();
   const iframeViewerRef = useRef<HybridViewerHandle>(null);
   const shaderViewerRef = useRef<ShaderVisViewerHandle>(null);
+  const reglViewerRef = useRef<ReglViewerHandle>(null);
   
   // State for shader viewer props
   const [shaderCode, setShaderCode] = useState<string>();
@@ -26,10 +32,28 @@ const AdaptiveViewer = forwardRef<AdaptiveViewerHandle>((props, ref) => {
   const selectedViewer = settings.ui.components.selectedViewer;
 
   useImperativeHandle(ref, () => ({
-    // Legacy methods for compatibility
-    setShaderCode: () => console.log('setShaderCode not implemented in AdaptiveViewer'),
-    setUniform: () => console.log('setUniform not implemented in AdaptiveViewer'),
-    captureScreenshot: () => console.log('captureScreenshot not implemented in AdaptiveViewer'),
+    // REGL viewer methods
+    setShaderCode: (fragShader: string, vertShader?: string) => {
+      if (selectedViewer === 'regl_viewer' && reglViewerRef.current) {
+        reglViewerRef.current.setShaderCode(fragShader, vertShader);
+      } else {
+        console.warn('setShaderCode called but REGL viewer not active or available');
+      }
+    },
+    setUniform: (name: string, value: any) => {
+      if (selectedViewer === 'regl_viewer' && reglViewerRef.current) {
+        reglViewerRef.current.setUniform(name, value);
+      } else {
+        console.warn('setUniform called but REGL viewer not active or available');
+      }
+    },
+    captureScreenshot: () => {
+      if (selectedViewer === 'regl_viewer' && reglViewerRef.current) {
+        reglViewerRef.current.captureScreenshot();
+      } else {
+        console.warn('captureScreenshot called but REGL viewer not active or available');
+      }
+    },
     
     loadHTML: (html: string) => {
       if (selectedViewer === 'iframe_viewer' && iframeViewerRef.current) {
@@ -57,8 +81,21 @@ const AdaptiveViewer = forwardRef<AdaptiveViewerHandle>((props, ref) => {
         setShaderCode(shaderCode);
         setUniformsDict(uniformsDict);
         setTextures(textures);
+      } else if (selectedViewer === 'regl_viewer' && reglViewerRef.current) {
+        console.log('[AdaptiveViewer] Loading shader code for REGL viewer:', { shaderCode: shaderCode.length, uniformsCount: Object.keys(uniformsDict || {}).length });
+        
+        // Set uniforms first, then shader code to ensure they're available when the draw command is created
+        if (uniformsDict) {
+          console.log('[AdaptiveViewer] Setting uniforms for REGL viewer:', uniformsDict);
+          Object.entries(uniformsDict).forEach(([name, value]) => {
+            reglViewerRef.current?.setUniform(name, value);
+          });
+        }
+        
+        // Set shader code after uniforms are set
+        reglViewerRef.current.setShaderCode(shaderCode);
       } else {
-        console.warn('loadShaderCode called but shader viewer not active');
+        console.warn('loadShaderCode called but no compatible viewer is active');
       }
     }
   }), [selectedViewer]);
@@ -72,6 +109,8 @@ const AdaptiveViewer = forwardRef<AdaptiveViewerHandle>((props, ref) => {
         textures={textures}
       />
     );
+  } else if (selectedViewer === 'regl_viewer') {
+    return <NewReglViewer ref={reglViewerRef} />;
   } else {
     return <HybridViewer ref={iframeViewerRef} />;
   }

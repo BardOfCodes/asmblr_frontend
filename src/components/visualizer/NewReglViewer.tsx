@@ -36,6 +36,7 @@ export const NewReglViewer = React.forwardRef<ReglViewerHandle>((_, ref) => {
     cameraOrigin: [0.0, 0.0, 0.0],
     sunAzimuth:   0.0,   // 0…2π
     sunElevation: 0.0,   // –π…+π
+    globalStateStep: 0.0, // Default value for state-based shaders
   });
 
   useImperativeHandle(ref, () => ({
@@ -46,10 +47,15 @@ export const NewReglViewer = React.forwardRef<ReglViewerHandle>((_, ref) => {
       });
     },
     setUniform: (name: string, value: any) => {
-      setDynamicUniforms((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
+      console.log(`[NewReglViewer] Setting uniform "${name}":`, value);
+      setDynamicUniforms((prev) => {
+        const newUniforms = {
+          ...prev,
+          [name]: value,
+        };
+        console.log('[NewReglViewer] Updated uniforms:', newUniforms);
+        return newUniforms;
+      });
     },
 
   // ← new method
@@ -123,7 +129,14 @@ export const NewReglViewer = React.forwardRef<ReglViewerHandle>((_, ref) => {
 
     const render = () => {
       regl.clear({ color: [0, 0, 0, 1] });
-      drawCommandRef.current && drawCommandRef.current();
+      if (drawCommandRef.current) {
+        try {
+          drawCommandRef.current();
+        } catch (error) {
+          console.error('[NewReglViewer] Render error:', error);
+          console.error('[NewReglViewer] Current uniforms:', dynamicUniforms);
+        }
+      }
     };
 
     frameLoopRef.current = regl.frame(() => render());
@@ -136,31 +149,39 @@ export const NewReglViewer = React.forwardRef<ReglViewerHandle>((_, ref) => {
   }, []);
 
   useEffect(() => {
-    if (!shaderCode.frag || !shaderCode.vert) return;
+    if (!shaderCode.frag || !shaderCode.vert || !reglRef.current) return;
 
-    drawCommandRef.current = reglRef.current({
-      frag: shaderCode.frag,
-      vert: shaderCode.vert,
-      attributes: {
-        position: [
-          [-1, 1],
-          [1, 1],
-          [-1, -1],
-          [1, -1],
-        ],
-      },
-      uniforms: {
-        resolution: ({ viewportWidth, viewportHeight }: any) => [
-          viewportWidth,
-          viewportHeight,
-        ],
-        time: ({ tick }: any) => tick * 0.001,
-        castShadows: true,
-        ...dynamicUniforms,
-      },
-      count: 4,
-      primitive: 'triangle strip',
-    });
+    console.log('[NewReglViewer] Creating draw command with uniforms:', dynamicUniforms);
+
+    try {
+      drawCommandRef.current = reglRef.current({
+        frag: shaderCode.frag,
+        vert: shaderCode.vert,
+        attributes: {
+          position: [
+            [-1, 1],
+            [1, 1],
+            [-1, -1],
+            [1, -1],
+          ],
+        },
+        uniforms: {
+          resolution: ({ viewportWidth, viewportHeight }: any) => [
+            viewportWidth,
+            viewportHeight,
+          ],
+          time: ({ tick }: any) => tick * 0.001,
+          castShadows: true,
+          ...dynamicUniforms,
+        },
+        count: 4,
+        primitive: 'triangle strip',
+      });
+      console.log('[NewReglViewer] Draw command created successfully');
+    } catch (error) {
+      console.error('[NewReglViewer] Error creating draw command:', error);
+      drawCommandRef.current = null;
+    }
   }, [shaderCode, dynamicUniforms]);
 
   useEffect(() => {

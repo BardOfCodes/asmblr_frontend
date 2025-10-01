@@ -1,32 +1,21 @@
 // Auto-generated from asmblr/nodes.json. Do not edit.
 import { NodeDefinition } from '../../definitions/NodeDefinitions';
 
-export const SMPLMaterialDefinition: NodeDefinition = {
-  type: "SMPLMaterial",
-  label: "SMPLMaterial",
-  category: "materials",
+export const MatReferenceDefinition: NodeDefinition = {
+  type: "MatReference",
+  label: "MatReference",
+  category: "sysl_materials",
   description: "Auto-generated from sysl.symbolic.materials.",
-  inputs: [{"key": "smpl_index", "label": "Smpl Index", "socketType": "ExprSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "name", "label": "Name", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "smpl_index", "type": "int", "label": "Smpl Index", "config": {"defaultValue": null}, "linkedToInput": "smpl_index", "showLabel": true, "hasSocket": true}],
-  factory: (data?: Record<string, any>) => ({ ...(data || {}) })
-};
-
-export const RGBMaterialDefinition: NodeDefinition = {
-  type: "RGBMaterial",
-  label: "RGBMaterial",
-  category: "materials",
-  description: "Auto-generated from sysl.symbolic.materials.",
-  inputs: [{"key": "rgb", "label": "Rgb", "socketType": "ExprSocket", "required": false, "variadic": false}],
-  outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "rgb", "type": "Vector[3]", "label": "Rgb", "config": {"defaultValue": null}, "linkedToInput": "rgb", "showLabel": true, "hasSocket": true}],
+  controls: [{"key": "name", "type": "str", "label": "Name", "config": {"defaultValue": null}, "linkedToInput": "name", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
 export const MaterialV3Definition: NodeDefinition = {
   type: "MaterialV3",
   label: "MaterialV3",
-  category: "materials",
+  category: "sysl_materials",
   description: "Auto-generated from sysl.symbolic.materials.",
   inputs: [{"key": "albedo", "label": "Albedo", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "emissive", "label": "Emissive", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "roughness", "label": "Roughness", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "clearcoat", "label": "Clearcoat", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "metallic", "label": "Metallic", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
@@ -37,7 +26,7 @@ export const MaterialV3Definition: NodeDefinition = {
 export const NonEmissiveMaterialV3Definition: NodeDefinition = {
   type: "NonEmissiveMaterialV3",
   label: "NonEmissiveMaterialV3",
-  category: "materials",
+  category: "sysl_materials",
   description: "Auto-generated from sysl.symbolic.materials.",
   inputs: [{"key": "albedo", "label": "Albedo", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "roughness", "label": "Roughness", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "clearcoat", "label": "Clearcoat", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "metallic", "label": "Metallic", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
@@ -45,24 +34,35 @@ export const NonEmissiveMaterialV3Definition: NodeDefinition = {
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
-export const MatReferenceDefinition: NodeDefinition = {
-  type: "MatReference",
-  label: "MatReference",
-  category: "materials",
+export const RGBMaterialDefinition: NodeDefinition = {
+  type: "RGBMaterial",
+  label: "RGBMaterial",
+  category: "sysl_materials",
   description: "Auto-generated from sysl.symbolic.materials.",
-  inputs: [{"key": "name", "label": "Name", "socketType": "ExprSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "rgb", "label": "Rgb", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "name", "type": "str", "label": "Name", "config": {"defaultValue": null}, "linkedToInput": "name", "showLabel": true, "hasSocket": true}],
+  controls: [{"key": "rgb", "type": "Vector[3]", "label": "Rgb", "config": {"defaultValue": null}, "linkedToInput": "rgb", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
 export const RegisterMaterialDefinition: NodeDefinition = {
   type: "RegisterMaterial",
   label: "RegisterMaterial",
-  category: "materials",
+  category: "sysl_materials",
   description: "Auto-generated from sysl.symbolic.materials.",
   inputs: [{"key": "name", "label": "Name", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "material", "label": "Material", "socketType": "ExprSocket", "required": true, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
   controls: [{"key": "name", "type": "str", "label": "Name", "config": {"defaultValue": null}, "linkedToInput": "name", "showLabel": true, "hasSocket": true}],
+  factory: (data?: Record<string, any>) => ({ ...(data || {}) })
+};
+
+export const SMPLMaterialDefinition: NodeDefinition = {
+  type: "SMPLMaterial",
+  label: "SMPLMaterial",
+  category: "sysl_materials",
+  description: "Auto-generated from sysl.symbolic.materials.",
+  inputs: [{"key": "smpl_index", "label": "Smpl Index", "socketType": "ExprSocket", "required": false, "variadic": false}],
+  outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
+  controls: [{"key": "smpl_index", "type": "int", "label": "Smpl Index", "config": {"defaultValue": null}, "linkedToInput": "smpl_index", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };

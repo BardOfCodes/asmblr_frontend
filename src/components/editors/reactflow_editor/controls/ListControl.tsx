@@ -157,9 +157,12 @@ const VectorInputComponent: React.FC<{
       <ListInput
         type="text"
         value={value !== undefined ? value : ''}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => {
+          const numValue = parseFloat(e.target.value);
+          onChange(isNaN(numValue) ? 0 : numValue);
+        }}
         disabled={disabled}
-        placeholder=""
+        placeholder="0"
       />
     );
   }
@@ -175,10 +178,16 @@ const VectorInputComponent: React.FC<{
         <VectorInput
           key={i}
           type="text"
-          value={vectorValue[i] !== undefined ? vectorValue[i] : ''}
+          value={vectorValue[i] !== undefined ? vectorValue[i] : '0'}
           onChange={(e) => {
-            const newVector = vectorValue.slice();
-            newVector[i] = e.target.value; // Store raw string value
+            const newVector = [...vectorValue];
+            // Ensure the vector has the correct length
+            while (newVector.length < dimensions) {
+              newVector.push(0);
+            }
+            // Parse the input value as a number
+            const numValue = parseFloat(e.target.value);
+            newVector[i] = isNaN(numValue) ? 0 : numValue;
             onChange(newVector);
           }}
           disabled={disabled}
@@ -213,21 +222,21 @@ const BaseListControl: React.FC<BaseControlProps & {
 
   const handleAddItem = useCallback(() => {
     const newItem = createDefaultValue(itemType);
-    const newList = listValue.slice();
+    const newList = [...listValue];
     newList.push(newItem);
     onChange(newList);
-  }, [listValue, onChange, itemType, config]);
+  }, [listValue, onChange, itemType]);
 
   const handleRemoveItem = useCallback((index: number) => {
     const newList = listValue.filter((_: any, i: number) => i !== index);
     onChange(newList);
-  }, [listValue, onChange, config]);
+  }, [listValue, onChange]);
 
   const handleItemChange = useCallback((index: number, newValue: any) => {
-    const newList = listValue.slice();
+    const newList = [...listValue];
     newList[index] = newValue;
     onChange(newList);
-  }, [listValue, onChange, config]);
+  }, [listValue, onChange]);
 
   const typeLabel = itemType.toUpperCase();
 

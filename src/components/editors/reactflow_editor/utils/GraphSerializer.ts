@@ -43,12 +43,45 @@ class TypeConverter {
    * Convert a string value to the appropriate type based on the control type
    */
   static convertValue(value: any, controlType: string): any {
+    const normalizedType = controlType.toLowerCase().trim();
+    
+    // Handle List[Vector[n]], List[vec2], List[vec3], List[vec4] types explicitly
+    if (normalizedType === 'list[vector[2]]' || normalizedType === 'list[vec2]') {
+      if (Array.isArray(value)) {
+        console.log(`[DEBUG] Processing List[Vector[2]], input:`, value);
+        return value; // Return the array as-is for list of vec2
+      }
+      return [];
+    }
+    
+    if (normalizedType === 'list[vector[3]]' || normalizedType === 'list[vec3]') {
+      if (Array.isArray(value)) {
+        console.log(`[DEBUG] Processing List[Vector[3]], input:`, value);
+        return value; // Return the array as-is for list of vec3
+      }
+      return [];
+    }
+    
+    if (normalizedType === 'list[vector[4]]' || normalizedType === 'list[vec4]') {
+      if (Array.isArray(value)) {
+        console.log(`[DEBUG] Processing List[Vector[4]], input:`, value);
+        return value; // Return the array as-is for list of vec4
+      }
+      return [];
+    }
+    
+    if (normalizedType === 'list[float]') {
+      if (Array.isArray(value)) {
+        console.log(`[DEBUG] Processing List[float], input:`, value);
+        return value; // Return the array as-is for list of floats
+      }
+      return [];
+    }
+
     // If value is already the correct type (not a string), return as-is
     if (typeof value !== 'string') {
       return this.ensureCorrectType(value, controlType);
     }
-
-    const normalizedType = controlType.toLowerCase().trim();
 
     // Handle boolean types
     if (normalizedType === 'bool' || normalizedType === 'boolean') {
@@ -89,7 +122,7 @@ class TypeConverter {
       }
     }
 
-    // Handle list types
+    // Handle list types - support both List[...] and list[...] formats
     const listMatch = normalizedType.match(/^list\[(.+)\]$/);
     if (listMatch) {
       return this.parseListString(value, listMatch[1]);
@@ -190,8 +223,58 @@ class TypeConverter {
    * Parse a list string or handle array input
    */
   private static parseListString(value: any, innerType: string): any[] {
+    console.log(`[DEBUG] parseListString called with:`, { value, innerType });
+    
     if (Array.isArray(value)) {
-      // Convert each element according to inner type
+      // For list of vectors/matrices, check if items are already properly structured
+      const normalizedInnerType = innerType.toLowerCase().trim();
+      console.log(`[DEBUG] Processing array with normalizedInnerType: ${normalizedInnerType}`);
+      
+      // If inner type is a vector and items are already arrays of correct size, return as-is
+      if (normalizedInnerType.includes('vec') || normalizedInnerType.includes('vector')) {
+        const expectedDimensions = this.getVectorDimensions(normalizedInnerType);
+        
+        if (expectedDimensions > 0) {
+          console.log(`[DEBUG] Vector list processing: expectedDimensions=${expectedDimensions}, value:`, value);
+          const result = value.map(item => {
+            if (Array.isArray(item) && item.length === expectedDimensions) {
+              // Already properly structured vector, just ensure numbers
+              const processedItem = item.map(v => {
+                const num = parseFloat(String(v));
+                return isNaN(num) ? 0 : num;
+              });
+              console.log(`[DEBUG] Keeping properly structured vector:`, item, '→', processedItem);
+              return processedItem;
+            }
+            // Not properly structured, convert normally
+            console.log(`[DEBUG] Converting improperly structured item:`, item);
+            return this.convertValue(item, innerType);
+          });
+          console.log(`[DEBUG] Final vector list result:`, result);
+          return result;
+        }
+      }
+      
+      // If inner type is a matrix and items are already arrays of correct size, return as-is
+      if (normalizedInnerType.includes('mat') || normalizedInnerType.includes('matrix')) {
+        const expectedDimensions = this.getMatrixDimensions(normalizedInnerType);
+        if (expectedDimensions > 0) {
+          const expectedSize = expectedDimensions * expectedDimensions;
+          return value.map(item => {
+            if (Array.isArray(item) && item.length === expectedSize) {
+              // Already properly structured matrix, just ensure numbers
+              return item.map(v => {
+                const num = parseFloat(String(v));
+                return isNaN(num) ? 0 : num;
+              });
+            }
+            // Not properly structured, convert normally
+            return this.convertValue(item, innerType);
+          });
+        }
+      }
+      
+      // For other types or improperly structured vectors, convert each element
       return value.map(item => this.convertValue(item, innerType));
     }
 
@@ -228,10 +311,10 @@ class TypeConverter {
       }
       
       if (normalizedType.includes('list[')) {
-        const listMatch = normalizedType.match(/^list\[(.+)\]$/);
-        if (listMatch) {
-          return value.map(item => this.convertValue(item, listMatch[1]));
-        }
+        // For list types, if the value is already an array, just return it as-is
+        // The parseListString method should have already been called during initial conversion
+        console.log(`[DEBUG] ensureCorrectType: List type detected, returning array as-is:`, value);
+        return value;
       }
     }
 

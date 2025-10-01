@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AppProvider } from './store/AppContext';
-import { SettingsProvider } from './store/SettingsContext';
+import { SettingsProvider, useSettings } from './store/SettingsContext';
 import { ModularLayout } from './components/layout/ModularLayout';
 import { ModePicker } from './components/header/ModePicker';
 import { SimpleDebugLayout } from './components/layout/SimpleDebugLayout';
@@ -12,6 +12,7 @@ import { useShortcutManager } from './utils/ShortcutManager';
 const AppContent: React.FC = () => {
   const [modeName, setModeName] = useState<string | null>(null);
   const [mode, setMode] = useState<AsmblrMode | null>(null);
+  const { dispatch } = useSettings();
 
   // Initialize keyboard shortcut manager
   useShortcutManager(modeName);
@@ -42,6 +43,13 @@ const AppContent: React.FC = () => {
       saveModeToDisk(name);
       setModeName(name);
       setMode(Modes[name]);
+      
+      // Set REGL viewer as default for Migumi mode
+      if (name === 'Migumi Graph') {
+        debug.log('Setting REGL viewer as default for Migumi mode');
+        dispatch({ type: 'SET_VIEWER_TYPE', payload: 'regl_viewer' });
+      }
+      
       debug.log('Mode set successfully:', name);
     } else {
       debug.error('Mode not found:', name);

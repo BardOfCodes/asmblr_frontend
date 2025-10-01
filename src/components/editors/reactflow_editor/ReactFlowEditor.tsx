@@ -29,6 +29,7 @@ import * as AutoNodes from './nodes/auto_nodes';
 import { DEFAULT_NODE_THEME } from './theme';
 import { projectService } from './services/ProjectService';
 import { setReactFlowRef } from './hooks/useProjectActions';
+import { setMigumiReactFlowRef } from './hooks/useMigumiProjectActions';
 import { AllModeDefinitions } from './config/ModeNodeSets';
 import { debug } from '../../../utils/debug';
 
@@ -108,7 +109,7 @@ const ReactFlowEditorInner: React.FC<ReactFlowEditorProps> = ({
   // Register React Flow functions for project operations
   
   useEffect(() => {
-    setReactFlowRef({
+    const reactFlowRef = {
       getNodes: reactFlowInstance.getNodes,
       getEdges: reactFlowInstance.getEdges,
       getViewport: reactFlowInstance.getViewport,
@@ -116,11 +117,16 @@ const ReactFlowEditorInner: React.FC<ReactFlowEditorProps> = ({
       setEdges,
       setViewport: reactFlowInstance.setViewport,
       fitView: reactFlowInstance.fitView
-    });
+    };
+
+    // Set references for both standard and Migumi project actions
+    setReactFlowRef(reactFlowRef);
+    setMigumiReactFlowRef(reactFlowRef);
 
     // Cleanup on unmount
     return () => {
       setReactFlowRef(null);
+      setMigumiReactFlowRef(null);
     };
   }, [reactFlowInstance, setNodes, setEdges]);
 
@@ -494,6 +500,9 @@ const ReactFlowEditorInner: React.FC<ReactFlowEditorProps> = ({
         fitView
         attributionPosition="bottom-left"
         defaultEdgeOptions={defaultEdgeOptions}
+        minZoom={0.01}
+        maxZoom={4}
+        defaultViewport={{ x: 0, y: 0, zoom: 0.5 }}
       >
         <Background />
         <Controls>

@@ -18,6 +18,7 @@ import { Modes, saveModeToDisk } from '../../modes/modes';
 import { SettingsDialog } from '../control-panel/SettingsDialog';
 import TestComponent from '../editors/reactflow_editor/core/TestComponent';
 import { useProjectActions } from '../editors/reactflow_editor/hooks/useProjectActions';
+import { useMigumiProjectActions } from '../editors/reactflow_editor/hooks/useMigumiProjectActions';
 import { debug } from '../../utils/debug';
 
 import { EditorHandle } from '../../types/editor';
@@ -39,8 +40,10 @@ export const Header: React.FC<HeaderProps> = ({
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [testOpen, setTestOpen] = useState(false);
 
-  // Project management actions
-  const projectActions = useProjectActions();
+  // Project management actions - use Migumi-specific actions for Migumi mode
+  const standardProjectActions = useProjectActions();
+  const migumiProjectActions = useMigumiProjectActions();
+  const projectActions = modeName === 'Migumi Graph' ? migumiProjectActions : standardProjectActions;
 
   const handleSave = async () => {
     debug.log('Save clicked - current mode:', modeName);

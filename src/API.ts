@@ -19,6 +19,10 @@ const MODE_ENDPOINTS = {
   neo: {
     html: '/api/neo/generate-shader',
     twgl: '/api/neo/generate-twgl-shader'
+  },
+  migumi: {
+    html: '/api/migumi/generate-shader',
+    twgl: '/api/migumi/generate-twgl-shader'
   }
 } as const;
 

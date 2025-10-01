@@ -311,7 +311,8 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose })
                     style={{ width: 200 }}
                     options={[
                       { value: 'iframe_viewer', label: 'HTML/iframe Viewer' },
-                      { value: 'shader_viewer', label: 'TWGL Shader Viewer' }
+                      { value: 'shader_viewer', label: 'TWGL Shader Viewer' },
+                      { value: 'regl_viewer', label: 'REGL Shader Viewer' }
                     ]}
                   />
                 </SettingRow>

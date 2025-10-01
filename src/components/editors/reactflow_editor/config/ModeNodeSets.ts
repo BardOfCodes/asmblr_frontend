@@ -39,7 +39,6 @@ export const SySLModeDefinition: ModeDefinition = {
   name: 'sysl',
   label: 'SySL',
   nodeSet: {
-    'Auto': getNodesByCategories(['auto']),
     "Colors": getNodesByCategories(['color']),
     "Combinators": getNodesByCategories(['combinators']),
     "Material Solid Combinators": getNodesByCategories(['mat_solid_combinators']),
@@ -55,7 +54,7 @@ export const SySLModeDefinition: ModeDefinition = {
 };
 
 /**
- * GeoLIPI Graph Mode - Geometric Language for Implicit Programming  
+ * GeoLIPI Mode - Geometric Language for Implicit Programming  
  * Includes: Geometric primitives, transformations, combinators
  * Excludes: Materials, SySL-specific nodes
  */
@@ -63,7 +62,6 @@ export const GeoLIPIModeDefinition: ModeDefinition = {
   name: 'geolipi',
   label: 'GeoLIPI',
   nodeSet: {
-    'Auto': getNodesByCategories(['auto']),
     "Combinators": getNodesByCategories(['combinators']),
     "Primitives 2D": getNodesByCategories(['primitives_2d']),
     "Primitives 3D": getNodesByCategories(['primitives_3d']),
@@ -81,7 +79,6 @@ export const NeoModeDefinition: ModeDefinition = {
   name: 'neo',
   label: 'SySL-Extended', 
   nodeSet: {
-    'Auto': getNodesByCategories(['auto']),
     "Colors": getNodesByCategories(['color']),
     "Combinators": getNodesByCategories(['combinators']),
     "Material Solid Combinators": getNodesByCategories(['mat_solid_combinators']),
@@ -93,10 +90,29 @@ export const NeoModeDefinition: ModeDefinition = {
     "Transforms 2D": getNodesByCategories(['transforms_2d']),
     "Transforms 3D": getNodesByCategories(['transforms_3d']),
     "Variables": getNodesByCategories(['variables']),
+    "MXG": getNodesByCategories(['mxg']),
   }
 };
 
 
+
+/**
+ * Migumi Mode - Minimal geometric operations
+ * Includes: Basic primitives and transforms only
+ */
+export const MigumiModeDefinition: ModeDefinition = {
+  name: 'migumi',
+  label: 'Migumi',
+  nodeSet: {
+    "Primitives 2D": getNodesByCategories(['primitives_2d']),
+    'Primitives 3D': getNodesByCategories(['primitives_3d']),
+    'Transforms 3D': getNodesByCategories(['transforms_3d']),
+    "Transforms 2D": getNodesByCategories(['transforms_2d']),
+    "Combinators": getNodesByCategories(['combinators']),
+    'Variables': getNodesByCategories(['variables']),
+    "MXG": getNodesByCategories(['mxg']),
+  }
+};
 
 /**
  * All mode definitions for registration
@@ -105,4 +121,5 @@ export const AllModeDefinitions = [
   NeoModeDefinition,
   SySLModeDefinition,
   GeoLIPIModeDefinition,
+  MigumiModeDefinition,
 ];
