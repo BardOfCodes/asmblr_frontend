@@ -12,9 +12,15 @@ import { projectService } from './ProjectService';
  * Node name mappings for old format compatibility
  */
 const OLD_FORMAT_NODE_MAPPINGS = {
-  'Plane': 'PlaneV2',
   'Plane3D': 'PlaneV23D',
-  'Difference': 'DifferenceV2'
+} as const;
+
+/**
+ * Connection input mappings for Difference nodes (old format)
+ */
+const DIFFERENCE_INPUT_MAPPINGS = {
+  'expr1': 'expr_0',
+  'expr2': 'expr_1',
 } as const;
 
 /**
@@ -116,6 +122,9 @@ function preprocessOldFormatJson(jsonData: any): any {
       
       console.log(`🔍 MigumiProjectService: Processing module ${moduleIndex} with ${module.nodes.length} nodes`);
       
+      // Track IDs of nodes named "Difference" (before any renaming)
+      const diffIds: Set<string> = new Set();
+      
       // Process each node in the module
       module.nodes.forEach((node: any, nodeIndex: number) => {
         totalNodesProcessed++;
@@ -126,6 +135,11 @@ function preprocessOldFormatJson(jsonData: any): any {
         
         const originalName = node.name;
         let conversionsForThisNode = 0;
+        
+        // Track Difference nodes for connection updates
+        if (originalName === 'Difference') {
+          diffIds.add(node.id);
+        }
         
         // Handle parameter mappings FIRST (using original node name)
         const paramMappings = OLD_FORMAT_PARAM_MAPPINGS[originalName as keyof typeof OLD_FORMAT_PARAM_MAPPINGS];
@@ -150,12 +164,28 @@ function preprocessOldFormatJson(jsonData: any): any {
         
         totalConversions += conversionsForThisNode;
       });
+      
+      // Process connections to update targetInput for Difference nodes
+      if (module.connections && Array.isArray(module.connections) && diffIds.size > 0) {
+        console.log(`🔗 MigumiProjectService: Processing ${module.connections.length} connections for Difference node input updates`);
+        module.connections.forEach((conn: any) => {
+          if (diffIds.has(conn.target)) {
+            const oldInput = conn.targetInput;
+            const newInput = DIFFERENCE_INPUT_MAPPINGS[oldInput as keyof typeof DIFFERENCE_INPUT_MAPPINGS];
+            if (newInput) {
+              console.log(`🔄 MigumiProjectService: Updating connection targetInput: "${oldInput}" → "${newInput}" for target ${conn.target}`);
+              conn.targetInput = newInput;
+              totalConversions++;
+            }
+          }
+        });
+      }
     });
   } else if (typeof moduleList === 'object' && moduleList !== null) {
     console.log(`📋 MigumiProjectService: Processing moduleList as object with keys:`, Object.keys(moduleList));
     
     // Handle moduleList as an object (dictionary of modules)
-      Object.entries(moduleList).forEach(([moduleKey, module]: [string, any]) => {
+    Object.entries(moduleList).forEach(([moduleKey, module]: [string, any]) => {
       if (!module.nodes || !Array.isArray(module.nodes)) {
         console.log(`ℹ️ MigumiProjectService: Module "${moduleKey}" has no nodes array, skipping`);
         return;
@@ -163,6 +193,9 @@ function preprocessOldFormatJson(jsonData: any): any {
       
       console.log(`🔍 MigumiProjectService: Processing module "${moduleKey}" with ${module.nodes.length} nodes`);
       
+      // Track IDs of nodes named "Difference" (before any renaming)
+      const diffIds: Set<string> = new Set();
+      
       // Process each node in the module
       module.nodes.forEach((node: any, nodeIndex: number) => {
         totalNodesProcessed++;
@@ -173,6 +206,11 @@ function preprocessOldFormatJson(jsonData: any): any {
         
         const originalName = node.name;
         let conversionsForThisNode = 0;
+        
+        // Track Difference nodes for connection updates
+        if (originalName === 'Difference') {
+          diffIds.add(node.id);
+        }
         
         // Handle parameter mappings FIRST (using original node name)
         const paramMappings = OLD_FORMAT_PARAM_MAPPINGS[originalName as keyof typeof OLD_FORMAT_PARAM_MAPPINGS];
@@ -197,6 +235,22 @@ function preprocessOldFormatJson(jsonData: any): any {
         
         totalConversions += conversionsForThisNode;
       });
+      
+      // Process connections to update targetInput for Difference nodes
+      if (module.connections && Array.isArray(module.connections) && diffIds.size > 0) {
+        console.log(`🔗 MigumiProjectService: Processing ${module.connections.length} connections for Difference node input updates`);
+        module.connections.forEach((conn: any) => {
+          if (diffIds.has(conn.target)) {
+            const oldInput = conn.targetInput;
+            const newInput = DIFFERENCE_INPUT_MAPPINGS[oldInput as keyof typeof DIFFERENCE_INPUT_MAPPINGS];
+            if (newInput) {
+              console.log(`🔄 MigumiProjectService: Updating connection targetInput: "${oldInput}" → "${newInput}" for target ${conn.target}`);
+              conn.targetInput = newInput;
+              totalConversions++;
+            }
+          }
+        });
+      }
     });
   } else {
     console.error('❌ MigumiProjectService: moduleList is neither array nor object:', typeof moduleList, moduleList);

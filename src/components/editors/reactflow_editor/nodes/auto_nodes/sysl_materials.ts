@@ -23,6 +23,17 @@ export const MaterialV3Definition: NodeDefinition = {
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
+export const MaterialV4Definition: NodeDefinition = {
+  type: "MaterialV4",
+  label: "MaterialV4",
+  category: "sysl_materials",
+  description: "Auto-generated from sysl.symbolic.materials.",
+  inputs: [{"key": "albedo", "label": "Albedo", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "emissive", "label": "Emissive", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "mrc", "label": "Mrc", "socketType": "ExprSocket", "required": false, "variadic": false}],
+  outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
+  controls: [{"key": "albedo", "type": "Vector[3]", "label": "Albedo", "config": {"defaultValue": null}, "linkedToInput": "albedo", "showLabel": true, "hasSocket": true}, {"key": "emissive", "type": "Vector[3]", "label": "Emissive", "config": {"defaultValue": null}, "linkedToInput": "emissive", "showLabel": true, "hasSocket": true}, {"key": "mrc", "type": "Vector[3]", "label": "Mrc", "config": {"defaultValue": null}, "linkedToInput": "mrc", "showLabel": true, "hasSocket": true}],
+  factory: (data?: Record<string, any>) => ({ ...(data || {}) })
+};
+
 export const NonEmissiveMaterialV3Definition: NodeDefinition = {
   type: "NonEmissiveMaterialV3",
   label: "NonEmissiveMaterialV3",
@@ -64,5 +75,16 @@ export const SMPLMaterialDefinition: NodeDefinition = {
   inputs: [{"key": "smpl_index", "label": "Smpl Index", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
   controls: [{"key": "smpl_index", "type": "int", "label": "Smpl Index", "config": {"defaultValue": null}, "linkedToInput": "smpl_index", "showLabel": true, "hasSocket": true}],
+  factory: (data?: Record<string, any>) => ({ ...(data || {}) })
+};
+
+export const SMPLMaterialV4Definition: NodeDefinition = {
+  type: "SMPLMaterialV4",
+  label: "SMPLMaterialV4",
+  category: "sysl_materials",
+  description: "Auto-generated from sysl.symbolic.materials.",
+  inputs: [{"key": "albedo", "label": "Albedo", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "mr", "label": "Mr", "socketType": "ExprSocket", "required": false, "variadic": false}],
+  outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
+  controls: [{"key": "albedo", "type": "Vector[3]", "label": "Albedo", "config": {"defaultValue": null}, "linkedToInput": "albedo", "showLabel": true, "hasSocket": true}, {"key": "mr", "type": "Vector[2]", "label": "Mr", "config": {"defaultValue": null}, "linkedToInput": "mr", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };

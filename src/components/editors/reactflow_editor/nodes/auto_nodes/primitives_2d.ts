@@ -309,17 +309,6 @@ export const Pie2DDefinition: NodeDefinition = {
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
-export const PolyArc2DDefinition: NodeDefinition = {
-  type: "PolyArc2D",
-  label: "PolyArc2D",
-  category: "primitives_2d",
-  description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "point", "label": "Point", "socketType": "ExprSocket", "required": false, "variadic": false}],
-  outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "point", "type": "List[Vector[3]]", "label": "Point", "config": {"defaultValue": null}, "linkedToInput": "point", "showLabel": true, "hasSocket": true}],
-  factory: (data?: Record<string, any>) => ({ ...(data || {}) })
-};
-
 export const Polygon2DDefinition: NodeDefinition = {
   type: "Polygon2D",
   label: "Polygon2D",
@@ -537,6 +526,17 @@ export const Vesica2DDefinition: NodeDefinition = {
   inputs: [{"key": "r", "label": "R", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "d", "label": "D", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
   controls: [{"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true}, {"key": "d", "type": "float", "label": "D", "config": {"defaultValue": null}, "linkedToInput": "d", "showLabel": true, "hasSocket": true}],
+  factory: (data?: Record<string, any>) => ({ ...(data || {}) })
+};
+
+export const PolyArc2DDefinition: NodeDefinition = {
+  type: "PolyArc2D",
+  label: "PolyArc2D",
+  category: "primitives_2d",
+  description: "Auto-generated from geolipi.symbolic.primitives_2d.",
+  inputs: [{"key": "points", "label": "Points", "socketType": "ExprSocket", "required": false, "variadic": false}],
+  outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
+  controls: [{"key": "points", "type": "List[Vector[3]]", "label": "Points", "config": {"defaultValue": null}, "linkedToInput": "points", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 

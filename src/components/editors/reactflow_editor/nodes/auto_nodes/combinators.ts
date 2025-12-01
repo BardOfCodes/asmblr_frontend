@@ -23,17 +23,6 @@ export const DifferenceDefinition: NodeDefinition = {
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
-export const DifferenceV2Definition: NodeDefinition = {
-  type: "DifferenceV2",
-  label: "DifferenceV2",
-  category: "combinators",
-  description: "Auto-generated from geolipi.symbolic.combinators.",
-  inputs: [{"key": "expr1", "label": "Expr 1", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "expr2", "label": "Expr 2", "socketType": "ExprSocket", "required": true, "variadic": false}],
-  outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [],
-  factory: (data?: Record<string, any>) => ({ ...(data || {}) })
-};
-
 export const IntersectionDefinition: NodeDefinition = {
   type: "Intersection",
   label: "Intersection",

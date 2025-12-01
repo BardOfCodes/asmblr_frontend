@@ -1,6 +1,17 @@
 // Auto-generated from asmblr/nodes.json. Do not edit.
 import { NodeDefinition } from '../../definitions/NodeDefinitions';
 
+export const Affine3DDefinition: NodeDefinition = {
+  type: "Affine3D",
+  label: "Affine3D",
+  category: "transforms_3d",
+  description: "Auto-generated from geolipi.symbolic.transforms_3d.",
+  inputs: [{"key": "expr", "label": "Expr", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "matrix", "label": "Matrix", "socketType": "ExprSocket", "required": false, "variadic": false}],
+  outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
+  controls: [{"key": "matrix", "type": "Matrix[4,4]", "label": "Matrix", "config": {"defaultValue": null}, "linkedToInput": "matrix", "showLabel": true, "hasSocket": true}],
+  factory: (data?: Record<string, any>) => ({ ...(data || {}) })
+};
+
 export const AxialReflect3DDefinition: NodeDefinition = {
   type: "AxialReflect3D",
   label: "AxialReflect3D",

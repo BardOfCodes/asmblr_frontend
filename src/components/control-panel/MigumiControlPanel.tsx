@@ -189,21 +189,31 @@ export const MigumiControlPanel: React.FC<MigumiControlPanelProps> = ({
       });
       
       // Call API with prepared payload using Migumi backend
-      const result = await generateShader('migumi', 'twgl', payload);
+      const result = await generateShader('migumi', 'html', payload);
       
-      debug.log('Migumi shader generation successful:', {
-        hasShaderCode: !!(result as any).shaderCode,
-        uniformCount: Object.keys((result as any).uniforms || {}).length,
-        textureCount: Object.keys((result as any).textures || {}).length
-      });
-      
-      const shaderResult = result as any; // Type assertion for shader code response
-      if (shaderResult.shaderCode && viewerRef.current && viewerRef.current.loadShaderCode) {
-        viewerRef.current.loadShaderCode(shaderResult.shaderCode, shaderResult.uniforms, shaderResult.textures);
-        debug.log('Successfully loaded Migumi shader code into viewer');
+      debug.log('Neo HTML generation successful');
+        
+      const htmlResult = result as any; // Type assertion for HTML response
+      if (htmlResult.html && viewerRef.current && viewerRef.current.loadHTML) {
+        viewerRef.current.loadHTML(htmlResult.html);
+        debug.log('Successfully loaded Neo HTML into iframe');
       } else {
-        debug.error('Backend response missing shaderCode or loadShaderCode method not available:', result);
+        debug.error('Backend response missing html field or loadHTML method not available:', result);
       }
+
+      // debug.log('Migumi shader generation successful:', {
+      //   hasShaderCode: !!(result as any).shaderCode,
+      //   uniformCount: Object.keys((result as any).uniforms || {}).length,
+      //   textureCount: Object.keys((result as any).textures || {}).length
+      // });
+      
+      // const shaderResult = result as any; // Type assertion for shader code response
+      // if (shaderResult.shaderCode && viewerRef.current && viewerRef.current.loadShaderCode) {
+      //   viewerRef.current.loadShaderCode(shaderResult.shaderCode, shaderResult.uniforms, shaderResult.textures);
+      //   debug.log('Successfully loaded Migumi shader code into viewer');
+      // } else {
+      //   debug.error('Backend response missing shaderCode or loadShaderCode method not available:', result);
+      // }
     } catch (error) {
       debug.error('Migumi shader generation failed:', error);
       if (error instanceof APIError) {
@@ -253,7 +263,7 @@ export const MigumiControlPanel: React.FC<MigumiControlPanelProps> = ({
             checked={useOldFormat}
             onChange={(e) => handleOldFormatChange(e.target.checked)}
           />
-          Use old format compatibility (Plane3D → PlaneV23D, Difference → DifferenceV2)
+          Use old format compatibility (Plane3D → PlaneV23D)
         </CheckboxContainer>
       </SettingsSection>
 
@@ -263,7 +273,7 @@ export const MigumiControlPanel: React.FC<MigumiControlPanelProps> = ({
         {useOldFormat && (
           <>
             <br /><br />
-            <strong>Old Format Mode:</strong> Automatically converts Plane3D → PlaneV23D and Difference → DifferenceV2 when importing files.
+            <strong>Old Format Mode:</strong> Automatically converts Plane3D → PlaneV23D and other edits when importing files.
           </>
         )}
       </InfoSection>

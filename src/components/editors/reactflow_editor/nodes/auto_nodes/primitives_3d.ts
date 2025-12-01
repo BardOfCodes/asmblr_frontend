@@ -336,11 +336,9 @@ export const PlaneV23DDefinition: NodeDefinition = {
   label: "PlaneV23D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
-  inputs: [{"key": "origin", "label": "Origin", "socketType": "ExprSocket", "required": false, "variadic": false}, 
-    {"key": "normal", "label": "Normal", "socketType": "ExprSocket", "required": false, "variadic": false}],
+  inputs: [{"key": "origin", "label": "Origin", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "normal", "label": "Normal", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "origin", "type": "Vector[3]", "label": "Origin", "config": {"defaultValue": null}, "linkedToInput": "origin", "showLabel": true, "hasSocket": true}, 
-    {"key": "normal", "type": "Vector[3]", "label": "Normal", "config": {"defaultValue": null}, "linkedToInput": "normal", "showLabel": true, "hasSocket": true}],
+  controls: [{"key": "origin", "type": "Vector[3]", "label": "Origin", "config": {"defaultValue": null}, "linkedToInput": "origin", "showLabel": true, "hasSocket": true}, {"key": "normal", "type": "Vector[3]", "label": "Normal", "config": {"defaultValue": null}, "linkedToInput": "normal", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 

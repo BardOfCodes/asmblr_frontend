@@ -55,3 +55,14 @@ export const MatSolidV3Definition: NodeDefinition = {
   controls: [],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
+
+export const MatSolidV4Definition: NodeDefinition = {
+  type: "MatSolidV4",
+  label: "MatSolidV4",
+  category: "sysl_base",
+  description: "Auto-generated from sysl.symbolic.base.",
+  inputs: [{"key": "solid", "label": "Solid", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "material", "label": "Material", "socketType": "ExprSocket", "required": true, "variadic": false}],
+  outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
+  controls: [],
+  factory: (data?: Record<string, any>) => ({ ...(data || {}) })
+};
