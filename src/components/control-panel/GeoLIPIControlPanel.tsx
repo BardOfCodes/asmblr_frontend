@@ -1,84 +1,22 @@
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { theme } from '../../design/theme';
-import { generateShader, APIError } from '../../API';
+import { generateShader } from '../../API';
 import { useSettings } from '../../store/SettingsContext';
 import { debug } from '../../utils/debug';
 import { EditorHandle } from '../../types/editor';
 import { ViewerHandle } from '../../types/viewer';
 import { prepareGeolipiShaderPayload } from './shaderPayloadHelper';
 import { useMainFunctionRegistration } from '../../utils/ShortcutManager';
-import { notifications } from '../../utils/notifications';
-
-const Container = styled.div`
-  padding: 20px;
-  background: ${theme.colors.background};
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  height: 100%;
-`;
-
-const Title = styled.h3`
-  margin: 0 0 16px 0;
-  color: ${theme.colors.textPrimary};
-  font-size: 18px;
-  font-weight: 600;
-  border-bottom: 2px solid #10b981; /* Green theme for GeoLIPI */
-  padding-bottom: 8px;
-`;
-
-const ButtonGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-`;
-
-const ActionButton = styled.button`
-  padding: 12px 16px;
-  background: #10b981; /* Green theme for GeoLIPI */
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: #059669;
-    transform: translateY(-1px);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-
-  &:disabled {
-    background: ${theme.colors.gray400};
-    cursor: not-allowed;
-    transform: none;
-  }
-`;
-
-const SettingsSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 12px;
-  background: ${theme.colors.backgroundSecondary};
-  border-radius: 6px;
-  border: 1px solid #10b981;
-`;
-
-const SettingsLabel = styled.label`
-  font-size: 13px;
-  font-weight: 500;
-  color: ${theme.colors.textPrimary};
-  margin-bottom: 4px;
-`;
+import {
+  ControlPanelContainer,
+  ControlPanelTitle,
+  ButtonGroup,
+  ActionButton,
+  SettingsSection,
+  SettingsLabel,
+  handleShaderError
+} from './BaseControlPanel';
 
 const ModeSelector = styled.select`
   padding: 8px 12px;
@@ -91,7 +29,7 @@ const ModeSelector = styled.select`
   
   &:focus {
     outline: none;
-    border-color: #10b981;
+    border-color: ${theme.colors.modeGreen};
     box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
   }
 `;
@@ -119,7 +57,6 @@ export const GeoLIPIControlPanel: React.FC<GeoLIPIControlPanelProps> = ({
     debug.log('Generating GeoLIPI shader from node graph...');
     
     try {
-      // Prepare payload using the GeoLIPI-specific helper
       const { payload, metadata } = prepareGeolipiShaderPayload(editor, settings, geolipiMode);
       
       debug.log('Payload prepared:', {
@@ -129,7 +66,6 @@ export const GeoLIPIControlPanel: React.FC<GeoLIPIControlPanelProps> = ({
         geolipiMode: geolipiMode
       });
       
-      // Call API with prepared payload
       const result = await generateShader('geolipi', 'twgl', payload);
       
       debug.log('GeoLIPI shader generation successful:', {
@@ -138,7 +74,7 @@ export const GeoLIPIControlPanel: React.FC<GeoLIPIControlPanelProps> = ({
         textureCount: Object.keys((result as any).textures || {}).length
       });
       
-      const shaderResult = result as any; // Type assertion for shader code response
+      const shaderResult = result as any;
       if (shaderResult.shaderCode && viewerRef.current && viewerRef.current.loadShaderCode) {
         viewerRef.current.loadShaderCode(shaderResult.shaderCode, shaderResult.uniforms, shaderResult.textures);
         debug.log('Successfully loaded GeoLIPI shader code into viewer');
@@ -146,47 +82,66 @@ export const GeoLIPIControlPanel: React.FC<GeoLIPIControlPanelProps> = ({
         debug.error('Backend response missing shaderCode or loadShaderCode method not available:', result);
       }
     } catch (error) {
-      debug.error('GeoLIPI shader generation failed:', error);
-      if (error instanceof APIError) {
-        debug.error('API Error details:', error.backendError);
-        // Show error dialog to user with backend error details if available
-        const backendError = error.backendError;
-        notifications.showErrorDialog({
-          title: 'Shader Generation Failed',
-          message: backendError?.message || error.message,
-          traceback: backendError?.traceback || `Endpoint: ${error.endpoint}\nStatus: ${error.status}`,
-          type: backendError?.type || 'APIError'
-        });
-      } else {
-        // Handle unexpected errors
-        notifications.showErrorDialog({
-          title: 'Shader Generation Failed',
-          message: error instanceof Error ? error.message : 'An unexpected error occurred during shader generation',
-          traceback: error instanceof Error ? error.stack : String(error),
-          type: 'UnexpectedError'
-        });
-      }
+      handleShaderError(error, 'GeoLIPI shader generation');
     }
   }, [editor, settings, geolipiMode, viewerRef]);
 
-  // Register this function as the main function for GeoLIPI mode
+  const handleGenerateGeoLIPIShaderIFrame = useCallback(async () => {
+    debug.log('Generating GeoLIPI shader IFrame from node graph...');
+    
+    try {
+      const { payload, metadata } = prepareGeolipiShaderPayload(editor, settings, geolipiMode);
+      
+      debug.log('Payload prepared for IFrame:', {
+        nodeCount: metadata.nodeCount,
+        edgeCount: metadata.edgeCount,
+        serializationMethod: metadata.serializationMethod,
+        geolipiMode: geolipiMode
+      });
+      
+      const result = await generateShader('geolipi', 'html', payload);
+      
+      debug.log('GeoLIPI HTML generation successful');
+      
+      const htmlResult = result as any;
+      if (htmlResult.html && viewerRef.current && viewerRef.current.loadHTML) {
+        viewerRef.current.loadHTML(htmlResult.html);
+        debug.log('Successfully loaded GeoLIPI HTML into iframe');
+      } else {
+        debug.error('Backend response missing html field or loadHTML method not available:', result);
+      }
+    } catch (error) {
+      handleShaderError(error, 'GeoLIPI IFrame generation');
+    }
+  }, [editor, settings, geolipiMode, viewerRef]);
+
   useMainFunctionRegistration(
-    'GeoLIPI', 
-    handleGenerateGeoLIPIShader, 
-    'Generate GeoLIPI shader from node graph (Cmd/Ctrl+Enter)'
+    'GeoLIPI Graph', 
+    handleGenerateGeoLIPIShaderIFrame, 
+    'Generate GeoLIPI shader IFrame from node graph (Cmd/Ctrl+Enter)'
   );
 
   return (
-    <Container>
-      <Title>GeoLIPI Controls</Title>
+    <ControlPanelContainer>
+      <ControlPanelTitle $accentColor={theme.colors.modeGreen}>GeoLIPI Controls</ControlPanelTitle>
       <ButtonGroup>
-        <ActionButton onClick={handleGenerateGeoLIPIShader}>
+        <ActionButton 
+          $accentColor={theme.colors.modeGreen}
+          $accentHover={theme.colors.modeGreenHover}
+          onClick={handleGenerateGeoLIPIShader}
+        >
           Generate Shader
         </ActionButton>
-        
+        <ActionButton 
+          $accentColor={theme.colors.modeGreen}
+          $accentHover={theme.colors.modeGreenHover}
+          onClick={handleGenerateGeoLIPIShaderIFrame}
+        >
+          Generate Shader IFrame
+        </ActionButton>
       </ButtonGroup>
 
-      <SettingsSection>
+      <SettingsSection $accentColor={theme.colors.modeGreen}>
         <SettingsLabel htmlFor="geolipi-mode">GeoLIPI Generation Mode</SettingsLabel>
         <ModeSelector
           id="geolipi-mode"
@@ -203,7 +158,6 @@ export const GeoLIPIControlPanel: React.FC<GeoLIPIControlPanelProps> = ({
           }
         </ModeDescription>
       </SettingsSection>
-
-    </Container>
+    </ControlPanelContainer>
   );
 };

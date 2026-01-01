@@ -8,6 +8,7 @@ import { NodeRegistry } from '../definitions';
 // Import all auto-generated node definitions
 import * as AutoNodes from '../nodes/auto_nodes';
 import { NodeDefinition } from '../definitions';
+import { debug } from '../../../../utils/debug';
 
 interface UseReactFlowEditorProps {
   modeName: string;
@@ -24,8 +25,8 @@ export const useReactFlowEditor = ({ modeName }: UseReactFlowEditorProps): React
       (item): item is NodeDefinition => item && typeof item === 'object' && 'type' in item
     );
     
-    console.log('Loading', nodeDefinitions.length, 'auto-generated nodes for mode:', modeName);
-    console.log('✅ Found', nodeDefinitions.length, 'auto-generated nodes');
+    debug.log('Loading', nodeDefinitions.length, 'auto-generated nodes for mode:', modeName);
+    debug.log('Found', nodeDefinitions.length, 'auto-generated nodes');
     
   }, [modeName]);
 
@@ -43,7 +44,7 @@ export const useReactFlowEditor = ({ modeName }: UseReactFlowEditorProps): React
   const handleNodeControlChange = useCallback((nodeId: string, controlId: string, value: any) => {
     // This will be handled by the ReactFlowEditor component internally
     // We could emit events here for uniform updates if needed
-    console.log('Node control changed:', { nodeId, controlId, value });
+    debug.log('Node control changed:', { nodeId, controlId, value });
   }, []);
 
   // Export data function
@@ -97,7 +98,7 @@ export const useReactFlowEditor = ({ modeName }: UseReactFlowEditorProps): React
   const importData = useCallback((data: ReactFlowExportData) => {
     // This would need to reconstruct nodes and edges from serialized data
     // For now, just log the data
-    console.log('Importing React Flow data:', data);
+    debug.log('Importing React Flow data:', data);
   }, []);
 
   // Get nodes
@@ -109,7 +110,7 @@ export const useReactFlowEditor = ({ modeName }: UseReactFlowEditorProps): React
   // Add node
   const addNode = useCallback((nodeType: string, position?: { x: number; y: number }) => {
     // This would use the node factory to create a new node
-    console.log('Add node:', nodeType, position);
+    debug.log('Add node:', nodeType, position);
   }, []);
 
   // Remove node
@@ -144,13 +145,13 @@ export const useReactFlowEditor = ({ modeName }: UseReactFlowEditorProps): React
   // Zoom to fit
   const zoomToFit = useCallback(() => {
     // This would be implemented using React Flow's fitView function
-    console.log('Zoom to fit');
+    debug.log('Zoom to fit');
   }, []);
 
   // Layout function
   const layout = useCallback(() => {
     // This would implement auto-layout functionality
-    console.log('Auto layout');
+    debug.log('Auto layout');
   }, []);
 
   // Create the editor view

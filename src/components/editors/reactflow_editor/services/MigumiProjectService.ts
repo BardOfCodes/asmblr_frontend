@@ -7,6 +7,7 @@
 import { Node, Edge } from 'reactflow';
 import { ReactFlowNodeData } from '../types';
 import { projectService } from './ProjectService';
+import { debug } from '../../../../utils/debug';
 
 /**
  * Node name mappings for old format compatibility
@@ -45,8 +46,8 @@ const OLD_FORMAT_PARAM_MAPPINGS = {
  * Preprocesses old format JSON by updating node names and wrapping in new format structure
  */
 function preprocessOldFormatJson(jsonData: any): any {
-  console.log('🔄 MigumiProjectService: Preprocessing old format JSON');
-  console.log('🔍 MigumiProjectService: Input data structure:', {
+  debug.log('🔄 MigumiProjectService: Preprocessing old format JSON');
+  debug.log('🔍 MigumiProjectService: Input data structure:', {
     hasGraph: !!jsonData.graph,
     hasModuleList: !!jsonData.moduleList,
     topLevelKeys: Object.keys(jsonData),
@@ -58,13 +59,13 @@ function preprocessOldFormatJson(jsonData: any): any {
   
   // Check if this is old format (has moduleList at top level, no graph wrapper)
   if (processedData.moduleList && !processedData.graph) {
-    console.log('📦 MigumiProjectService: Detected old format - wrapping moduleList in new format structure');
+    debug.log('📦 MigumiProjectService: Detected old format - wrapping moduleList in new format structure');
     
     let moduleList = processedData.moduleList;
     
     // Convert array moduleList to object format if needed
     if (Array.isArray(moduleList)) {
-      console.log('🔄 MigumiProjectService: Converting array moduleList to object format');
+      debug.log('🔄 MigumiProjectService: Converting array moduleList to object format');
       const moduleListObject: Record<string, any> = {};
       moduleList.forEach((module: any, index: number) => {
         const moduleKey = module.name || `module_${index}`;
@@ -111,16 +112,16 @@ function preprocessOldFormatJson(jsonData: any): any {
   const moduleList = processedData.graph.moduleList;
   
   if (Array.isArray(moduleList)) {
-    console.log(`📋 MigumiProjectService: Processing moduleList as array with ${moduleList.length} modules`);
+    debug.log(`📋 MigumiProjectService: Processing moduleList as array with ${moduleList.length} modules`);
     
     // Process each module in the moduleList array
     moduleList.forEach((module: any, moduleIndex: number) => {
       if (!module.nodes || !Array.isArray(module.nodes)) {
-        console.log(`ℹ️ MigumiProjectService: Module ${moduleIndex} has no nodes array, skipping`);
+        debug.log(`ℹ️ MigumiProjectService: Module ${moduleIndex} has no nodes array, skipping`);
         return;
       }
       
-      console.log(`🔍 MigumiProjectService: Processing module ${moduleIndex} with ${module.nodes.length} nodes`);
+      debug.log(`🔍 MigumiProjectService: Processing module ${moduleIndex} with ${module.nodes.length} nodes`);
       
       // Track IDs of nodes named "Difference" (before any renaming)
       const diffIds: Set<string> = new Set();
@@ -146,7 +147,7 @@ function preprocessOldFormatJson(jsonData: any): any {
         if (paramMappings && node.data) {
           Object.entries(paramMappings).forEach(([oldParam, newParam]) => {
             if (node.data[oldParam] !== undefined) {
-              console.log(`🔄 MigumiProjectService: Converting node[${nodeIndex}] parameter: "${oldParam}" → "${newParam}" (for ${originalName})`);
+              debug.log(`🔄 MigumiProjectService: Converting node[${nodeIndex}] parameter: "${oldParam}" → "${newParam}" (for ${originalName})`);
               node.data[newParam] = node.data[oldParam];
               delete node.data[oldParam];
               conversionsForThisNode++;
@@ -157,7 +158,7 @@ function preprocessOldFormatJson(jsonData: any): any {
         // Handle name mappings AFTER parameter mappings
         const newName = OLD_FORMAT_NODE_MAPPINGS[originalName as keyof typeof OLD_FORMAT_NODE_MAPPINGS];
         if (newName) {
-          console.log(`🔄 MigumiProjectService: Converting node[${nodeIndex}] name: "${originalName}" → "${newName}"`);
+          debug.log(`🔄 MigumiProjectService: Converting node[${nodeIndex}] name: "${originalName}" → "${newName}"`);
           node.name = newName;
           conversionsForThisNode++;
         }
@@ -167,13 +168,13 @@ function preprocessOldFormatJson(jsonData: any): any {
       
       // Process connections to update targetInput for Difference nodes
       if (module.connections && Array.isArray(module.connections) && diffIds.size > 0) {
-        console.log(`🔗 MigumiProjectService: Processing ${module.connections.length} connections for Difference node input updates`);
+        debug.log(`🔗 MigumiProjectService: Processing ${module.connections.length} connections for Difference node input updates`);
         module.connections.forEach((conn: any) => {
           if (diffIds.has(conn.target)) {
             const oldInput = conn.targetInput;
             const newInput = DIFFERENCE_INPUT_MAPPINGS[oldInput as keyof typeof DIFFERENCE_INPUT_MAPPINGS];
             if (newInput) {
-              console.log(`🔄 MigumiProjectService: Updating connection targetInput: "${oldInput}" → "${newInput}" for target ${conn.target}`);
+              debug.log(`🔄 MigumiProjectService: Updating connection targetInput: "${oldInput}" → "${newInput}" for target ${conn.target}`);
               conn.targetInput = newInput;
               totalConversions++;
             }
@@ -182,16 +183,16 @@ function preprocessOldFormatJson(jsonData: any): any {
       }
     });
   } else if (typeof moduleList === 'object' && moduleList !== null) {
-    console.log(`📋 MigumiProjectService: Processing moduleList as object with keys:`, Object.keys(moduleList));
+    debug.log(`📋 MigumiProjectService: Processing moduleList as object with keys:`, Object.keys(moduleList));
     
     // Handle moduleList as an object (dictionary of modules)
     Object.entries(moduleList).forEach(([moduleKey, module]: [string, any]) => {
       if (!module.nodes || !Array.isArray(module.nodes)) {
-        console.log(`ℹ️ MigumiProjectService: Module "${moduleKey}" has no nodes array, skipping`);
+        debug.log(`ℹ️ MigumiProjectService: Module "${moduleKey}" has no nodes array, skipping`);
         return;
       }
       
-      console.log(`🔍 MigumiProjectService: Processing module "${moduleKey}" with ${module.nodes.length} nodes`);
+      debug.log(`🔍 MigumiProjectService: Processing module "${moduleKey}" with ${module.nodes.length} nodes`);
       
       // Track IDs of nodes named "Difference" (before any renaming)
       const diffIds: Set<string> = new Set();
@@ -217,7 +218,7 @@ function preprocessOldFormatJson(jsonData: any): any {
         if (paramMappings && node.data) {
           Object.entries(paramMappings).forEach(([oldParam, newParam]) => {
             if (node.data[oldParam] !== undefined) {
-              console.log(`🔄 MigumiProjectService: Converting node[${nodeIndex}] parameter: "${oldParam}" → "${newParam}" (for ${originalName})`);
+              debug.log(`🔄 MigumiProjectService: Converting node[${nodeIndex}] parameter: "${oldParam}" → "${newParam}" (for ${originalName})`);
               node.data[newParam] = node.data[oldParam];
               delete node.data[oldParam];
               conversionsForThisNode++;
@@ -228,7 +229,7 @@ function preprocessOldFormatJson(jsonData: any): any {
         // Handle name mappings AFTER parameter mappings
         const newName = OLD_FORMAT_NODE_MAPPINGS[originalName as keyof typeof OLD_FORMAT_NODE_MAPPINGS];
         if (newName) {
-          console.log(`🔄 MigumiProjectService: Converting node[${nodeIndex}] name: "${originalName}" → "${newName}"`);
+          debug.log(`🔄 MigumiProjectService: Converting node[${nodeIndex}] name: "${originalName}" → "${newName}"`);
           node.name = newName;
           conversionsForThisNode++;
         }
@@ -238,13 +239,13 @@ function preprocessOldFormatJson(jsonData: any): any {
       
       // Process connections to update targetInput for Difference nodes
       if (module.connections && Array.isArray(module.connections) && diffIds.size > 0) {
-        console.log(`🔗 MigumiProjectService: Processing ${module.connections.length} connections for Difference node input updates`);
+        debug.log(`🔗 MigumiProjectService: Processing ${module.connections.length} connections for Difference node input updates`);
         module.connections.forEach((conn: any) => {
           if (diffIds.has(conn.target)) {
             const oldInput = conn.targetInput;
             const newInput = DIFFERENCE_INPUT_MAPPINGS[oldInput as keyof typeof DIFFERENCE_INPUT_MAPPINGS];
             if (newInput) {
-              console.log(`🔄 MigumiProjectService: Updating connection targetInput: "${oldInput}" → "${newInput}" for target ${conn.target}`);
+              debug.log(`🔄 MigumiProjectService: Updating connection targetInput: "${oldInput}" → "${newInput}" for target ${conn.target}`);
               conn.targetInput = newInput;
               totalConversions++;
             }
@@ -253,11 +254,11 @@ function preprocessOldFormatJson(jsonData: any): any {
       }
     });
   } else {
-    console.error('❌ MigumiProjectService: moduleList is neither array nor object:', typeof moduleList, moduleList);
+    debug.error('❌ MigumiProjectService: moduleList is neither array nor object:', typeof moduleList, moduleList);
     return processedData;
   }
   
-  console.log(`✅ MigumiProjectService: Preprocessing complete`, {
+  debug.log(`✅ MigumiProjectService: Preprocessing complete`, {
     totalNodesProcessed,
     totalConversions,
     nameConversions: Object.entries(OLD_FORMAT_NODE_MAPPINGS).map(([old, new_]) => `${old} → ${new_}`),
@@ -285,7 +286,7 @@ export async function importMigumiProject(
     metadata?: any;
   };
 }> {
-  console.log('📁 MigumiProjectService: Starting Migumi import', {
+  debug.log('📁 MigumiProjectService: Starting Migumi import', {
     fileName: file.name,
     fileSize: file.size,
     useOldFormat
@@ -294,13 +295,13 @@ export async function importMigumiProject(
   try {
     // Read the file as text first
     const fileText = await file.text();
-    console.log('📄 MigumiProjectService: File read successfully, parsing JSON');
+    debug.log('📄 MigumiProjectService: File read successfully, parsing JSON');
     
     let jsonData;
     try {
       jsonData = JSON.parse(fileText);
     } catch (parseError) {
-      console.error('❌ MigumiProjectService: JSON parse error:', parseError);
+      debug.error('❌ MigumiProjectService: JSON parse error:', parseError);
       return {
         success: false,
         message: `Invalid JSON file: ${parseError}`
@@ -313,17 +314,17 @@ export async function importMigumiProject(
     
     if (shouldPreprocess) {
       if (isOldFormatFile && !useOldFormat) {
-        console.log('🔍 MigumiProjectService: Auto-detected old format file, preprocessing...');
+        debug.log('🔍 MigumiProjectService: Auto-detected old format file, preprocessing...');
       } else {
-        console.log('🔧 MigumiProjectService: Old format mode enabled, preprocessing...');
+        debug.log('🔧 MigumiProjectService: Old format mode enabled, preprocessing...');
       }
       jsonData = preprocessOldFormatJson(jsonData);
     } else {
-      console.log('ℹ️ MigumiProjectService: Using new format, no preprocessing needed');
+      debug.log('ℹ️ MigumiProjectService: Using new format, no preprocessing needed');
     }
     
     // Validate the processed data structure before creating the file
-    console.log('🔍 MigumiProjectService: Validating processed data structure:', {
+    debug.log('🔍 MigumiProjectService: Validating processed data structure:', {
       hasVersion: !!jsonData.version,
       hasCreated: !!jsonData.created,
       hasModified: !!jsonData.modified,
@@ -339,22 +340,22 @@ export async function importMigumiProject(
       lastModified: file.lastModified
     });
     
-    console.log('🔄 MigumiProjectService: Delegating to standard ProjectService.importProject');
+    debug.log('🔄 MigumiProjectService: Delegating to standard ProjectService.importProject');
     
     // Use the standard project service to handle the processed file
     const result = await projectService.importProject(processedFile);
     
     if (result.success) {
-      console.log('✅ MigumiProjectService: Import successful');
+      debug.log('✅ MigumiProjectService: Import successful');
     } else {
-      console.error('❌ MigumiProjectService: Import failed:', result.message);
+      debug.error('❌ MigumiProjectService: Import failed:', result.message);
     }
     
     return result;
     
   } catch (error) {
-    console.error('❌ MigumiProjectService: Unexpected error during import:', error);
-    console.error('📍 MigumiProjectService: Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+    debug.error('❌ MigumiProjectService: Unexpected error during import:', error);
+    debug.error('📍 MigumiProjectService: Error stack:', error instanceof Error ? error.stack : 'No stack trace');
     
     return {
       success: false,
@@ -379,7 +380,7 @@ export async function loadMigumiProject(
     metadata?: any;
   };
 }> {
-  console.log('📂 MigumiProjectService: Starting Migumi load', { key, useOldFormat });
+  debug.log('📂 MigumiProjectService: Starting Migumi load', { key, useOldFormat });
   
   // For localStorage projects, we could potentially have old format data
   // Try to load and check if preprocessing is needed
@@ -389,12 +390,12 @@ export async function loadMigumiProject(
     // If loading failed and old format is enabled, we might need preprocessing
     // But for localStorage, this is less common since we usually save in new format
     if (!result.success && useOldFormat) {
-      console.log('ℹ️ MigumiProjectService: Standard load failed, old format mode was enabled but localStorage projects are typically in new format');
+      debug.log('ℹ️ MigumiProjectService: Standard load failed, old format mode was enabled but localStorage projects are typically in new format');
     }
     
     return result;
   } catch (error) {
-    console.error('❌ MigumiProjectService: Load error:', error);
+    debug.error('❌ MigumiProjectService: Load error:', error);
     return {
       success: false,
       message: `Failed to load Migumi project: ${error}`

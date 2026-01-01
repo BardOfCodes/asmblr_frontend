@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SettingOutlined, SaveOutlined, FolderOpenOutlined, FileOutlined, ExperimentOutlined } from '@ant-design/icons';
+import { SettingOutlined, SaveOutlined, FolderOpenOutlined, FileOutlined } from '@ant-design/icons';
 import { notifications } from '../../utils/notifications';
 import { 
   HeaderContainer, 
@@ -16,7 +16,6 @@ import { useProjectPicker } from '../utils/project-picker';
 import { useProjectSaver } from '../utils/project-saver';
 import { Modes, saveModeToDisk } from '../../modes/modes';
 import { SettingsDialog } from '../control-panel/SettingsDialog';
-import TestComponent from '../editors/reactflow_editor/core/TestComponent';
 import { useProjectActions } from '../editors/reactflow_editor/hooks/useProjectActions';
 import { useMigumiProjectActions } from '../editors/reactflow_editor/hooks/useMigumiProjectActions';
 import { debug } from '../../utils/debug';
@@ -38,7 +37,6 @@ export const Header: React.FC<HeaderProps> = ({
   const [_open, file] = useProjectPicker(); // Keep for potential future use
   const [_save] = useProjectSaver('project.json'); // Keep for potential future use
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [testOpen, setTestOpen] = useState(false);
 
   // Project management actions - use Migumi-specific actions for Migumi mode
   const standardProjectActions = useProjectActions();
@@ -182,15 +180,6 @@ export const Header: React.FC<HeaderProps> = ({
 
           <HeaderNav>
             <HeaderButton
-              onClick={() => setTestOpen(true)}
-              title="Test Core System (Development)"
-              $active={testOpen}
-            >
-              <HeaderIconWrapper><ExperimentOutlined /></HeaderIconWrapper>
-              Test
-            </HeaderButton>
-            
-            <HeaderButton
               onClick={() => setSettingsOpen(true)}
               title="Interface Settings"
               $active={settingsOpen}
@@ -206,38 +195,6 @@ export const Header: React.FC<HeaderProps> = ({
         open={settingsOpen} 
         onClose={() => setSettingsOpen(false)} 
       />
-
-      {/* Full-screen test modal */}
-      {testOpen && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'white',
-          zIndex: 9999,
-          padding: '20px',
-          overflow: 'auto'
-        }}>
-          <div style={{ marginBottom: '20px' }}>
-            <button 
-              onClick={() => setTestOpen(false)}
-              style={{
-                padding: '8px 16px',
-                backgroundColor: '#1890ff',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer'
-              }}
-            >
-              ← Back to Main
-            </button>
-          </div>
-          <TestComponent />
-        </div>
-      )}
     </>
   );
 };

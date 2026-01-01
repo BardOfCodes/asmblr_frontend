@@ -1,6 +1,5 @@
 // Centralized Mode Registry - Improved type safety and organization
 import { AsmblrMode } from './types';
-import { makeNeoMode } from './neo-mode';
 import { makeSySLMode } from './sysl-mode';
 import { makeGeoLIPIMode } from './geolipi-mode';
 import { makeMigumiMode } from './migumi-mode';
@@ -9,7 +8,6 @@ import { makeMigumiMode } from './migumi-mode';
  * Mode identifiers - ensures consistency across the app
  */
 export const MODE_IDS = {
-  NEO: 'neo',
   SYSL: 'sysl', 
   GEOLIPI: 'geolipi',
   MIGUMI: 'migumi',
@@ -33,12 +31,6 @@ interface ModeRegistration {
  * Registry of all available modes
  */
 const MODE_REGISTRY: Record<ModeId, ModeRegistration> = {
-  [MODE_IDS.NEO]: {
-    id: MODE_IDS.NEO,
-    displayName: 'Neo Graph',
-    factory: makeNeoMode,
-    description: 'Full-featured mode with all node types and capabilities',
-  },
   [MODE_IDS.SYSL]: {
     id: MODE_IDS.SYSL,
     displayName: 'SySL Graph', 

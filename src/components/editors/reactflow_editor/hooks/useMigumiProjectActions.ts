@@ -8,6 +8,7 @@ import { useCallback } from 'react';
 import { useProjectActions, getReactFlowRef } from './useProjectActions';
 import { importMigumiProject, loadMigumiProject } from '../services/MigumiProjectService';
 import { getMigumiSettings } from '../../../control-panel/MigumiControlPanel';
+import { debug } from '../../../../utils/debug';
 
 // Global reference to current React Flow instance (same as standard hook)
 let globalReactFlowRef: {
@@ -36,26 +37,26 @@ export function useMigumiProjectActions() {
     // Try Migumi-specific ref first, fall back to standard ref
     const reactFlowRef = globalReactFlowRef || getReactFlowRef();
     
-    console.log('📁 useMigumiProjectActions: Starting Migumi import', {
+    debug.log('📁 useMigumiProjectActions: Starting Migumi import', {
       hasMigumiRef: !!globalReactFlowRef,
       hasStandardRef: !!getReactFlowRef(),
       usingRef: reactFlowRef ? 'available' : 'none'
     });
     
     if (!reactFlowRef) {
-      console.error('❌ useMigumiProjectActions: No ReactFlow reference available');
+      debug.error('❌ useMigumiProjectActions: No ReactFlow reference available');
       return { success: false, message: 'Editor not available' };
     }
     
     // Get current Migumi settings
     const settings = getMigumiSettings();
-    console.log('🔧 useMigumiProjectActions: Using settings:', settings);
+    debug.log('🔧 useMigumiProjectActions: Using settings:', settings);
 
     // Use the specialized Migumi import function
     const result = await importMigumiProject(file, settings.useOldFormat);
     
     if (result.success && result.data) {
-      console.log('✅ useMigumiProjectActions: Import successful, updating editor');
+      debug.log('✅ useMigumiProjectActions: Import successful, updating editor');
       
       reactFlowRef.setNodes(result.data.nodes);
       reactFlowRef.setEdges(result.data.edges);
@@ -67,7 +68,7 @@ export function useMigumiProjectActions() {
         setTimeout(() => reactFlowRef?.fitView(), 100);
       }
     } else {
-      console.error('❌ useMigumiProjectActions: Import failed:', result.message);
+      debug.error('❌ useMigumiProjectActions: Import failed:', result.message);
     }
 
     return result;
@@ -78,26 +79,26 @@ export function useMigumiProjectActions() {
     // Try Migumi-specific ref first, fall back to standard ref
     const reactFlowRef = globalReactFlowRef || getReactFlowRef();
     
-    console.log('📂 useMigumiProjectActions: Starting Migumi load', {
+    debug.log('📂 useMigumiProjectActions: Starting Migumi load', {
       hasMigumiRef: !!globalReactFlowRef,
       hasStandardRef: !!getReactFlowRef(),
       usingRef: reactFlowRef ? 'available' : 'none'
     });
     
     if (!reactFlowRef) {
-      console.error('❌ useMigumiProjectActions: No ReactFlow reference available');
+      debug.error('❌ useMigumiProjectActions: No ReactFlow reference available');
       return { success: false, message: 'Editor not available' };
     }
     
     // Get current Migumi settings
     const settings = getMigumiSettings();
-    console.log('🔧 useMigumiProjectActions: Using settings:', settings);
+    debug.log('🔧 useMigumiProjectActions: Using settings:', settings);
 
     // Use the specialized Migumi load function
     const result = await loadMigumiProject(key, settings.useOldFormat);
     
     if (result.success && result.data) {
-      console.log('✅ useMigumiProjectActions: Load successful, updating editor');
+      debug.log('✅ useMigumiProjectActions: Load successful, updating editor');
       
       reactFlowRef.setNodes(result.data.nodes);
       reactFlowRef.setEdges(result.data.edges);
@@ -109,7 +110,7 @@ export function useMigumiProjectActions() {
         setTimeout(() => reactFlowRef?.fitView(), 100);
       }
     } else {
-      console.error('❌ useMigumiProjectActions: Load failed:', result.message);
+      debug.error('❌ useMigumiProjectActions: Load failed:', result.message);
     }
 
     return result;

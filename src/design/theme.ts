@@ -12,6 +12,7 @@ export const theme = {
     
     // Status colors
     success: '#10b981',
+    successHover: '#059669',
     successLight: '#ecfdf5',
     warning: '#f59e0b',
     warningLight: '#fffbeb',
@@ -19,6 +20,12 @@ export const theme = {
     errorLight: '#fef2f2',
     info: '#06b6d4',
     infoLight: '#f0fdfa',
+    
+    // Mode accent colors
+    modePurple: '#8b5cf6',
+    modePurpleHover: '#7c3aed',
+    modeGreen: '#10b981',
+    modeGreenHover: '#059669',
     
     // Neutrals - Ultra clean and minimal
     white: '#ffffff',

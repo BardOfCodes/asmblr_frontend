@@ -1,68 +1,18 @@
 import React, { useCallback } from 'react';
-import styled from 'styled-components';
-import { theme } from '../../design/theme';
-import { generateShader, APIError } from '../../API';
+import { generateShader } from '../../API';
 import { useSettings } from '../../store/SettingsContext';
 import { debug } from '../../utils/debug';
 import { EditorHandle } from '../../types/editor';
 import { ViewerHandle } from '../../types/viewer';
-import { prepareShaderPayloadFromEditor,  } from './shaderPayloadHelper';
+import { prepareShaderPayloadFromEditor } from './shaderPayloadHelper';
 import { useMainFunctionRegistration } from '../../utils/ShortcutManager';
-import { notifications } from '../../utils/notifications';
-
-const Container = styled.div`
-  padding: 20px;
-  background: ${theme.colors.background};
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  height: 100%;
-`;
-
-const Title = styled.h3`
-  margin: 0 0 16px 0;
-  color: ${theme.colors.textPrimary};
-  font-size: 18px;
-  font-weight: 600;
-  border-bottom: 2px solid ${theme.colors.primary};
-  padding-bottom: 8px;
-`;
-
-const ButtonGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-`;
-
-const ActionButton = styled.button`
-  padding: 12px 16px;
-  background: ${theme.colors.primary};
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: ${theme.colors.primaryDark};
-    transform: translateY(-1px);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-
-  &:disabled {
-    background: ${theme.colors.gray400};
-    cursor: not-allowed;
-    transform: none;
-  }
-`;
-
+import {
+  ControlPanelContainer,
+  ControlPanelTitle,
+  ButtonGroup,
+  ActionButton,
+  handleShaderError
+} from './BaseControlPanel';
 
 interface SySLControlPanelProps {
   editor: EditorHandle;
@@ -79,7 +29,6 @@ export const SySLControlPanel: React.FC<SySLControlPanelProps> = ({
     debug.log('Generating SySL shader from node graph...');
     
     try {
-      // Prepare payload using the helper
       const { payload, metadata } = prepareShaderPayloadFromEditor('sysl', editor, settings);
       
       debug.log('Payload prepared:', {
@@ -88,7 +37,6 @@ export const SySLControlPanel: React.FC<SySLControlPanelProps> = ({
         serializationMethod: metadata.serializationMethod
       });
       
-      // Call API with prepared payload
       const result = await generateShader('sysl', 'twgl', payload);
       
       debug.log('SySL shader generation successful:', {
@@ -97,7 +45,7 @@ export const SySLControlPanel: React.FC<SySLControlPanelProps> = ({
         textureCount: Object.keys((result as any).textures || {}).length
       });
       
-      const shaderResult = result as any; // Type assertion for shader code response
+      const shaderResult = result as any;
       if (shaderResult.shaderCode && viewerRef.current && viewerRef.current.loadShaderCode) {
         viewerRef.current.loadShaderCode(shaderResult.shaderCode, shaderResult.uniforms, shaderResult.textures);
         debug.log('Successfully loaded SySL shader code into viewer');
@@ -105,44 +53,55 @@ export const SySLControlPanel: React.FC<SySLControlPanelProps> = ({
         debug.error('Backend response missing shaderCode or loadShaderCode method not available:', result);
       }
     } catch (error) {
-      debug.error('SySL shader generation failed:', error);
-      if (error instanceof APIError) {
-        debug.error('API Error details:', error.backendError);
-        // Show error dialog to user with backend error details if available
-        const backendError = error.backendError;
-        notifications.showErrorDialog({
-          title: 'Shader Generation Failed',
-          message: backendError?.message || error.message,
-          traceback: backendError?.traceback || `Endpoint: ${error.endpoint}\nStatus: ${error.status}`,
-          type: backendError?.type || 'APIError'
-        });
-      } else {
-        // Handle unexpected errors
-        notifications.showErrorDialog({
-          title: 'Shader Generation Failed',
-          message: error instanceof Error ? error.message : 'An unexpected error occurred during shader generation',
-          traceback: error instanceof Error ? error.stack : String(error),
-          type: 'UnexpectedError'
-        });
-      }
+      handleShaderError(error, 'SySL shader generation');
     }
   }, [editor, settings, viewerRef]);
 
-  // Register this function as the main function for SySL mode
+  const handleGenerateSySLShaderIFrame = useCallback(async () => {
+    debug.log('Generating SySL shader IFrame from node graph...');
+    
+    try {
+      const { payload, metadata } = prepareShaderPayloadFromEditor('sysl', editor, settings);
+      
+      debug.log('Payload prepared for IFrame:', {
+        nodeCount: metadata.nodeCount,
+        edgeCount: metadata.edgeCount,
+        serializationMethod: metadata.serializationMethod
+      });
+      
+      const result = await generateShader('sysl', 'html', payload);
+      
+      debug.log('SySL HTML generation successful');
+      
+      const htmlResult = result as any;
+      if (htmlResult.html && viewerRef.current && viewerRef.current.loadHTML) {
+        viewerRef.current.loadHTML(htmlResult.html);
+        debug.log('Successfully loaded SySL HTML into iframe');
+      } else {
+        debug.error('Backend response missing html field or loadHTML method not available:', result);
+      }
+    } catch (error) {
+      handleShaderError(error, 'SySL IFrame generation');
+    }
+  }, [editor, settings, viewerRef]);
+
   useMainFunctionRegistration(
-    'SySL', 
-    handleGenerateSySLShader, 
-    'Generate SySL shader from node graph (Cmd/Ctrl+Enter)'
+    'SySL Graph', 
+    handleGenerateSySLShaderIFrame, 
+    'Generate SySL shader IFrame from node graph (Cmd/Ctrl+Enter)'
   );
 
   return (
-    <Container>
-      <Title>Symbolic Scene Language (SySL) Controls</Title>
+    <ControlPanelContainer>
+      <ControlPanelTitle>Symbolic Scene Language (SySL) Controls</ControlPanelTitle>
       <ButtonGroup>
         <ActionButton onClick={handleGenerateSySLShader}>
           Generate Shader
         </ActionButton>
+        <ActionButton onClick={handleGenerateSySLShaderIFrame}>
+          Generate Shader IFrame
+        </ActionButton>
       </ButtonGroup>
-    </Container>
+    </ControlPanelContainer>
   );
 };

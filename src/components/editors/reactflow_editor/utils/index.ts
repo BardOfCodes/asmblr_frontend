@@ -16,7 +16,6 @@ export type {
 export { ProjectFileManager, PROJECT_FILE_VERSION } from './ProjectFileManager';
 export type {
   ProjectFile,
-  NeoInterfaceSpec,
   ReactFlowEditorSettings
 } from './ProjectFileManager';
 

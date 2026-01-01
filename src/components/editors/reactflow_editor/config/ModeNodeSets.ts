@@ -72,31 +72,6 @@ export const GeoLIPIModeDefinition: ModeDefinition = {
 };
 
 /**
- * Neo Graph Mode - Full feature set (original mode)
- * Includes: All available nodes
- */
-export const NeoModeDefinition: ModeDefinition = {
-  name: 'neo',
-  label: 'SySL-Extended', 
-  nodeSet: {
-    "Colors": getNodesByCategories(['color']),
-    "Combinators": getNodesByCategories(['combinators']),
-    "Material Solid Combinators": getNodesByCategories(['mat_solid_combinators']),
-    "Primitives 2D": getNodesByCategories(['primitives_2d']),
-    "Primitives 3D": getNodesByCategories(['primitives_3d']),
-    "SySL Base": getNodesByCategories(['sysl_base']),
-    "SySL Combinators": getNodesByCategories(['sysl_combinators']),
-    "Materials": getNodesByCategories(['materials']),
-    "Transforms 2D": getNodesByCategories(['transforms_2d']),
-    "Transforms 3D": getNodesByCategories(['transforms_3d']),
-    "Variables": getNodesByCategories(['variables']),
-    "MXG": getNodesByCategories(['mxg']),
-  }
-};
-
-
-
-/**
  * Migumi Mode - Minimal geometric operations
  * Includes: Basic primitives and transforms only
  */
@@ -118,7 +93,6 @@ export const MigumiModeDefinition: ModeDefinition = {
  * All mode definitions for registration
  */
 export const AllModeDefinitions = [
-  NeoModeDefinition,
   SySLModeDefinition,
   GeoLIPIModeDefinition,
   MigumiModeDefinition,

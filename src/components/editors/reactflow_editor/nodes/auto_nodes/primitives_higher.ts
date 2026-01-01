@@ -78,17 +78,6 @@ export const QuadraticCurve1DDefinition: NodeDefinition = {
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
-export const Revolution3DDefinition: NodeDefinition = {
-  type: "Revolution3D",
-  label: "Revolution3D",
-  category: "primitives_higher",
-  description: "Auto-generated from geolipi.symbolic.primitives_higher.",
-  inputs: [{"key": "input", "label": "Input", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "radius", "label": "Radius", "socketType": "ExprSocket", "required": false, "variadic": false}],
-  outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "radius", "type": "float", "label": "Radius", "config": {"defaultValue": null}, "linkedToInput": "radius", "showLabel": true, "hasSocket": true}],
-  factory: (data?: Record<string, any>) => ({ ...(data || {}) })
-};
-
 export const SimpleExtrusion3DDefinition: NodeDefinition = {
   type: "SimpleExtrusion3D",
   label: "SimpleExtrusion3D",
@@ -97,5 +86,16 @@ export const SimpleExtrusion3DDefinition: NodeDefinition = {
   inputs: [{"key": "input", "label": "Input", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "height", "label": "Height", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
   controls: [{"key": "height", "type": "float", "label": "Height", "config": {"defaultValue": null}, "linkedToInput": "height", "showLabel": true, "hasSocket": true}],
+  factory: (data?: Record<string, any>) => ({ ...(data || {}) })
+};
+
+export const SimpleRevolution3DDefinition: NodeDefinition = {
+  type: "SimpleRevolution3D",
+  label: "SimpleRevolution3D",
+  category: "primitives_higher",
+  description: "Auto-generated from geolipi.symbolic.primitives_higher.",
+  inputs: [{"key": "input", "label": "Input", "socketType": "ExprSocket", "required": true, "variadic": false}, {"key": "radius", "label": "Radius", "socketType": "ExprSocket", "required": false, "variadic": false}],
+  outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
+  controls: [{"key": "radius", "type": "float", "label": "Radius", "config": {"defaultValue": null}, "linkedToInput": "radius", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };

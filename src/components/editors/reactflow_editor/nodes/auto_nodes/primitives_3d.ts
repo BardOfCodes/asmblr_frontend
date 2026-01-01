@@ -1,9 +1,9 @@
 // Auto-generated from asmblr/nodes.json. Do not edit.
 import { NodeDefinition } from '../../definitions/NodeDefinitions';
 
-export const ArbitraryCappedConeDefinition: NodeDefinition = {
-  type: "ArbitraryCappedCone",
-  label: "ArbitraryCappedCone",
+export const ArbitraryCappedCone3DDefinition: NodeDefinition = {
+  type: "ArbitraryCappedCone3D",
+  label: "ArbitraryCappedCone3D",
   category: "primitives_3d",
   description: "Auto-generated from geolipi.symbolic.primitives_3d.",
   inputs: [{"key": "a", "label": "A", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "b", "label": "B", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "ra", "label": "Ra", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "rb", "label": "Rb", "socketType": "ExprSocket", "required": false, "variadic": false}],

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { Modal, Switch, Button, Select, Input, Collapse } from 'antd';
 import { useSettings, EditorType, ViewerType, ShaderSettings } from '../../store/SettingsContext';
 import { theme } from '../../design/theme';
+import { debug } from '../../utils/debug';
 
 const { TextArea } = Input;
 
@@ -92,14 +93,23 @@ interface SettingsDialogProps {
 export const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose }) => {
   const { settings, dispatch } = useSettings();
   const { layout } = settings.ui;
-  const [shaderSettingsText, setShaderSettingsText] = useState(() => {
-    // Convert current shader settings to JSON string for editing
-    const currentSettings = settings.shaderGeneration.shaderSettings;
-    if (!currentSettings.render_mode && Object.keys(currentSettings.variables).length === 0) {
-      return ''; // Empty if no custom settings
+  const [shaderSettingsText, setShaderSettingsText] = useState('');
+  const wasOpenRef = useRef(false);
+
+  // Sync local state with context settings ONLY when dialog opens (not on every settings change)
+  useEffect(() => {
+    // Only sync when transitioning from closed to open
+    if (open && !wasOpenRef.current) {
+      const currentSettings = settings.shaderGeneration.shaderSettings;
+      if (!currentSettings.render_mode && Object.keys(currentSettings.variables || {}).length === 0) {
+        setShaderSettingsText('');
+      } else {
+        setShaderSettingsText(JSON.stringify(currentSettings, null, 2));
+      }
+      debug.log('SettingsDialog opened - synced shader settings from context');
     }
-    return JSON.stringify(currentSettings, null, 2);
-  });
+    wasOpenRef.current = open;
+  }, [open]); // Only depend on 'open', not on settings
 
   const handlePanelVisibilityChange = (panel: keyof typeof layout, visible: boolean) => {
     dispatch({ type: 'SET_PANEL_VISIBILITY', payload: { panel, visible } });
@@ -116,7 +126,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose })
       localStorage.setItem('asmblr-default-settings', currentSettingsJson);
       
       // Show confirmation
-      console.log('Current settings saved as default:', {
+      debug.log('Current settings saved as default:', {
         editor: settings.ui.components.selectedEditor,
         viewer: settings.ui.components.selectedViewer,
         panelVisibility: {
@@ -134,7 +144,7 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose })
       }, 2000);
       
     } catch (error) {
-      console.error('Failed to save default settings:', error);
+      debug.error('Failed to save default settings:', error);
     }
   };
 
@@ -156,22 +166,24 @@ export const SettingsDialog: React.FC<SettingsDialogProps> = ({ open, onClose })
         };
         dispatch({ type: 'SET_SHADER_SETTINGS', payload: emptySettings });
       } else {
-        // Parse and validate JSON
+        // Parse JSON and preserve ALL fields (including custom ones like post_process_shader)
         const parsedSettings = JSON.parse(value);
         
-        // Ensure it has the required structure
+        // Merge with defaults for required fields, but preserve all other fields
         const validatedSettings: ShaderSettings = {
-          render_mode: parsedSettings.render_mode || "",
-          variables: parsedSettings.variables || {},
-          extract_vars: parsedSettings.extract_vars || false,
-          use_define_vars: parsedSettings.use_define_vars || false
+          render_mode: parsedSettings.render_mode ?? "",
+          variables: parsedSettings.variables ?? {},
+          extract_vars: parsedSettings.extract_vars ?? false,
+          use_define_vars: parsedSettings.use_define_vars ?? false,
+          // Spread all other fields to preserve custom settings like post_process_shader
+          ...parsedSettings
         };
         
         dispatch({ type: 'SET_SHADER_SETTINGS', payload: validatedSettings });
       }
     } catch (error) {
       // Invalid JSON - don't update settings, just keep the text
-      console.warn('Invalid JSON in shader settings:', error);
+      debug.warn('Invalid JSON in shader settings:', error);
     }
   };
 

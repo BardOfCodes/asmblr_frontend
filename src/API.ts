@@ -16,10 +16,6 @@ const MODE_ENDPOINTS = {
     html: '/api/sysl/generate-shader', 
     twgl: '/api/sysl/generate-twgl-shader'
   },
-  neo: {
-    html: '/api/neo/generate-shader',
-    twgl: '/api/neo/generate-twgl-shader'
-  },
   migumi: {
     html: '/api/migumi/generate-shader',
     twgl: '/api/migumi/generate-twgl-shader'
@@ -257,56 +253,6 @@ export const generateShader = async (
     return generateShaderHtml(mode, payload);
   } else {
     return generateShaderCode(mode, payload);
-  }
-};
-
-// =============================================================================
-// LEGACY SHADER GENERATION APIs (DEPRECATED - Use mode-based functions above)
-// =============================================================================
-
-/**
- * Generate shader HTML from node graph (GEOLIPI ENDPOINT)
- */
-export const generateGeolipiShaderHtml = async (payload: ConversionPayload = {}): Promise<ShaderHtmlResponse> => {
-  try {
-    debug.log('API: Calling /api/geolipi/generate-shader with payload:', payload);
-    const response = await apiClient.post<ShaderHtmlResponse>('/api/geolipi/generate-shader', payload);
-    return handleLegacyResponse(response);
-  } catch (error) {
-    return handleError(error, '/api/geolipi/generate-shader');
-  }
-};
-
-
-export const generateSySLShaderHtml = async (payload: ConversionPayload = {}): Promise<ShaderHtmlResponse> => {
-  try {
-    debug.log('API: Calling /api/sysl/generate-shader with payload:', payload);
-    const response = await apiClient.post<ShaderHtmlResponse>('/api/sysl/generate-shader', payload);
-    return handleLegacyResponse(response);
-  } catch (error) {
-    return handleError(error, '/api/sysl/generate-shader');
-  }
-};
-
-export const generateGeolipiTWGLShaderCode = async (payload: ConversionPayload = {}): Promise<ShaderCodeResponse> => {
-  try {
-    debug.log('API: Calling /api/geolipi/generate-twgl-shader with payload:', payload);
-    const response = await apiClient.post<ShaderCodeResponse>('/api/geolipi/generate-twgl-shader', payload);
-    return handleLegacyResponse(response);
-  } catch (error) {
-    return handleError(error, '/api/geolipi/generate-twgl-shader');
-  }
-};
-/**
- * Generate TWGL shader code, uniforms, and textures (SYSL TWGL ENDPOINT)
- */
-export const generateSySLTWGLShaderCode = async (payload: ConversionPayload = {}): Promise<ShaderCodeResponse> => {
-  try {
-    debug.log('API: Calling /api/sysl/generate-twgl-shader with payload:', payload);
-    const response = await apiClient.post<ShaderCodeResponse>('/api/sysl/generate-twgl-shader', payload);
-    return handleLegacyResponse(response);
-  } catch (error) {
-    return handleError(error, '/api/sysl/generate-twgl-shader');
   }
 };
 

@@ -3,7 +3,7 @@
  * 
  * This system handles saving/loading complete project files that can contain:
  * - Graph data (nodes, connections, positions)
- * - Interface specifications (Neo, other editors)
+ * - Interface specifications
  * - Editor settings and state
  * - Metadata and versioning
  */
@@ -30,8 +30,7 @@ export interface ProjectFile {
   
   // Interface specifications (extensible)
   interfaces?: {
-    neo?: NeoInterfaceSpec;
-    // Future: other interface types can be added here
+    // Future: interface types can be added here
     // webgl?: WebGLInterfaceSpec;
     // terminal?: TerminalInterfaceSpec;
   };
@@ -54,11 +53,6 @@ export interface ProjectFile {
   metadata?: Record<string, any>;
 }
 
-// Neo interface specification (placeholder for future)
-export interface NeoInterfaceSpec {
-  version: string;
-  config: Record<string, any>;
-}
 
 // React Flow editor specific settings
 export interface ReactFlowEditorSettings {

@@ -1,7 +1,7 @@
 // Vector Control Components
 // Handles vector inputs (Vec2, Vec3, Vec4) and single floats with theme integration
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import styled from 'styled-components';
 import { BaseControl, ControlInputWrapper } from './BaseControl';
 import { BaseControlProps } from '../../../../types/control';
@@ -21,6 +21,7 @@ const UnitsLabel = styled.span`
 
 /**
  * Float Control Component - Clean, theme-integrated number input
+ * Accepts any string input to allow typing negative numbers, decimals, etc.
  */
 export const FloatControl: React.FC<BaseControlProps> = ({
   id,
@@ -32,11 +33,13 @@ export const FloatControl: React.FC<BaseControlProps> = ({
   disabled
 }) => {
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value;
-    onChange(inputValue); // Pass the raw string value with no constraints
+    onChange(e.target.value); // Pass the raw string value
   }, [onChange]);
 
-  const numValue = value !== undefined ? value : (config.defaultValue || '');
+  // Convert value to string for display, handling all edge cases
+  const displayValue = value !== undefined && value !== null && !Number.isNaN(value) 
+    ? String(value) 
+    : (config.defaultValue !== undefined ? String(config.defaultValue) : '');
 
   return (
     <BaseControl 
@@ -49,7 +52,7 @@ export const FloatControl: React.FC<BaseControlProps> = ({
         <input
           id={id}
           type="text"
-          value={numValue}
+          value={displayValue}
           onChange={handleChange}
           disabled={disabled}
           placeholder=""
@@ -102,7 +105,17 @@ const VectorInput = styled.input`
 `;
 
 /**
+ * Convert a value to a display string, handling edge cases
+ */
+function toDisplayString(val: any, defaultVal: string = '0'): string {
+  if (val === undefined || val === null) return defaultVal;
+  if (typeof val === 'number' && Number.isNaN(val)) return defaultVal;
+  return String(val);
+}
+
+/**
  * Base Vector Control Component - Simple and direct
+ * Uses refs to avoid stale closure issues with vector values
  */
 const BaseVectorControl: React.FC<BaseControlProps & { 
   dimensions: number;
@@ -118,31 +131,32 @@ const BaseVectorControl: React.FC<BaseControlProps & {
   dimensions,
   labels
 }) => {
-  // Initialize vector with correct size - simple and direct
-  const initializeVector = (): any[] => {
-    const result = new Array(dimensions).fill(0);
-    return result;
-  };
-
+  // Use a ref to always have access to the latest value
+  const valueRef = useRef<any[]>([]);
+  
   // Get current vector value - ensure it's always the right size
   const getCurrentVector = (): any[] => {
     if (Array.isArray(value) && value.length === dimensions) {
-      return [...value]; // Use existing value if it's the right size
+      return value; // Return the actual value reference
     }
     if (Array.isArray(config.defaultValue) && config.defaultValue.length === dimensions) {
-      return [...config.defaultValue]; // Use default if it's the right size
+      return config.defaultValue;
     }
-    return initializeVector(); // Otherwise create new vector
+    return new Array(dimensions).fill(0);
   };
 
-  const vectorValue = getCurrentVector();
+  // Update the ref with the current value
+  const currentVector = getCurrentVector();
+  valueRef.current = currentVector;
 
+  // Handle dimension change using ref to avoid stale closure
   const handleDimensionChange = useCallback((index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
-    const newVector = [...vectorValue]; // Copy current vector
-    newVector[index] = inputValue; // Update the specific index - store as string for now
-    onChange(newVector); // Send the complete vector
-  }, [vectorValue, onChange]);
+    // Use the ref to get the latest value, not the closure
+    const newVector = [...valueRef.current];
+    newVector[index] = inputValue; // Store as string to preserve user input exactly
+    onChange(newVector);
+  }, [onChange, dimensions]); // Don't include valueRef.current - it's a ref
 
   return (
     <BaseControl 
@@ -157,7 +171,7 @@ const BaseVectorControl: React.FC<BaseControlProps & {
             <DimensionLabel>{labels[index]}:</DimensionLabel>
             <VectorInput
               type="text"
-              value={vectorValue[index] ?? '0'}
+              value={toDisplayString(currentVector[index], '0')}
               onChange={(e) => handleDimensionChange(index, e)}
               disabled={disabled}
               placeholder="0"

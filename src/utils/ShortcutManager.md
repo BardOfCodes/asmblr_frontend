@@ -72,7 +72,7 @@ export const GeoLIPIControlPanel: React.FC<Props> = ({ editor, viewerRef }) => {
 |------|----------|-------------|
 | `GeoLIPI Graph` | `handleGenerateGeoLIPIShader` | Generate GeoLIPI shader from node graph |
 | `SySL Graph` | `handleGenerateSySLShader` | Generate SySL shader from node graph |
-| `Neo Graph` | `handleGenerateShader` | Generate Neo shader from node graph |
+| `Migumi Graph` | `handleGenerateMigumiShader` | Generate Migumi shader from node graph |
 
 ## Features
 

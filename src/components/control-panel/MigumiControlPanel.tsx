@@ -1,87 +1,23 @@
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { theme } from '../../design/theme';
-import { generateShader, APIError } from '../../API';
+import { generateShader } from '../../API';
 import { useSettings } from '../../store/SettingsContext';
 import { debug } from '../../utils/debug';
 import { EditorHandle } from '../../types/editor';
 import { ViewerHandle } from '../../types/viewer';
 import { prepareShaderPayload } from './shaderPayloadHelper';
 import { useMainFunctionRegistration } from '../../utils/ShortcutManager';
-import { notifications } from '../../utils/notifications';
 import { useProjectActions, getReactFlowRef } from '../editors/reactflow_editor/hooks/useProjectActions';
-
-const Container = styled.div`
-  padding: 20px;
-  background: ${theme.colors.background};
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  height: 100%;
-`;
-
-const Title = styled.h3`
-  margin: 0 0 16px 0;
-  color: ${theme.colors.textPrimary};
-  font-size: 18px;
-  font-weight: 600;
-  border-bottom: 2px solid #8b5cf6; /* Purple theme for Migumi */
-  padding-bottom: 8px;
-`;
-
-const ButtonGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-`;
-
-const ActionButton = styled.button`
-  padding: 12px 16px;
-  background: #8b5cf6; /* Purple theme for Migumi */
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: #7c3aed;
-    transform: translateY(-1px);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-
-  &:disabled {
-    background: ${theme.colors.gray400};
-    cursor: not-allowed;
-    transform: none;
-  }
-`;
-
-const InfoSection = styled.div`
-  padding: 12px;
-  background: ${theme.colors.backgroundSecondary};
-  border-radius: 6px;
-  border-left: 3px solid #8b5cf6;
-  font-size: 12px;
-  color: ${theme.colors.textSecondary};
-`;
-
-const SettingsSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 12px;
-  background: ${theme.colors.backgroundSecondary};
-  border-radius: 6px;
-  border: 1px solid #8b5cf6;
-`;
+import {
+  ControlPanelContainer,
+  ControlPanelTitle,
+  ButtonGroup,
+  ActionButton,
+  InfoSection,
+  SettingsSection,
+  handleShaderError
+} from './BaseControlPanel';
 
 const CheckboxContainer = styled.label`
   display: flex;
@@ -94,11 +30,11 @@ const CheckboxContainer = styled.label`
   input[type="checkbox"] {
     width: 16px;
     height: 16px;
-    accent-color: #8b5cf6;
+    accent-color: ${theme.colors.modePurple};
   }
 `;
 
-const SettingsLabel = styled.div`
+const SettingsTitle = styled.div`
   font-weight: 600;
   color: ${theme.colors.textPrimary};
   font-size: 14px;
@@ -115,7 +51,7 @@ export interface MigumiSettings {
   useOldFormat: boolean;
 }
 
-// Global state for Migumi settings (simple approach)
+// Global state for Migumi settings
 let globalMigumiSettings: MigumiSettings = {
   useOldFormat: true
 };
@@ -126,7 +62,7 @@ export function getMigumiSettings(): MigumiSettings {
 
 export function setMigumiSettings(settings: Partial<MigumiSettings>): void {
   globalMigumiSettings = { ...globalMigumiSettings, ...settings };
-  console.log('🔧 MigumiControlPanel: Settings updated:', globalMigumiSettings);
+  debug.log('MigumiControlPanel: Settings updated:', globalMigumiSettings);
 }
 
 export const MigumiControlPanel: React.FC<MigumiControlPanelProps> = ({
@@ -137,13 +73,11 @@ export const MigumiControlPanel: React.FC<MigumiControlPanelProps> = ({
   const [useOldFormat, setUseOldFormat] = useState(globalMigumiSettings.useOldFormat);
   const projectActions = useProjectActions();
 
-  // Update global settings when local state changes
   const handleOldFormatChange = useCallback((checked: boolean) => {
     setUseOldFormat(checked);
     setMigumiSettings({ useOldFormat: checked });
   }, []);
 
-  // Create a graph editor object that can provide nodes and edges
   const createGraphEditor = useCallback(() => {
     if (!projectActions.isAvailable()) {
       debug.warn('ReactFlow editor not available for graph data extraction');
@@ -156,7 +90,7 @@ export const MigumiControlPanel: React.FC<MigumiControlPanelProps> = ({
       return {
         getNodes: () => reactFlowRef.getNodes(),
         getEdges: () => reactFlowRef.getEdges(),
-        nodeRegistry: (editor as any).nodeRegistry // Pass through the node registry if available
+        nodeRegistry: (editor as any).nodeRegistry
       };
     }
 
@@ -168,14 +102,12 @@ export const MigumiControlPanel: React.FC<MigumiControlPanelProps> = ({
     debug.log('Generating Migumi shader from node graph...');
     
     try {
-      // Create a proper graph editor that can provide nodes and edges
       const graphEditor = createGraphEditor();
       
       if (!graphEditor) {
         throw new Error('Unable to access ReactFlow graph data. Please ensure the editor is loaded.');
       }
 
-      // Prepare payload using the helper with the proper graph editor
       const { payload, metadata } = prepareShaderPayload({
         mode: 'migumi',
         editor: graphEditor,
@@ -188,75 +120,44 @@ export const MigumiControlPanel: React.FC<MigumiControlPanelProps> = ({
         serializationMethod: metadata.serializationMethod
       });
       
-      // Call API with prepared payload using Migumi backend
       const result = await generateShader('migumi', 'html', payload);
       
-      debug.log('Neo HTML generation successful');
+      debug.log('Migumi HTML generation successful');
         
-      const htmlResult = result as any; // Type assertion for HTML response
+      const htmlResult = result as any;
       if (htmlResult.html && viewerRef.current && viewerRef.current.loadHTML) {
         viewerRef.current.loadHTML(htmlResult.html);
-        debug.log('Successfully loaded Neo HTML into iframe');
+        debug.log('Successfully loaded Migumi HTML into iframe');
       } else {
         debug.error('Backend response missing html field or loadHTML method not available:', result);
       }
-
-      // debug.log('Migumi shader generation successful:', {
-      //   hasShaderCode: !!(result as any).shaderCode,
-      //   uniformCount: Object.keys((result as any).uniforms || {}).length,
-      //   textureCount: Object.keys((result as any).textures || {}).length
-      // });
-      
-      // const shaderResult = result as any; // Type assertion for shader code response
-      // if (shaderResult.shaderCode && viewerRef.current && viewerRef.current.loadShaderCode) {
-      //   viewerRef.current.loadShaderCode(shaderResult.shaderCode, shaderResult.uniforms, shaderResult.textures);
-      //   debug.log('Successfully loaded Migumi shader code into viewer');
-      // } else {
-      //   debug.error('Backend response missing shaderCode or loadShaderCode method not available:', result);
-      // }
     } catch (error) {
-      debug.error('Migumi shader generation failed:', error);
-      if (error instanceof APIError) {
-        debug.error('API Error details:', error.backendError);
-        // Show error dialog to user with backend error details if available
-        const backendError = error.backendError;
-        notifications.showErrorDialog({
-          title: 'Shader Generation Failed',
-          message: backendError?.message || error.message,
-          traceback: backendError?.traceback || `Endpoint: ${error.endpoint}\nStatus: ${error.status}`,
-          type: backendError?.type || 'APIError'
-        });
-      } else {
-        // Handle unexpected errors
-        notifications.showErrorDialog({
-          title: 'Shader Generation Failed',
-          message: error instanceof Error ? error.message : 'An unexpected error occurred during shader generation',
-          traceback: error instanceof Error ? error.stack : String(error),
-          type: 'UnexpectedError'
-        });
-      }
+      handleShaderError(error, 'Migumi shader generation');
     }
   }, [createGraphEditor, settings, viewerRef]);
 
-  // Register this function as the main function for Migumi mode
   useMainFunctionRegistration(
-    'Migumi', 
+    'Migumi Graph', 
     handleGenerateMigumiShader, 
-    'Generate Migumi shader from node graph (Cmd/Ctrl+Enter)'
+    'Generate Migumi shader IFrame from node graph (Cmd/Ctrl+Enter)'
   );
 
   return (
-    <Container>
-      <Title>Migumi Controls</Title>
+    <ControlPanelContainer>
+      <ControlPanelTitle $accentColor={theme.colors.modePurple}>Migumi Controls</ControlPanelTitle>
       
       <ButtonGroup>
-        <ActionButton onClick={handleGenerateMigumiShader}>
-          Generate Shader
+        <ActionButton 
+          $accentColor={theme.colors.modePurple}
+          $accentHover={theme.colors.modePurpleHover}
+          onClick={handleGenerateMigumiShader}
+        >
+          Generate Shader IFrame
         </ActionButton>
       </ButtonGroup>
 
-      <SettingsSection>
-        <SettingsLabel>File Format Settings</SettingsLabel>
+      <SettingsSection $accentColor={theme.colors.modePurple}>
+        <SettingsTitle>File Format Settings</SettingsTitle>
         <CheckboxContainer>
           <input
             type="checkbox"
@@ -267,7 +168,7 @@ export const MigumiControlPanel: React.FC<MigumiControlPanelProps> = ({
         </CheckboxContainer>
       </SettingsSection>
 
-      <InfoSection>
+      <InfoSection $accentColor={theme.colors.modePurple}>
         Migumi mode provides minimal geometric operations with basic 3D primitives and transformations.
         Perfect for simple geometric modeling and prototyping.
         {useOldFormat && (
@@ -277,6 +178,6 @@ export const MigumiControlPanel: React.FC<MigumiControlPanelProps> = ({
           </>
         )}
       </InfoSection>
-    </Container>
+    </ControlPanelContainer>
   );
 };

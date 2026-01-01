@@ -298,6 +298,17 @@ export const Parallelogram2DDefinition: NodeDefinition = {
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 
+export const Pentagram2DDefinition: NodeDefinition = {
+  type: "Pentagram2D",
+  label: "Pentagram2D",
+  category: "primitives_2d",
+  description: "Auto-generated from geolipi.symbolic.primitives_2d.",
+  inputs: [{"key": "r", "label": "R", "socketType": "ExprSocket", "required": false, "variadic": false}],
+  outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
+  controls: [{"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true}],
+  factory: (data?: Record<string, any>) => ({ ...(data || {}) })
+};
+
 export const Pie2DDefinition: NodeDefinition = {
   type: "Pie2D",
   label: "Pie2D",
@@ -460,17 +471,6 @@ export const Stairs2DDefinition: NodeDefinition = {
   inputs: [{"key": "wh", "label": "Wh", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "n", "label": "N", "socketType": "ExprSocket", "required": false, "variadic": false}],
   outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
   controls: [{"key": "wh", "type": "Vector[2]", "label": "Wh", "config": {"defaultValue": null}, "linkedToInput": "wh", "showLabel": true, "hasSocket": true}, {"key": "n", "type": "int", "label": "N", "config": {"defaultValue": null}, "linkedToInput": "n", "showLabel": true, "hasSocket": true}],
-  factory: (data?: Record<string, any>) => ({ ...(data || {}) })
-};
-
-export const Star2DDefinition: NodeDefinition = {
-  type: "Star2D",
-  label: "Star2D",
-  category: "primitives_2d",
-  description: "Auto-generated from geolipi.symbolic.primitives_2d.",
-  inputs: [{"key": "r", "label": "R", "socketType": "ExprSocket", "required": false, "variadic": false}, {"key": "rf", "label": "Rf", "socketType": "ExprSocket", "required": false, "variadic": false}],
-  outputs: [{"key": "expr", "label": "expr", "socketType": "ExprSocket"}],
-  controls: [{"key": "r", "type": "float", "label": "R", "config": {"defaultValue": null}, "linkedToInput": "r", "showLabel": true, "hasSocket": true}, {"key": "rf", "type": "float", "label": "Rf", "config": {"defaultValue": null}, "linkedToInput": "rf", "showLabel": true, "hasSocket": true}],
   factory: (data?: Record<string, any>) => ({ ...(data || {}) })
 };
 

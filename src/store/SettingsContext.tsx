@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useReducer, ReactNode, useEffect } from 'react';
+import { debug } from '../utils/debug';
 
 export interface PanelSettings {
   visible: boolean;
@@ -21,6 +22,8 @@ export interface ShaderSettings {
   variables: Record<string, any>;
   extract_vars: boolean;
   use_define_vars: boolean;
+  // Allow additional arbitrary fields for backend compatibility
+  [key: string]: any;
 }
 
 export interface ComponentSettings {
@@ -202,7 +205,7 @@ function settingsReducer(state: SettingsState, action: SettingsAction): Settings
           return JSON.parse(defaultSettings) as SettingsState;
         }
       } catch (error) {
-        console.warn('Failed to load default settings:', error);
+        debug.warn('Failed to load default settings:', error);
       }
       return state;
 
@@ -227,7 +230,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     try {
       localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
     } catch (error) {
-      console.warn('Failed to save settings:', error);
+      debug.warn('Failed to save settings:', error);
     }
   };
 
@@ -237,20 +240,20 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       const defaultSettings = localStorage.getItem('asmblr-default-settings');
       
       if (defaultSettings) {
-        console.log('Loading saved default settings');
+        debug.log('Loading saved default settings');
         const parsedSettings = JSON.parse(defaultSettings) as SettingsState;
         dispatch({ type: 'LOAD_SETTINGS', payload: parsedSettings });
       } else {
         // Fallback to current session settings if no defaults are saved
         const sessionSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
         if (sessionSettings) {
-          console.log('Loading session settings (no defaults found)');
+          debug.log('Loading session settings (no defaults found)');
           const parsedSettings = JSON.parse(sessionSettings) as SettingsState;
           dispatch({ type: 'LOAD_SETTINGS', payload: parsedSettings });
         }
       }
     } catch (error) {
-      console.warn('Failed to load settings:', error);
+      debug.warn('Failed to load settings:', error);
     }
   };
 

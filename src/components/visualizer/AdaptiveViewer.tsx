@@ -1,6 +1,7 @@
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { useSettings } from '../../store/SettingsContext';
 import { ViewerHandle } from '../../modes/types';
+import { debug } from '../../utils/debug';
 import HybridViewer from './HybridViewer';
 import { HybridViewerHandle } from './HybridViewer';
 import ShaderVisViewer, { ShaderVisViewerHandle } from './ShaderVisViewer';
@@ -37,21 +38,21 @@ const AdaptiveViewer = forwardRef<AdaptiveViewerHandle>((_, ref) => {
       if (selectedViewer === 'regl_viewer' && reglViewerRef.current) {
         reglViewerRef.current.setShaderCode(fragShader, vertShader);
       } else {
-        console.warn('setShaderCode called but REGL viewer not active or available');
+        debug.warn('setShaderCode called but REGL viewer not active or available');
       }
     },
     setUniform: (name: string, value: any) => {
       if (selectedViewer === 'regl_viewer' && reglViewerRef.current) {
         reglViewerRef.current.setUniform(name, value);
       } else {
-        console.warn('setUniform called but REGL viewer not active or available');
+        debug.warn('setUniform called but REGL viewer not active or available');
       }
     },
     captureScreenshot: () => {
       if (selectedViewer === 'regl_viewer' && reglViewerRef.current) {
         reglViewerRef.current.captureScreenshot();
       } else {
-        console.warn('captureScreenshot called but REGL viewer not active or available');
+        debug.warn('captureScreenshot called but REGL viewer not active or available');
       }
     },
     
@@ -59,21 +60,21 @@ const AdaptiveViewer = forwardRef<AdaptiveViewerHandle>((_, ref) => {
       if (selectedViewer === 'iframe_viewer' && iframeViewerRef.current) {
         iframeViewerRef.current.loadHTML(html);
       } else {
-        console.warn('loadHTML called but iframe viewer not active or available');
+        debug.warn('loadHTML called but iframe viewer not active or available');
       }
     },
     loadShaderData: (data: any) => {
       if (selectedViewer === 'shader_viewer' && shaderViewerRef.current) {
         shaderViewerRef.current.loadShaderData(data);
       } else {
-        console.warn('loadShaderData called but shader viewer not active or available');
+        debug.warn('loadShaderData called but shader viewer not active or available');
       }
     },
     updateUniforms: (uniforms: Record<string, any>) => {
       if (selectedViewer === 'shader_viewer' && shaderViewerRef.current) {
         shaderViewerRef.current.updateUniforms(uniforms);
       } else {
-        console.warn('updateUniforms called but shader viewer not active or available');
+        debug.warn('updateUniforms called but shader viewer not active or available');
       }
     },
     loadShaderCode: (shaderCode: string, uniformsDict: Record<string, any>, textures?: Record<string, any>) => {
@@ -82,11 +83,11 @@ const AdaptiveViewer = forwardRef<AdaptiveViewerHandle>((_, ref) => {
         setUniformsDict(uniformsDict);
         setTextures(textures);
       } else if (selectedViewer === 'regl_viewer' && reglViewerRef.current) {
-        console.log('[AdaptiveViewer] Loading shader code for REGL viewer:', { shaderCode: shaderCode.length, uniformsCount: Object.keys(uniformsDict || {}).length });
+        debug.log('[AdaptiveViewer] Loading shader code for REGL viewer:', { shaderCode: shaderCode.length, uniformsCount: Object.keys(uniformsDict || {}).length });
         
         // Set uniforms first, then shader code to ensure they're available when the draw command is created
         if (uniformsDict) {
-          console.log('[AdaptiveViewer] Setting uniforms for REGL viewer:', uniformsDict);
+          debug.log('[AdaptiveViewer] Setting uniforms for REGL viewer:', uniformsDict);
           Object.entries(uniformsDict).forEach(([name, value]) => {
             reglViewerRef.current?.setUniform(name, value);
           });
@@ -95,7 +96,7 @@ const AdaptiveViewer = forwardRef<AdaptiveViewerHandle>((_, ref) => {
         // Set shader code after uniforms are set
         reglViewerRef.current.setShaderCode(shaderCode);
       } else {
-        console.warn('loadShaderCode called but no compatible viewer is active');
+        debug.warn('loadShaderCode called but no compatible viewer is active');
       }
     }
   }), [selectedViewer]);

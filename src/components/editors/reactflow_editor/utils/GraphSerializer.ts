@@ -696,7 +696,7 @@ export class GraphSerializer {
       };
     });
 
-    // Convert connections
+    // Convert connections - ensure edges are not selected after load
     const edges: Edge[] = module.connections.map((conn, index) => ({
       id: `edge-${index}`,
       source: conn.source,
@@ -704,13 +704,20 @@ export class GraphSerializer {
       sourceHandle: conn.sourceOutput,
       targetHandle: conn.targetInput,
       type: 'default', // Use default for smooth bezier curves
+      selected: false, // Ensure edges are not selected after import
       style: {
         strokeWidth: 4,
         stroke: '#6366F1'
       }
     }));
 
-    return { nodes, edges };
+    // Ensure nodes are not selected after import
+    const deselectedNodes = nodes.map(node => ({
+      ...node,
+      selected: false
+    }));
+
+    return { nodes: deselectedNodes, edges };
   }
 
   /**
